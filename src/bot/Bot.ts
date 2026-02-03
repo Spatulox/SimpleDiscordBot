@@ -27,19 +27,20 @@ export type BotConfig = {
 export type RandomBotActivity = {type: ActivityType, message: string}[]
 
 export class Bot {
-    private static _client: Client;
+    // Instance properties
+    public static _client: Client;
     public static readonly log = new BotLog()
     public static readonly message = new BotMessage()
-
     private static criticConfig: CriticConfig;
     private static _config: BotConfig;
 
-    private static randomActivity: RandomBotActivity = [];
+    get config(): BotConfig { return Bot._config; }
+    get client(): Client { return Bot._client; }
 
     static get client(): Client { return Bot._client; }
     static get config(): BotConfig { return Bot._config; }
 
-    constructor(client: Client, randomActivity: RandomBotActivity = []) {
+    constructor(client: Client) {
 
         Log.info('----------------------------------------------------');
         Log.info("Starting Program")
@@ -48,8 +49,7 @@ export class Bot {
         if (!token) throw new Error('Missing environment variable: DISCORD_BOT_TOKEN');
         Bot.criticConfig = { dev: configJson.dev, token } as CriticConfig;
         Bot._config = { ...configJson } as BotConfig;
-        Bot._client = client
-        Bot.randomActivity = randomActivity;
+        Bot._client = client;
 
         (async() => {
             Log.info(`Using discord.js version: ${version}`);
@@ -114,14 +114,38 @@ export class Bot {
         }
     }
 
-    static setRandomActivity() {
-        if(Bot.randomActivity.length == 0){
+    static setRandomActivity(randomActivity: RandomBotActivity, intervalMs: number | null = null) {
+        if(randomActivity.length == 0){
             Log.error("Bot.randomActivity = [{}] is empty")
             return
         }
 
-        const random = Bot.randomActivity[Math.floor(Math.random() * Bot.randomActivity.length)]!;
-        Bot.setActivity(random.message, random.type);
+        const pickRandom = () => {
+            const random = randomActivity[Math.floor(Math.random() * randomActivity.length)]!;
+            Bot.setActivity(random.message, random.type);
+            return random;
+        };
+
+        if (intervalMs === null) {
+            pickRandom();
+            Log.info(`Activity set ONCE`);
+            return;
+        }
+
+        if(intervalMs != null) {
+            setInterval(async () => {
+                const random = randomActivity[Math.floor(Math.random() * randomActivity.length)]!;
+                Bot.setActivity(random.message, random.type);
+            }, intervalMs);
+            return
+        }
+
+        pickRandom();
+        setInterval(() => {
+            pickRandom();
+        }, intervalMs);
+
+        Log.info(`Random activity started (every ${Math.round(intervalMs / 60000)}min)`);
     }
 
 }
