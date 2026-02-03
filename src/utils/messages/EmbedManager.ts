@@ -94,6 +94,15 @@ export class EmbedManager {
     }
 
     /**
+     * Creates debug embed
+     */
+    static debug(description: string): EmbedBuilder {
+        return this.create(EmbedColor.green)
+            .setTitle('Debug')
+            .setDescription(description);
+    }
+
+    /**
      * Defer ephemeral reply
      */
     static deferEphemeral(): InteractionDeferReplyOptions {
