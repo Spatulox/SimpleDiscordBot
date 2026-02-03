@@ -1,12 +1,12 @@
 import {Client, ActivityType, Events, version} from 'discord.js';
 import dotenv from 'dotenv';
-import configJson from '../../config.json'
 import { Time } from '../utils/times/UnitTime';
 import {Log} from "../utils/Log";
 import {InternetChecker} from "../utils/network/InternetChecker";
 import {BotLog} from "./BotLog";
 import {EmbedColor} from "../manager/messages/EmbedManager";
 import {BotMessage} from "./BotMessage";
+import {BotEnv} from "./BotEnv";
 
 dotenv.config();
 
@@ -40,15 +40,13 @@ export class Bot {
     static get client(): Client { return Bot._client; }
     static get config(): BotConfig { return Bot._config; }
 
-    constructor(client: Client) {
+    constructor(client: Client, config: BotConfig) {
 
         Log.info('----------------------------------------------------');
         Log.info("Starting Program")
 
-        const token = process.env.DISCORD_BOT_TOKEN;
-        if (!token) throw new Error('Missing environment variable: DISCORD_BOT_TOKEN');
-        Bot.criticConfig = { dev: configJson.dev, token } as CriticConfig;
-        Bot._config = { ...configJson } as BotConfig;
+        Bot.criticConfig = { dev: BotEnv.dev, token: BotEnv.token };
+        Bot._config = config;
         Bot._client = client;
 
         (async() => {
