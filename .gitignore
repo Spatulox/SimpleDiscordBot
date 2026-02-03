@@ -90,8 +90,4 @@ typings/
 log/
 
 dist/
-config.json
-
-config.dev.json
-
 .idea
