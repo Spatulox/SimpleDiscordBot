@@ -3,9 +3,9 @@ import dotenv from 'dotenv';
 import configJson from '../../config.json' with { type: 'json' };
 import { Time } from '../utils/times/UnitTime.js';
 import {Log} from "../utils/Log.js";
-import {InternetChecker} from "../network/InternetChecker.js";
+import {InternetChecker} from "../utils/network/InternetChecker.js";
 import {BotLog} from "./BotLog.js";
-import {EmbedColor} from "../utils/messages/EmbedManager.js";
+import {EmbedColor} from "../manager/messages/EmbedManager.js";
 import {BotMessage} from "./BotMessage.js";
 
 dotenv.config();

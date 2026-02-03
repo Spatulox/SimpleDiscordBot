@@ -1,5 +1,5 @@
-import { Log } from '../utils/Log.js';
-import { Time } from '../utils/times/UnitTime.js';
+import { Log } from '../Log';
+import { Time } from '../times/UnitTime';
 
 export class InternetChecker {
     private static readonly TARGET = 'https://1.1.1.1'; // Cloudflare DNS HTTPS

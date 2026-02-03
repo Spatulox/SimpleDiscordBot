@@ -4,7 +4,7 @@ import {
     InteractionDeferReplyOptions,
     MessageFlags,
 } from "discord.js";
-import { Bot } from '../../bot/Bot.js';
+import { Bot } from '../../bot/Bot';
 
 export enum EmbedColor {
     error = 0x880015,

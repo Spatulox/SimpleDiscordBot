@@ -1,7 +1,7 @@
 import {Collection, GuildMember, User} from 'discord.js';
-import {Bot} from "../../bot/Bot.js";
-import {Log} from "../Log.js";
-import {Time} from "../times/UnitTime.js";
+import {Bot} from "../../bot/Bot";
+import {Log} from "../../utils/Log";
+import {Time} from "../../utils/times/UnitTime";
 
 export class UserManager {
 

@@ -1,6 +1,6 @@
 import { TextChannel, DMChannel, ThreadChannel } from 'discord.js';
-import {Bot} from "../../bot/Bot.js";
-import {Log} from "../Log.js";
+import {Bot} from "../../bot/Bot";
+import {Log} from "../../utils/Log";
 
 export class ChannelManager {
     /**

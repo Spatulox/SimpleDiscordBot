@@ -1,9 +1,9 @@
 // src/filesystem/FileManager.ts
 import path from 'path';
 import fs from 'fs/promises';
-import { Log } from '../utils/Log.js';
-import {Bot} from "../bot/Bot.js";
-import {EmbedManager} from "./messages/EmbedManager.js";
+import { Log } from '../utils/Log';
+import {Bot} from "../bot/Bot";
+import {EmbedManager} from "./messages/EmbedManager";
 
 export class FileManager {
     /**

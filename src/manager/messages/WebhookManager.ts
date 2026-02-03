@@ -7,9 +7,9 @@ import {
     ThreadChannel,
     MessageCreateOptions, WebhookMessageCreateOptions
 } from 'discord.js';
-import {EmbedManager} from "./EmbedManager.js";
-import {Log} from "../Log.js";
-import {Bot} from "../../bot/Bot.js";
+import {EmbedManager} from "./EmbedManager";
+import {Log} from "../../utils/Log";
+import {Bot} from "../../bot/Bot";
 
 export class WebhookManager {
     private webhook: Webhook | null = null;

@@ -1,8 +1,8 @@
 import {Guild, GuildMember, TextChannel, DMChannel, ThreadChannel, Collection} from 'discord.js';
-import {Log} from "../Log.js";
-import {Time} from "../times/UnitTime.js";
-import {ChannelManager} from "./ChannelManager.js";
-import {UserManager} from "./UserManager.js";
+import {Log} from "../../utils/Log";
+import {Time} from "../../utils/times/UnitTime";
+import {ChannelManager} from "./ChannelManager";
+import {UserManager} from "./UserManager";
 
 export class GuildManager {
     /**

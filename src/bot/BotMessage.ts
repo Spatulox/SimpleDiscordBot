@@ -9,7 +9,7 @@ import {
 } from 'discord.js';
 import {Log} from "../utils/Log.js";
 import {Bot} from "./Bot.js";
-import {EmbedManager} from "../utils/messages/EmbedManager.js";
+import {EmbedManager} from "../manager/messages/EmbedManager.js";
 
 export class BotMessage {
     /**
