@@ -14,21 +14,25 @@ export class BotLog {
      */
     public static initDiscordLogging(): void {
         // Find log channel
-        const logCh = Bot.client.channels.cache.get(Bot.config.logChannelId);
-        if (logCh && logCh.isTextBased()) {
-            Bot.log.logChannel = logCh as TextChannel;
-            Log.info(`Discord log channel initialized: ${Bot.log.logChannel.name}`);
-        } else {
-            Log.warn(`Log channel ${Bot.config.logChannelId} not found or not accessible`);
+        if(Bot.config.logChannelId) {
+            const logCh = Bot.client.channels.cache.get(Bot.config.logChannelId);
+            if (logCh && logCh.isTextBased()) {
+                Bot.log.logChannel = logCh as TextChannel;
+                Log.info(`Discord log channel initialized: ${Bot.log.logChannel.name}`);
+            } else {
+                Log.warn(`Discord Log channel ${Bot.config.logChannelId} not found or not accessible`);
+            }
         }
 
-        // Find error channel
-        const errorCh = Bot.client.channels.cache.get(Bot.config.errorChannelId);
-        if (errorCh && errorCh.isTextBased()) {
-            Bot.log.errorChannel = errorCh as TextChannel;
-            Log.info(`Discord error channel initialized: ${Bot.log.errorChannel.name}`);
-        } else {
-            Log.warn(`Error channel ${Bot.config.errorChannelId} not found or not accessible`);
+        if(Bot.config.errorChannelId) {
+            // Find error channel
+            const errorCh = Bot.client.channels.cache.get(Bot.config.errorChannelId);
+            if (errorCh && errorCh.isTextBased()) {
+                Bot.log.errorChannel = errorCh as TextChannel;
+                Log.info(`Discord error channel initialized: ${Bot.log.errorChannel.name}`);
+            } else {
+                Log.warn(`Discord Error channel ${Bot.config.errorChannelId} not found or not accessible`);
+            }
         }
     }
 

@@ -41,13 +41,13 @@ export enum EmbedColor {
     chocolate = 0xD2691E,
     crimson = 0xDC143C,
     youtube = 0xFF1A1A,
-    botColor = 0x5C8AD8,
+    default = 0x5C8AD8,
     minecraft = 0x006400
 }
 
 export class EmbedManager {
-    private static readonly BOT_ICON = Bot.config.botIconUrl;
-    private static readonly DEFAULT_COLOR = Bot.config.defaultEmbedColor || EmbedColor.botColor;
+    private static readonly BOT_ICON = Bot.config.botIconUrl || "";
+    private static readonly DEFAULT_COLOR = Bot.config.defaultEmbedColor || EmbedColor.default;
 
     /**
      * Creates base embed - SAME SIMPLE API !

@@ -16,7 +16,7 @@ export class WebhookManager {
 
     constructor(
         private readonly channel: TextChannel | ThreadChannel,
-        private readonly name: string = Bot.config.botName,
+        private readonly name: string = Bot.config.botName || "",
         private readonly avatarURL?: string
     ) {}
 

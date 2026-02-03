@@ -17,11 +17,11 @@ type CriticConfig = {
 
 export type BotConfig = {
     clientId: string;
-    botIconUrl: string;
-    logChannelId: string;
-    errorChannelId: string;
-    defaultEmbedColor: number | EmbedColor;
-    botName: string
+    botIconUrl?: string;
+    logChannelId?: string;
+    errorChannelId?: string;
+    defaultEmbedColor?: number | EmbedColor;
+    botName?: string
 }
 
 export type RandomBotActivity = {type: ActivityType, message: string}[]
