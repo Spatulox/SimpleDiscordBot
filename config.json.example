@@ -1,11 +1,8 @@
 {
   "dev":true/false
-  "token": "",
-  "owner": "",
-  "sendChannelErrors":"yes",
-  "scheduledChannelId": "",
+  "clientId": "",
+
   "logChannelId": "",
   "errorChannel": "",
-  "clientId": "",
   "guildId": ""
 }
