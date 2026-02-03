@@ -2,8 +2,8 @@
 import path from 'path';
 import fs from 'fs/promises';
 import { Log } from '../utils/Log.js';
-import { TextChannel } from 'discord.js';
-import { createErrorEmbed, returnToSendEmbed } from '../messages/embeds.js';
+import {Bot} from "../bot/Bot.js";
+import {EmbedManager} from "./messages/EmbedManager.js";
 
 export class FileManager {
     /**
@@ -85,14 +85,14 @@ export class FileManager {
      * @param directoryPath Full directory path (creates if missing)
      * @param filename Filename without extension
      * @param data Data to write (JSON serializable)
-     * @param channel Optional Discord channel for error notifications
+     * @param errorToChannel Send error to the error channel
      * @returns true on success, false on failure
      */
     static async writeJsonFile(
         directoryPath: string,
         filename: string,
         data: any,
-        channel: TextChannel | null = null
+        sendErrorToErrorChannel: boolean = true
     ): Promise<boolean> {
         // Skip if data is an Error array
         if (Array.isArray(data) && data.length === 1 && data[0] === 'Error') {
@@ -129,18 +129,10 @@ export class FileManager {
 
         } catch (error) {
             const cleanFilename = filename.replace(/\.json$/i, '') || 'unknown';
-            Log.error(`Failed to write file ${directoryPath}/${cleanFilename}.json: ${error}`);
-
-            if (channel) {
-                try {
-                    await channel.send(
-                        returnToSendEmbed(
-                            createErrorEmbed(`Failed to write file ${directoryPath}/${cleanFilename}.json: ${error}`)
-                        )
-                    );
-                } catch (sendError) {
-                    Log.error(`Failed to send Discord error message: ${sendError}`);
-                }
+            if(sendErrorToErrorChannel){
+                await Bot.log.sendError(EmbedManager.error(`Failed to write file ${directoryPath}/${cleanFilename}.json: ${error}`))
+            } else {
+                Log.error(`Failed to write file ${directoryPath}/${cleanFilename}.json: ${error}`);
             }
             return false;
         }
