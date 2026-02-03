@@ -1,1 +1,1 @@
-# DiscordBotTemplateV2
+# Simple Discord Bot
