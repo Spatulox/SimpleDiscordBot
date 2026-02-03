@@ -7,7 +7,7 @@
     "build": "tsc",
     "startjs": "node ./dist/index.js",
     "start": "clear && npm run build && npm run startjs",
-    "dev": "nodemon --exec tsx src_old/index.ts",
+    "dev": "nodemon --exec tsx src/index.ts",
     "delete": "node dist/builder/deploy.js",
     "list": "node dist/builder/list.js",
     "deploy": "node dist/builder/delete.js"
