@@ -7,6 +7,7 @@
         "3 => Context Menu for messages"
     ],
     "default_member_permissions": ["ModerateMembers", "KickMembers", "BanMembers"],
+    "default_member_permissions_comment": "It's the same as the PermissionFlagsBits enum from discordjs",
     "dm_permission": false,
     "integration_types": [0, 1],
     "integration_type_comment":{
