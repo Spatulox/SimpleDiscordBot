@@ -1,4 +1,4 @@
-import {Client, ActivityType, Events, version, Interaction, TextChannel, EmbedBuilder} from 'discord.js';
+import {Client, ActivityType, Events, version} from 'discord.js';
 import dotenv from 'dotenv';
 import configJson from '../../config.json' with { type: 'json' };
 import { Time } from '../utils/times/UnitTime.js';
