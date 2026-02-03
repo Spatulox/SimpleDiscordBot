@@ -15,7 +15,7 @@ type CriticConfig = {
     token: string;
 };
 
-type Config = {
+export type BotConfig = {
     clientId: string;
     botIconUrl: string;
     logChannelId: string;
@@ -24,7 +24,7 @@ type Config = {
     botName: string
 }
 
-type RandomActivity = {type: ActivityType, message: string}[]
+export type RandomBotActivity = {type: ActivityType, message: string}[]
 
 export class Bot {
     private static _client: Client;
@@ -32,14 +32,14 @@ export class Bot {
     public static readonly message = new BotMessage()
 
     private static criticConfig: CriticConfig;
-    private static _config: Config;
+    private static _config: BotConfig;
 
-    private static randomActivity: RandomActivity = [];
+    private static randomActivity: RandomBotActivity = [];
 
     static get client(): Client { return Bot._client; }
-    static get config(): Config { return Bot._config; }
+    static get config(): BotConfig { return Bot._config; }
 
-    constructor(client: Client, randomActivity: RandomActivity = []) {
+    constructor(client: Client, randomActivity: RandomBotActivity = []) {
 
         Log.info('----------------------------------------------------');
         Log.info("Starting Program")
@@ -47,7 +47,7 @@ export class Bot {
         const token = process.env.DISCORD_BOT_TOKEN;
         if (!token) throw new Error('Missing environment variable: DISCORD_BOT_TOKEN');
         Bot.criticConfig = { dev: configJson.dev, token } as CriticConfig;
-        Bot._config = { ...configJson } as Config;
+        Bot._config = { ...configJson } as BotConfig;
         Bot._client = client
         Bot.randomActivity = randomActivity;
 
