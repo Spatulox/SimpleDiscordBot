@@ -6,6 +6,7 @@ import {Log} from "../utils/Log.js";
 import {InternetChecker} from "../network/InternetChecker.js";
 import {BotLog} from "./BotLog.js";
 import {EmbedColor} from "../utils/messages/EmbedManager.js";
+import {BotMessage} from "./BotMessage.js";
 
 dotenv.config();
 
@@ -28,6 +29,7 @@ type RandomActivity = {type: ActivityType, message: string}[]
 export class Bot {
     private static _client: Client;
     public static readonly log = new BotLog()
+    public static readonly message = new BotMessage()
 
     private static criticConfig: CriticConfig;
     private static _config: Config;
