@@ -3,6 +3,9 @@
   "clientId": "",
 
   "logChannelId": "",
-  "errorChannel": "",
-  "guildId": ""
+  "errorChannelId": "",
+  "guildId": "";
+  "botIconUrl": "",
+  "botName": "",
+  "defaultEmbedColor": 1
 }
