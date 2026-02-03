@@ -1,5 +1,5 @@
-import { Invite } from 'discord.js';
-import config from '../../config.js';
+import { Invite } from 'discord';
+import config from '../../config';
 
 /**
  * Vérifie si une invitation est ancienne (plus d'une heure).

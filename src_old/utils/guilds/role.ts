@@ -1,6 +1,6 @@
-import { Snowflake, GuildMember, Role, Guild } from 'discord.js';
-import { client } from '../client.js';
-import { sendMessage } from '../messages/messages.js';
+import { Snowflake, GuildMember, Role, Guild } from 'discord';
+import { client } from '../client';
+import { sendMessage } from '../messages/messages';
   /**
    * Supprime un rôle spécifique d'un membre par son nom
    * @param member - Le membre concerné

@@ -1,9 +1,9 @@
-import { log } from "../log.js";
-import { searchClientChannel } from "../guilds/channels.js";
-import {createErrorEmbed, Embed, isEmbed, returnToSendEmbed, sendEmbed, sendEmbedErrorMessage} from "./embeds.js";
-import { client } from '../client.js';
-import { Client, DMChannel, MessageCreateOptions, TextChannel, ThreadChannel } from 'discord.js';
-import config from "../../config.js";
+import { log } from "../log";
+import { searchClientChannel } from "../guilds/channels";
+import {createErrorEmbed, Embed, isEmbed, returnToSendEmbed, sendEmbed, sendEmbedErrorMessage} from "./embeds";
+import { client } from '../client';
+import { Client, DMChannel, MessageCreateOptions, TextChannel, ThreadChannel } from 'discord';
+import config from "../../config";
 
 //----------------------------------------------------------------------------//
 

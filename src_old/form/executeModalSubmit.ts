@@ -1,5 +1,5 @@
 import { ModalSubmitInteraction } from "discord.js";
-import { createErrorEmbed, sendInteractionEmbed } from "../utils/messages/embeds.js";
+import { createErrorEmbed, sendInteractionEmbed } from "../utils/messages/embeds";
 
 export async function executeModalSubmit(interaction: ModalSubmitInteraction){
     if (!interaction.isModalSubmit()) return;

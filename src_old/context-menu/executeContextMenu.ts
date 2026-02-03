@@ -1,5 +1,5 @@
 import { ContextMenuCommandInteraction } from "discord.js";
-import { createErrorEmbed, sendInteractionEmbed } from "../utils/messages/embeds.js";
+import { createErrorEmbed, sendInteractionEmbed } from "../utils/messages/embeds";
 
 export async function executeContextMenu(interaction: ContextMenuCommandInteraction){
     if (!interaction.isContextMenuCommand()) return;

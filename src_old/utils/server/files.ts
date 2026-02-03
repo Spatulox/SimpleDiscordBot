@@ -1,7 +1,7 @@
-import { log } from "../log.js";
+import { log } from "../log";
 import path from 'path'
 import fs from 'fs'
-import { createErrorEmbed, returnToSendEmbed } from "../messages/embeds.js";
+import { createErrorEmbed, returnToSendEmbed } from "../messages/embeds";
 import { TextChannel } from "discord.js";
 
 //----------------------------------------------------------------------------//
@@ -33,7 +33,7 @@ export async function listDirectory(directoryPath: string): Promise<string[] | b
 export async function listJsonFile(directoryPath: string): Promise<string[] | false> {
     try {
         const files = await fs.promises.readdir(directoryPath);
-        return files.filter(file => path.extname(file) === '.json');
+        return files.filter(file => path.extname(file) === 'on');
     } catch (err) {
         log('ERROR : impossible to read the directory: '+err);
         return false;
@@ -84,7 +84,7 @@ export async function writeJsonFileRework(
       }
     }
 
-    name = name.split('.json')[0] ?? '';
+    name = name.split('on')[0] ?? '';
     
     if(name == ''){
         log("ERROR : Impossible to write the Json file, name = ''")

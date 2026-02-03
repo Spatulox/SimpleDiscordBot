@@ -1,6 +1,6 @@
 // Slashes command in alphabetical order...
 import { StringSelectMenuInteraction } from "discord.js";
-import { createErrorEmbed, sendInteractionEmbed} from "../utils/messages/embeds.js";
+import { createErrorEmbed, sendInteractionEmbed} from "../utils/messages/embeds";
 
 export async function executeSelectMenu(interaction: StringSelectMenuInteraction) {
     if (!interaction.isAnySelectMenu()) return;

@@ -1,5 +1,5 @@
-import { client } from "../client.js";
-import { Guild } from "discord.js";
+import { client } from "../client";
+import { Guild } from "discord";
 
 /**
  * Vérifie si un membre est toujours dans un serveur Discord.

@@ -1,5 +1,5 @@
-import { log } from "../../utils/log.js";
-import {readJsonFile} from "../../utils/server/files.js";
+import { log } from "../../utils/log";
+import {readJsonFile} from "../../utils/server/files";
 import {ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle} from "discord.js";
 
 export async function loadForm(name: string){

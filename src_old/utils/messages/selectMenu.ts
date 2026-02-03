@@ -1,5 +1,5 @@
-import {ActionRowBuilder, StringSelectMenuBuilder, AnyComponentBuilder, AnySelectMenuInteraction, InteractionReplyOptions, InteractionEditReplyOptions, MessageFlags } from 'discord.js';
-import { log } from '../log.js';
+import {ActionRowBuilder, StringSelectMenuBuilder, AnyComponentBuilder, AnySelectMenuInteraction, InteractionReplyOptions, InteractionEditReplyOptions, MessageFlags } from 'discord';
+import { log } from '../log';
 
 
 type SelectMenuType = {

@@ -7,9 +7,9 @@ import {
     User,
     GuildMember
 } from 'discord.js';
-import {Log} from "../utils/Log.js";
-import {Bot} from "./Bot.js";
-import {EmbedManager} from "../manager/messages/EmbedManager.js";
+import {Log} from "../utils/Log";
+import {Bot} from "./Bot";
+import {EmbedManager} from "../manager/messages/EmbedManager";
 
 export class BotMessage {
     /**

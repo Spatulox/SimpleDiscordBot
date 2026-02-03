@@ -2,13 +2,13 @@ import { PermissionFlagsBits } from 'discord-api-types/v10';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v10';
 import { setTimeout } from "timers/promises";
-import { client } from '../../utils/client.js';
-import { Time } from '../../utils/times/UnitTime.js';
-import { log } from '../../utils/log.js';
-import { listJsonFile, readJsonFile, writeJsonFileRework } from '../../utils/server/files.js';
-import { loginBot } from '../../utils/login.js';
-import config from '../../config.js';
-import {Events} from "discord.js";
+import { client } from '../../utils/client';
+import { Time } from '../../utils/times/UnitTime';
+import { log } from '../../utils/log';
+import { listJsonFile, readJsonFile, writeJsonFileRework } from '../../utils/server/files';
+import { loginBot } from '../../utils/login';
+import config from '../../config';
+import {Events} from "discord";
 
 
 export interface Command {

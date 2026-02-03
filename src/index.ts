@@ -1,22 +1,22 @@
-export { Bot } from "./bot/Bot.js"
+export { Bot } from "./bot/Bot"
 
 
 // Manager
-export { FileManager } from './manager/FileManager.js'
+export { FileManager } from './manager/FileManager'
 
-export { EmbedManager, EmbedColor } from './manager/messages/EmbedManager.js';
-export { WebhookManager } from './manager/messages/WebhookManager.js';
+export { EmbedManager, EmbedColor } from './manager/messages/EmbedManager';
+export { WebhookManager } from './manager/messages/WebhookManager';
 
-export { ChannelManager } from './manager/discord/ChannelManager.js';
-export { UserManager } from './manager/discord/UserManager.js';
-export { RoleManager } from './manager/discord/RoleManager.js';
-export { InviteManager } from './manager/discord/InviteManager.js';
+export { ChannelManager } from './manager/discord/ChannelManager';
+export { UserManager } from './manager/discord/UserManager';
+export { RoleManager } from './manager/discord/RoleManager';
+export { InviteManager } from './manager/discord/InviteManager';
 
 // Utils
-export { Time } from "./utils/times/UnitTime.js"
-export { Log } from "./utils/Log.js"
-export { SimpleMutex } from "./utils/SimpleMutex.js"
+export { Time } from "./utils/times/UnitTime"
+export { Log } from "./utils/Log"
+export { SimpleMutex } from "./utils/SimpleMutex"
 
 
 // Type
-export type { BotConfig, RandomBotActivity } from './bot/Bot.js';
+export type { BotConfig, RandomBotActivity } from './bot/Bot';

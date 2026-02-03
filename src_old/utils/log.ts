@@ -4,7 +4,7 @@ import fs from 'fs';
 //----------------------------------------------------------------------------//
 
 export function log(str: string): void {
-  // Déterminer le chemin du fichier globalFunct.js
+  // Déterminer le chemin du fichier globalFunct
 
   // Déterminer le chemin du dossier et du fichier log
   const logDir: string = path.join(__dirname.split(path.sep + 'utils')[0]!, 'log')

@@ -1,7 +1,7 @@
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v10';
-import config from '../../config.js';
-import { log } from '../../utils/log.js';
+import config from '../../config';
+import { log } from '../../utils/log';
 
 
 async function deleteCommands(): Promise<void> {

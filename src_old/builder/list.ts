@@ -1,8 +1,8 @@
 import { Routes } from 'discord-api-types/v10';
-import { client } from '../utils/client.js';
-import { log } from '../utils/log.js';
-import { loginBot } from '../utils/login.js';
-import config from "../config.json" with {type: "json"}
+import { client } from '../utils/client';
+import { log } from '../utils/log';
+import { loginBot } from '../utils/login';
+import config from "../config.json"
 import {Events} from "discord.js";
 
 export interface Command {

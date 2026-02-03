@@ -1,8 +1,8 @@
 import { DMChannel, EmbedBuilder, InteractionDeferReplyOptions, TextChannel, ThreadChannel, MessageCreateOptions, InteractionReplyOptions, InteractionEditReplyOptions, CommandInteraction, ModalSubmitInteraction, BaseInteraction, MessageFlags } from "discord.js";
-import {log} from "../log.js";
-import { searchClientChannel } from "../guilds/channels.js";
-import { client } from "../client.js";
-import config from "../../config.js";
+import {log} from "../log";
+import { searchClientChannel } from "../guilds/channels";
+import { client } from "../client";
+import config from "../../config";
 
 
 

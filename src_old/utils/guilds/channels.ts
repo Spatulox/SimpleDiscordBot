@@ -1,5 +1,5 @@
-import {Client, DMChannel, GuildBasedChannel, GuildMember, Message, TextChannel, ThreadChannel } from 'discord.js';
-import { client } from '../client.js';
+import {Client, DMChannel, GuildBasedChannel, GuildMember, Message, TextChannel, ThreadChannel } from 'discord';
+import { client } from '../client';
 
 //----------------------------------------------------------------------------//
 

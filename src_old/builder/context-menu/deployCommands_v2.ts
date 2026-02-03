@@ -1,15 +1,15 @@
-import { client } from "../../utils/client.js";
-import { listJsonFile, readJsonFile } from "../../utils/server/files.js";
+import { client } from "../../utils/client";
+import { listJsonFile, readJsonFile } from "../../utils/server/files";
 import { PermissionFlagsBits } from 'discord-api-types/v10';
-import { log } from "../../utils/log.js";
-import { loginBot } from "../../utils/login.js";
+import { log } from "../../utils/log";
+import { loginBot } from "../../utils/login";
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v10';
 import { setTimeout } from "timers/promises";
-import { Time } from "../../utils/times/UnitTime.js";
-import { Command } from "../deploy.js";
-import config from "../../config.js";
-import {Events} from "discord.js";
+import { Time } from "../../utils/times/UnitTime";
+import { Command } from "../deploy";
+import config from "../../config";
+import {Events} from "discord";
 
 
 const PATH = "context-menu"

@@ -1,12 +1,12 @@
 import {Client, ActivityType, Events, version} from 'discord.js';
 import dotenv from 'dotenv';
-import configJson from '../../config.json' with { type: 'json' };
-import { Time } from '../utils/times/UnitTime.js';
-import {Log} from "../utils/Log.js";
-import {InternetChecker} from "../utils/network/InternetChecker.js";
-import {BotLog} from "./BotLog.js";
-import {EmbedColor} from "../manager/messages/EmbedManager.js";
-import {BotMessage} from "./BotMessage.js";
+import configJson from '../../config.json'
+import { Time } from '../utils/times/UnitTime';
+import {Log} from "../utils/Log";
+import {InternetChecker} from "../utils/network/InternetChecker";
+import {BotLog} from "./BotLog";
+import {EmbedColor} from "../manager/messages/EmbedManager";
+import {BotMessage} from "./BotMessage";
 
 dotenv.config();
 

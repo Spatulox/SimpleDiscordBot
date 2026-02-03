@@ -1,7 +1,7 @@
 // src/utils/BotLog.ts
 import {TextChannel, EmbedBuilder, Message} from 'discord.js';
-import {Log} from "../utils/Log.js";
-import {Bot} from "./Bot.js";
+import {Log} from "../utils/Log";
+import {Bot} from "./Bot";
 
 export class BotLog {
     private logChannel: TextChannel | null = null;
