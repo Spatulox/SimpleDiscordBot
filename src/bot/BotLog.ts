@@ -1,5 +1,5 @@
 // src/utils/BotLog.ts
-import {TextChannel, EmbedBuilder} from 'discord.js';
+import {TextChannel, EmbedBuilder, Message} from 'discord.js';
 import {Log} from "../utils/Log.js";
 import {Bot} from "./Bot.js";
 
@@ -38,43 +38,54 @@ export class BotLog {
     private async _sendToChannel(
         channel: TextChannel | null,
         content: string | EmbedBuilder,
-        prefix: "info" | "warn" | "error" = 'info'
-    ): Promise<void> {
+        prefix: "info" | "warn" | "error" | "debug" = 'info'
+    ): Promise<Message | void> {
         if (!channel) return;
+        let msg
 
         try {
             if (content instanceof EmbedBuilder) {
-                await channel.send({ embeds: [content] });
+                msg = await channel.send({ embeds: [content] });
             } else {
                 const timestamp = `\`${new Date().toISOString()}\``;
-                await channel.send(`${prefix.toUpperCase()} ${timestamp} ${content}`);
+                msg = await channel.send(`${prefix.toUpperCase()} ${timestamp} ${content}`);
             }
         } catch (error) {
             Log.error(`Failed to send to Discord channel: ${error}`);
         }
+
+        return msg
     }
 
     /**
      * Send INFO log - TEXT or EMBED !
      */
-    async sendLog(content: string | EmbedBuilder): Promise<void> {
+    async sendLog(content: string | EmbedBuilder): Promise<Message | void> {
         Log.info(content instanceof EmbedBuilder ? 'Embed logged' : content);
-        await this._sendToChannel(this.logChannel, content, 'info');
+        return await this._sendToChannel(this.logChannel, content, 'info');
     }
 
     /**
      * Send ERROR log - TEXT or EMBED !
      */
-    async sendError(content: string | EmbedBuilder): Promise<void> {
+    async sendError(content: string | EmbedBuilder): Promise<Message | void> {
         Log.error(content instanceof EmbedBuilder ? 'Embed error logged' : content);
-        await this._sendToChannel(this.errorChannel, content, 'error');
+        return await this._sendToChannel(this.errorChannel, content, 'error');
     }
 
     /**
      * Send WARNING log - TEXT or EMBED (log channel)
      */
-    async sendWarn(content: string | EmbedBuilder): Promise<void> {
+    async sendWarn(content: string | EmbedBuilder): Promise<Message | void> {
         Log.warn(content instanceof EmbedBuilder ? 'Embed warning logged' : content);
-        await this._sendToChannel(this.logChannel, content, 'warn');
+        return await this._sendToChannel(this.logChannel, content, 'warn');
+    }
+
+    /**
+     * Send DEBUG log - TEXT or EMBED (log channel)
+     */
+    async sendDebug(content: string | EmbedBuilder): Promise<Message | void> {
+        Log.debug(content instanceof EmbedBuilder ? 'Embed debug logged' : content);
+        return await this._sendToChannel(this.logChannel, content, 'debug');
     }
 }
