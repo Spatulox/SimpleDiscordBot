@@ -1,6 +1,6 @@
 import {BaseCLI} from "./BaseCLI";
 import {InteractionCLI} from "./InteractionCLI";
-import {GenerationCLI} from "./GenerationCLI";
+import {GenerationCLI} from "./GenerationCLI/GenerationCLI";
 
 /**
  * --- MainCLI ---
