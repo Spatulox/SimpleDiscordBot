@@ -1,7 +1,8 @@
 // CLI Interface
 import readline from "readline";
-import {BaseInteractionManager, CommandManager, ContextMenuManager} from "./BaseInteractionManager";
+import {BaseInteractionManager} from "./BaseInteractionManager";
 import {BotEnv} from "../../../../bot/BotEnv";
+import {CommandManager, ContextMenuManager} from "./InteractionManager";
 
 class CLIInterface {
     private rl = readline.createInterface({
