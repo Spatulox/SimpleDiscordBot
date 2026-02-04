@@ -28,10 +28,10 @@ class CLIInterface {
     private async showMainMenu(): Promise<void> {
         this.currentMenu = 'main';
         console.clear();
-        console.log('🤖 Discord Bot Manager CLI');
+        console.log('Simple Discord Bot Manager CLI');
         console.log('═'.repeat(50));
-        console.log('1. Interaction Menu (Slash command / Context menu / ...)');
-        console.log('2. Files Generation (Slash command / Context menu / ...)');
+        console.log('1. Manage Interactions (Slash command / Context menu / ...)');
+        console.log('2. Generate Interaction Files (Slash command / Context menu / ...)');
         console.log('3. Help');
         console.log('4. Exit');
         console.log('═'.repeat(50));
@@ -75,10 +75,10 @@ class CLIInterface {
         console.clear();
         console.log(`${managerName} - ${manager.folderPath}`);
         console.log('═'.repeat(50));
-        console.log('1. List');
-        console.log('2. Deploy');
-        console.log('3. Update');
-        console.log('4. Delete');
+        console.log(`1. List remote ${manager.folderPath}`);
+        console.log(`2. Deploy local ${manager.folderPath}`);
+        console.log(`3. Update remote ${manager.folderPath}`);
+        console.log(`4. Delete remote ${manager.folderPath}`);
         console.log('5. Back');
         console.log('═'.repeat(50));
 
@@ -155,22 +155,40 @@ class CLIInterface {
     }
 
     private async showHelp(): Promise<void> {
-        console.log(`
-🆘 HELP - Simple Discord Bot Manager CLI
+        console.clear();
+        console.log('');
+        console.log('||| HELP - Discord Bot Command Manager CLI |||');
+        console.log('');
+        console.log('🔗 Wiki: https://github.com/Spatulox/SimpleDiscordBot/wiki');
+        console.log('═'.repeat(80));
+        console.log('🤖 What it does:');
+        console.log('  • Manage your Discord interactions (slash commands & context menus) via an interactive CLI');
+        console.log('  • Let you deploy/update/delete any interaction');
+        console.log('  • Let you generate an interaction files');
 
-📁 Folder's struct :
-├── handlers/
-│   ├── commands/     ← Slash commands (type 1)
-│   └── context-menu/ ← Context Menu (type 2/3)
+        console.log('');
+        console.log('How you need to save your interaction files');
+        console.log('📁 Folder Structure:');
+        console.log('  ├── handlers/         ← in the root folder of your project');
+        console.log('  │   ├── commands/     ← Slash Commands (type 1)');
+        console.log('  │   └── context-menu/ ← Context Menus (type 2/3)');
 
-🎯 Functionalities:
-• List: Affiche les fichiers JSON locaux
-• Deploy: Deploy commande/context menu which exist on local file but not on Discord
-• Update: Update Discord command, based on the local files
-• Delete: Efface TOUT sur Discord
+        console.log('');
+        console.log('🎯 Features:');
+        console.log('  📊 1. List Remote    → Show deployed commands on Discord');
+        console.log('  🚀 2. Deploy Local   → Deploy local JSON files → Discord');
+        console.log('  🔄 3. Update Remote  → Update Discord commands based on local JSON file');
+        console.log('  🗑️ 4. Delete Remote → Remove Discord commands based on local JSON file');
 
-For an exemple of json file, please see "https://github.com/Spatulox/SimpleDiscordBot/wiki"
-        `);
+        console.log('');
+        console.log('🎮 Selection:');
+        console.log('  • Numbered lists appear after the interaction list');
+        console.log('  • Enter: "1,3,5" or "all" to select which interaction you want to apply the action');
+
+        console.log('');
+        console.log('🔗 Wiki: https://github.com/Spatulox/SimpleDiscordBot/wiki');
+        console.log('═'.repeat(80));
+
         await this.prompt('Press Enter to continue...');
         await this.showMainMenu();
     }
