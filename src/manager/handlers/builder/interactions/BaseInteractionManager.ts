@@ -37,44 +37,94 @@ export abstract class BaseInteractionManager {
         this.rest = new REST({ version: '10' }).setToken(token);
     }
 
-    async list(): Promise<void> {
-        console.log(`📋 Commandes ${this.folderPath} sur Discord (globales)...`);
+    async listFromFile(): Promise<Command[]> {
+        console.log(`Listing Handlers (${this.folderPath}) not deployed on discord`);
+
+        try {
+            const files = await FileManager.listJsonFiles(`./handlers/${this.folderPath}`);
+            if (!files || files.length === 0) {
+                console.log('No files found');
+                return [];
+            }
+
+            const commandList: Command[] = [];
+
+            for (const [index, file] of files.entries()) {
+                const cmd = await this.readCommand(`./handlers/${this.folderPath}/${file}`);
+                if (!cmd || cmd.id) continue;
+
+                const commandWithIndex = {
+                    ...cmd,
+                    index: index,
+                    filename: file
+                };
+                commandList.push(commandWithIndex as Command);
+            }
+
+            console.log(`✅ ${commandList.length} local ${this.folderPath}(s) not deployed\n`);
+
+            console.table(
+                commandList.map((cmd: any) => ({
+                    '#': cmd.index,
+                    Nom: cmd.name,
+                    Type: cmd.type === CommandType.SLASH ? 'Slash' :
+                        cmd.type === CommandType.USER_CONTEXT_MENU ? 'User' : 'Message',
+                    Description: cmd.description,
+                    Fichier: cmd.filename
+                }))
+            );
+
+            return commandList;
+        } catch (error) {
+            Log.error(`${(error as Error).message}`);
+            return [];
+        }
+    }
+
+    async list(): Promise<Command[]> {
+        console.log(`Handlers ${this.folderPath} on Discord (global)...`);
 
         try {
             const globalCmds = await this.rest.get(
                 Routes.applicationCommands(this.clientId)
             ) as any[];
 
-            const commands = globalCmds.filter(cmd => this.commandType.includes(cmd.type));
+            const commands: Command[] = globalCmds.filter(cmd => this.commandType.includes(cmd.type));
 
-            console.log(`✅ ${commands.length} commandes trouvées\n`);
+            const commandList: Command[] = commands.map((cmd: any, index: number) => ({
+                index: index,
+                name: cmd.name,
+                type: cmd.type,
+                description: cmd.description || 'N/A',
+                id: cmd.id
+            }));
+
+            console.log(`✅ ${commands.length} ${this.folderPath}(s) found\n`);
 
             console.table(
                 commands.map((cmd: any) => ({
                     Nom: cmd.name,
-                    Type: cmd.type === 1 ? 'Slash' : cmd.type === 2 ? 'User' : 'Message',
-                    Description: cmd.description,
+                    Type: cmd.type === CommandType.SLASH ? 'Slash' : cmd.type === CommandType.USER_CONTEXT_MENU ? 'User' : 'Message',
+                    Description: cmd.descriCommandTypeption,
                     ID: cmd.id.slice(-8)
                 }))
             );
-
+            return commandList;
         } catch (error) {
             Log.error(`❌ Erreur: ${(error as Error).message}`);
+            return []
         }
     }
 
-    async deploy(): Promise<void> {
-        console.log(`Deploy ${this.folderPath}...`);
-        const files = await FileManager.listJsonFiles("./handlers/"+this.folderPath);
-        if(!files){
-            Log.error('Error listing files');
-            return
-        }
+    async deploy(commands: Command[]): Promise<void> {
+        console.log(`Deploying ${commands.length} ${this.folderPath}(s)...`);
         let updatedCount = 0;
-
-        for (const file of files) {
-            const cmd = await this.readCommand(`./handlers/${this.folderPath}/${file}`);
-            if (!cmd) continue;
+        for (const cmd of commands) {
+            const file = cmd.filename;
+            if (!file) {
+                Log.error(`${cmd.name}: Not linked to a file (wtf)`);
+                continue;
+            }
 
             try {
                 await this.deploySingleCommand(cmd, file);
@@ -83,37 +133,42 @@ export abstract class BaseInteractionManager {
                 Log.error(`Error ${file}: ${(error as Error).message}`);
             }
         }
-        console.log(`✅ ${updatedCount}/${files.length} déployés`);
+        console.log(`✅ ${updatedCount}/${commands.length} deployed`);
     }
 
-    async update(): Promise<void> {
-        console.log(`Update ./handlers/${this.folderPath}...`);
-        await this.deploy(); // Même logique que deploy
-    }
-
-    async delete(): Promise<void> {
-        console.log(`Delete ./handlers/${this.folderPath}...`);
-        try {
-            // Globales
-            const globalCmds = await this.rest.get(Routes.applicationCommands(this.clientId)) as any[];
-            for (const cmd of globalCmds) {
-                await this.rest.delete(Routes.applicationCommand(this.clientId, cmd.id));
-                console.log(`🗑️  ${cmd.name} (global)`);
+    async delete(commands: Command[]): Promise<void> {
+        console.log(`Deleting ${commands.length} ${this.folderPath}(s)...`);
+        for (const cmd of commands) {
+            if (!cmd.id) {
+                Log.error(`${cmd.name}: No Discord ID, cannot delete the ${this.folderPath}`);
+                continue;
             }
 
-            // Guilds
-            /*for (const guildId of guildIds) {
-                try {
-                    const guildCmds = await this.rest.get(Routes.applicationGuildCommands(this.clientId, guildId)) as any[];
-                    for (const cmd of guildCmds) {
-                        await this.rest.delete(Routes.applicationGuildCommand(this.clientId, guildId, cmd.id));
-                        console.log(chalk.red(`🗑️  ${cmd.name} (guild ${guildId.slice(-4)})`));
-                    }
-                } catch {}
-            }*/
-            console.log('✅ Tout supprimé');
-        } catch (error) {
-            console.error(`❌ Erreur: ${(error as Error).message}`);
+            try {
+                await this.rest.delete(Routes.applicationCommand(this.clientId, cmd.id));
+                console.log(`${cmd.name} (${cmd.id.slice(-8)}) deleted`);
+            } catch (error) {
+                Log.error(`${cmd.name} (${cmd.id.slice(-8)}): ${(error as Error).message}`);
+            }
+        }
+    }
+
+    async update(commands: Command[]): Promise<void> {
+        console.log(`Updating ${commands.length} ${this.folderPath}(s)...`);
+        for (const cmd of commands) {
+            if (!cmd.id) {
+                Log.error(`${cmd.name}: No Discord ID, cannot update the ${this.folderPath}`);
+                continue;
+            }
+
+            try {
+                await this.rest.patch(Routes.applicationCommand(this.clientId, cmd.id), {
+                    body: { description: `${cmd.description} (Updated ${new Date().toISOString()})` }
+                });
+                console.log(`${cmd.name} updated`);
+            } catch (error) {
+                Log.error(`${cmd.name}: ${(error as Error).message}`);
+            }
         }
     }
 
@@ -122,7 +177,7 @@ export abstract class BaseInteractionManager {
         const dataToSend = { ...cmd };
         delete dataToSend.guildID;
 
-        if (cmd.type === 2 || cmd.type === 3) {
+        if (cmd.type === CommandType.MESSAGE_CONTEXT_MENU || cmd.type === CommandType.USER_CONTEXT_MENU) {
             delete dataToSend.options;
         }
 

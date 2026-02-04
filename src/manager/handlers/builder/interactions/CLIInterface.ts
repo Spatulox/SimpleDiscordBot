@@ -1,6 +1,6 @@
-// CLI Interface
+#!/usr/bin/env node
 import readline from "readline";
-import {BaseInteractionManager} from "./BaseInteractionManager";
+import {BaseInteractionManager, Command} from "./BaseInteractionManager";
 import {BotEnv} from "../../../../bot/BotEnv";
 import {CommandManager, ContextMenuManager} from "./InteractionManager";
 
@@ -11,13 +11,14 @@ class CLIInterface {
     });
     private managers: Record<string, BaseInteractionManager> = {};
     private currentMenu: 'main' | 'interaction' = 'main';
+    private handlerManagerType = ""
 
     constructor() {
         const CLIENT_ID = BotEnv.clientId;
         const TOKEN = BotEnv.token;
 
-        this.managers['commands'] = new CommandManager(CLIENT_ID, TOKEN);
-        this.managers['context-menu'] = new ContextMenuManager(CLIENT_ID, TOKEN);
+        this.managers['CommandManager'] = new CommandManager(CLIENT_ID, TOKEN);
+        this.managers['ContextMenuManager'] = new ContextMenuManager(CLIENT_ID, TOKEN);
     }
 
     async start(): Promise<void> {
@@ -57,8 +58,8 @@ class CLIInterface {
 
         const choice = await this.prompt('Choose a manager: ');
         switch (choice) {
-            case '1': await this.handleManager('commands'); break;
-            case '2': await this.handleManager('context-menu'); break;
+            case '1': await this.handleManager('CommandManager'); break;
+            case '2': await this.handleManager('ContextMenuManager'); break;
             case '3': await this.showMainMenu(); break;
             default: await this.showInteractionMenu();
         }
@@ -68,7 +69,9 @@ class CLIInterface {
         const manager = this.managers[managerKey];
         if (!manager) return;
 
-        const managerName = managerKey === 'commands' ? 'CommandManager' : 'ContextMenuManager';
+        this.handlerManagerType = `${manager.folderPath}(s)`
+
+        const managerName = managerKey;
         console.clear();
         console.log(`${managerName} - ${manager.folderPath}`);
         console.log('═'.repeat(50));
@@ -82,9 +85,9 @@ class CLIInterface {
         const choice = await this.prompt('Choose an action: ');
         switch (choice) {
             case '1': await manager.list(); break;
-            case '2': await manager.deploy(); break;
-            case '3': await manager.update(); break;
-            case '4': await manager.delete(); break;
+            case '2': await this.handleDeploy(manager); break;
+            case '3': await this.handleUpdate(manager); break;
+            case '4': await this.handleDelete(manager); break;
             case '5':
                 if (this.currentMenu === 'interaction') {
                     await this.showInteractionMenu();
@@ -98,6 +101,52 @@ class CLIInterface {
         await this.prompt('Press Enter to continue...');
         await this.handleManager(managerKey);
     }
+
+    private async selectCommands(manager: BaseInteractionManager, remote: boolean = true): Promise<Command[]> {
+        const commandList = remote ? await manager.list() as any[] : await manager.listFromFile() as any[];
+        if (!commandList?.length) {
+            console.log(`No ${this.handlerManagerType} found`);
+            return [];
+        }
+
+        const input = await this.prompt('Enter numbers (ex: 1,3,5 or "all"): ');
+
+        if (input.toLowerCase() === 'all') {
+            return commandList;
+        }
+
+        const indices = input.split(',').map(i => parseInt(i.trim())).filter(i => !isNaN(i));
+        const selected = commandList.filter((cmd: any) => indices.includes(cmd.index));
+
+        if (selected.length === 0) {
+            console.log('Invalid number');
+            return [];
+        }
+
+        console.log(`${selected.length} selected ${this.handlerManagerType}`);
+        return selected;
+    }
+
+    private async handleDeploy(manager: BaseInteractionManager): Promise<void> {
+        const selected = await this.selectCommands(manager, false);
+        if (selected.length === 0) return;
+        await manager.deploy(selected)
+    }
+
+    private async handleUpdate(manager: BaseInteractionManager): Promise<void> {
+        const selected = await this.selectCommands(manager);
+        if (selected.length === 0) return;
+
+        await manager.update(selected);
+    }
+
+    private async handleDelete(manager: BaseInteractionManager): Promise<void> {
+        const selected = await this.selectCommands(manager);
+        if (selected.length === 0) return;
+
+        await manager.delete(selected);
+    }
+
 
     private async showGenerationMenu(): Promise<void> {
         console.log('⚙️  Generation - TODO');
