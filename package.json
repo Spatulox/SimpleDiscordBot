@@ -12,7 +12,7 @@
     "delete": "node dist/builder/deploy.js",
     "list": "node dist/builder/list.js",
     "deploy": "node dist/builder/delete.js",
-    "deploy_test": "node dist/manager/handlers/builder/interactions/CLIInterface.js"
+    "deploy_test": "node dist/cli/MainCLI.js"
   },
   "license": "ISC",
   "dependencies": {
