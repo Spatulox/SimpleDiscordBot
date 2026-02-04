@@ -4,7 +4,7 @@ import {GenerationCLI} from "./GenerationCLI";
 
 /**
  * --- MainCLI ---
- * Contrôleur principal orchestrant les sous-menus
+ * Main controller for sub menu
  */
 export class MainCLI extends BaseCLI {
 
@@ -32,7 +32,8 @@ export class MainCLI extends BaseCLI {
             case '1': return new InteractionCLI(this).showMainMenu();
             case '2': return new GenerationCLI(this).showMainMenu();
             case '3': return this.showHelp();
-            case '4': console.log('👋 Bye!'); process.exit(0);
+            case '4':
+            case 'exit': console.log('👋 Bye!'); process.exit(0);
             default: return this.showMainMenu();
         }
     }

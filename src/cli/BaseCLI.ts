@@ -1,31 +1,8 @@
 #!/usr/bin/env node
 import readline from "readline";
 
-/*protected async showMainMenu(): Promise<void> {
-        this.currentMenu = 'main';
-        console.clear();
-        console.log(this.getTitle());
-        console.log('═'.repeat(50));
-        console.log('1. Manage');
-        console.log('2. Generate');
-        console.log('3. Help');
-        console.log('4. Exit');
-        console.log('═'.repeat(50));
-
-        const choice = await this.prompt('Choose an option: ');
-        switch (choice) {
-            case '1': await new InteractionCLI().showMainMenu(); break;
-            case '2': await new GenerationCLI().showMainMenu(); break;
-            case '3': await this.showHelp(); break;
-            case '4': console.log('Bye!'); process.exit(0); break;
-            default: await this.showMainMenu();
-        }
-        await this.prompt('Press Enter to continue...');
-    }*/
-
 /**
  * --- BaseCLI ---
- * Classe de base de toutes les interfaces CLI
  */
 export abstract class BaseCLI {
     private static _rl: readline.Interface | null = null;

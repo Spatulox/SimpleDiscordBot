@@ -55,7 +55,8 @@ export class InteractionCLI extends BaseCLI {
             case '2': await this.handleDeploy(manager); break;
             case '3': await this.handleUpdate(manager); break;
             case '4': await this.handleDelete(manager); break;
-            case '5': return this.showMainMenu();
+            case '5':
+            case 'exit': return this.showMainMenu();
         }
 
         await this.prompt('Press Enter to continue...');
@@ -70,9 +71,13 @@ export class InteractionCLI extends BaseCLI {
             return [];
         }
 
-        const input = await this.prompt('Enter numbers (ex: 1,3,5 or "all"): ');
+        const input = await this.prompt('Enter numbers (ex: 1,3,5 or "all" or "exit"): ');
         if (input.toLowerCase() === 'all') {
             return commandList;
+        }
+
+        if (input.toLowerCase() === 'exit') {
+            return [];
         }
 
         const indices = input.split(',').map(i => parseInt(i.trim())).filter(i => !isNaN(i));

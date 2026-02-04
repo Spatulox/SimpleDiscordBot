@@ -21,7 +21,8 @@ export class GenerationCLI extends BaseCLI {
             case '1': console.log('Slash template generation - TODO'); break;
             case '2': console.log('Context menu template - TODO'); break;
             case '3': console.log('All templates - TODO'); break;
-            case '4': return this.goBack();
+            case '4':
+            case 'exit': return this.goBack();
         }
 
         await this.prompt('Press Enter to continue...');
