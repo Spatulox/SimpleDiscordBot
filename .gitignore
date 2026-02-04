@@ -92,6 +92,6 @@ log/
 dist/
 .idea
 
-test
+src/test
 
 src_example/*.js
