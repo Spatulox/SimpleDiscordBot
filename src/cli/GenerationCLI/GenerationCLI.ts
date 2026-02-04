@@ -1,4 +1,5 @@
-import { BaseCLI } from "./BaseCLI";
+import { BaseCLI } from "../BaseCLI";
+import {ContextMenuGeneratorCLI} from "./ContextMenuGeneratorCLI";
 
 export class GenerationCLI extends BaseCLI {
 
@@ -19,7 +20,7 @@ export class GenerationCLI extends BaseCLI {
         const choice = await this.prompt('Choose an option: ');
         switch (choice) {
             case '1': console.log('Slash template generation - TODO'); break;
-            case '2': console.log('Context menu template - TODO'); break;
+            case '2': return new ContextMenuGeneratorCLI(this).showMainMenu();
             case '3': console.log('All templates - TODO'); break;
             case '4':
             case 'exit': return this.goBack();
