@@ -3,6 +3,7 @@ import * as path from "path";
 import {FileManager} from "../../manager/FileManager";
 import {FolderName} from "../../manager/handlers/builder/interactions/InteractionManager";
 
+// TODO ("Mettre des sécurité sur les champs obligatoire")
 export class ContextMenuGeneratorCLI extends BaseCLI {
     protected getTitle(): string {
         return "📝 Context Menu JSON Generator";
@@ -39,7 +40,7 @@ export class ContextMenuGeneratorCLI extends BaseCLI {
         console.log("🔧 2/10 - Type");
         console.log("2 => Context Menu for users");
         console.log("3 => Context Menu for messages");
-        config.type = parseInt(await this.prompt("Enter type (2 or 3): "));
+        config.type = parseInt(await this.prompt("Enter type (2 or 3): ")); // TODO 2 or 3 or les deux ??
 
         // 3. Permissions
         console.clear();
