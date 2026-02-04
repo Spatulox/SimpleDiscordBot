@@ -16,13 +16,16 @@ type CriticConfig = {
 };
 
 export type BotConfig = {
-    clientId: string;
     botIconUrl?: string;
     logChannelId?: string;
     errorChannelId?: string;
     defaultEmbedColor?: number | EmbedColor;
     botName?: string
 }
+
+export type InternalBotConfig = {
+    clientId: string
+} & BotConfig;
 
 export type RandomBotActivity = {type: ActivityType, message: string}[]
 
@@ -32,13 +35,13 @@ export class Bot {
     public static readonly log = new BotLog()
     public static readonly message = new BotMessage()
     private static criticConfig: CriticConfig;
-    private static _config: BotConfig;
+    private static _config: InternalBotConfig;
 
-    get config(): BotConfig { return Bot._config; }
+    get config(): InternalBotConfig { return Bot._config; }
     get client(): Client { return Bot._client; }
 
     static get client(): Client { return Bot._client; }
-    static get config(): BotConfig { return Bot._config; }
+    static get config(): InternalBotConfig { return Bot._config; }
 
     constructor(client: Client, config: BotConfig) {
 
@@ -46,7 +49,7 @@ export class Bot {
         Log.info("Starting Program")
 
         Bot.criticConfig = { dev: BotEnv.dev, token: BotEnv.token };
-        Bot._config = config;
+        Bot._config = { ...config, clientId: BotEnv.clientId};
         Bot._client = client;
 
         (async() => {
