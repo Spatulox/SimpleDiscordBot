@@ -171,7 +171,7 @@ class CLIInterface {
         console.log('📁 Folder Structure:');
         console.log('  ├── handlers/         ← in the root folder of your project');
         console.log('  │   ├── commands/     ← Slash Commands (type 1)');
-        console.log('  │   └── context-menu/ ← Context Menus (type 2/3)');
+        console.log('  │   └── context_menu/ ← Context Menus (type 2/3)');
 
         console.log('');
         console.log('🎯 Features:');

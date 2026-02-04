@@ -7,5 +7,5 @@ export class CommandManager extends BaseInteractionManager {
 
 export class ContextMenuManager extends BaseInteractionManager {
     public commandType: number[] = [CommandType.USER_CONTEXT_MENU, CommandType.MESSAGE_CONTEXT_MENU];
-    public folderPath = 'context-menu';
+    public folderPath = 'context_menu';
 }
