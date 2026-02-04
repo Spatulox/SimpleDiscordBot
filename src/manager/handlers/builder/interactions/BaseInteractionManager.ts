@@ -6,19 +6,27 @@ import {FileManager} from "../../../FileManager";
 import {Log} from "../../../../utils/Log";
 
 // Types
-interface Command {
+export interface Command {
     name: string;
     description: string;
     options?: any[];
     default_member_permissions?: string | bigint | number;
     guildID?: string[];
-    type: 1 | 2 | 3;
+    type: CommandType;
     id?: string;
+    filename?: string
+}
+
+export enum CommandType {
+    SLASH = 1,
+    USER_CONTEXT_MENU,
+    MESSAGE_CONTEXT_MENU,
 }
 
 export abstract class BaseInteractionManager {
     public abstract folderPath: string;
     public abstract commandType: number[];
+
     protected clientId: string;
     protected token: string;
     protected rest: REST;

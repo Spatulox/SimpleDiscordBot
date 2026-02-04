@@ -1,11 +1,11 @@
-import {BaseInteractionManager} from "./BaseInteractionManager";
+import {BaseInteractionManager, CommandType} from "./BaseInteractionManager";
 
 export class CommandManager extends BaseInteractionManager {
-    public commandType: number[] = [1];
+    public commandType: number[] = [CommandType.SLASH];
     public folderPath = 'commands';
 }
 
 export class ContextMenuManager extends BaseInteractionManager {
-    public commandType: number[] = [2, 3];
+    public commandType: number[] = [CommandType.USER_CONTEXT_MENU, CommandType.MESSAGE_CONTEXT_MENU];
     public folderPath = 'context-menu';
 }
