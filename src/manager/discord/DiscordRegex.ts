@@ -85,7 +85,7 @@ export class DiscordRegex {
     static isUsername(username: string): boolean {
         return this.USERNAME.test(username);
     }
-    
+
     /**
      * Type guard for Discord ID
      */
