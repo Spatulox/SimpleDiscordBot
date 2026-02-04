@@ -18,6 +18,7 @@ interface Command {
 
 export abstract class BaseInteractionManager {
     public abstract folderPath: string;
+    public abstract commandType: number[];
     protected clientId: string;
     protected token: string;
     protected rest: REST;
@@ -29,15 +30,28 @@ export abstract class BaseInteractionManager {
     }
 
     async list(): Promise<void> {
-        const files = await FileManager.listJsonFiles("./handlers/"+this.folderPath);
-        if(!files){
-            Log.error('Error listing files');
-            return
-        }
-        console.log(`📁 ./handlers/${this.folderPath}: ${files.length} folders`);
-        for (const file of files) {
-            const cmd = await this.readCommand(`./handlers/${this.folderPath}/${file}`);
-            console.log(`  • ${file}: ${cmd?.name || 'N/A'} (${cmd?.type === 1 ? 'Slash' : cmd?.type === 2 ? 'User' : 'Message'})`);
+        console.log(`📋 Commandes ${this.folderPath} sur Discord (globales)...`);
+
+        try {
+            const globalCmds = await this.rest.get(
+                Routes.applicationCommands(this.clientId)
+            ) as any[];
+
+            const commands = globalCmds.filter(cmd => this.commandType.includes(cmd.type));
+
+            console.log(`✅ ${commands.length} commandes trouvées\n`);
+
+            console.table(
+                commands.map((cmd: any) => ({
+                    Nom: cmd.name,
+                    Type: cmd.type === 1 ? 'Slash' : cmd.type === 2 ? 'User' : 'Message',
+                    Description: cmd.description,
+                    ID: cmd.id.slice(-8)
+                }))
+            );
+
+        } catch (error) {
+            Log.error(`❌ Erreur: ${(error as Error).message}`);
         }
     }
 
@@ -154,12 +168,4 @@ export abstract class BaseInteractionManager {
         const filePath = `./handlers/${this.folderPath}/${fileName}`;
         await fs.writeFile(filePath, JSON.stringify(cmd, null, 2));
     }
-}
-
-export class CommandManager extends BaseInteractionManager {
-    public folderPath = 'commands';
-}
-
-export class ContextMenuManager extends BaseInteractionManager {
-    public folderPath = 'context-menu';
 }
