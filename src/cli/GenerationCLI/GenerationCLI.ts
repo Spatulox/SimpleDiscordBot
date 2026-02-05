@@ -1,5 +1,7 @@
-import { BaseCLI } from "../BaseCLI";
+import {BaseCLI, MenuSelectionCLI} from "../BaseCLI";
 import {ContextMenuGeneratorCLI} from "./ContextMenuGeneratorCLI";
+import {ModalGeneratorCLI} from "./ModalGeneratorCLI";
+import {InteractionGeneratorCLI} from "./InteractionGeneratorCLI";
 
 export class GenerationCLI extends BaseCLI {
 
@@ -7,26 +9,14 @@ export class GenerationCLI extends BaseCLI {
         return '⚙️  Generation Manager CLI';
     }
 
-    async showMainMenu(): Promise<void> {
-        console.clear();
-        console.log(this.getTitle());
-        console.log('═'.repeat(40));
-        console.log('1. Generate Slash Command Template');
-        console.log('2. Generate Context Menu Template');
-        console.log('3. Generate All Templates');
-        console.log('4. Back');
-        console.log('═'.repeat(40));
+    protected readonly menuSelection: MenuSelectionCLI = [
+        { label: 'Generate Slash Command Template', action: () => new InteractionGeneratorCLI(this) },
+        { label: 'Generate Context Menu Template', action: () => new ContextMenuGeneratorCLI(this) },
+        { label: 'Generate Modal Template', action: () => new ModalGeneratorCLI(this) },
+        { label: 'Back', action: () => this, onSelect: () => this.goBack() },
+    ];
 
-        const choice = await this.prompt('Choose an option: ');
-        switch (choice) {
-            case '1': console.log('Slash template generation - TODO'); break;
-            case '2': return new ContextMenuGeneratorCLI(this).showMainMenu();
-            case '3': console.log('All templates - TODO'); break;
-            case '4':
-            case 'exit': return this.goBack();
-        }
-
-        await this.prompt('Press Enter to continue...');
-        return this.showMainMenu();
+    protected async action(): Promise<void> {
+        throw new Error("Method not implemented.");
     }
 }

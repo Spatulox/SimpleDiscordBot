@@ -1,5 +1,5 @@
-import {BaseCLI} from "./BaseCLI";
-import {InteractionCLI} from "./InteractionCLI";
+import {BaseCLI, MenuSelectionCLI} from "./BaseCLI";
+import {InteractionCLI} from "./InteractionCLI/InteractionCLI";
 import {GenerationCLI} from "./GenerationCLI/GenerationCLI";
 
 /**
@@ -17,25 +17,15 @@ export class MainCLI extends BaseCLI {
         this.showMainMenu();
     }
 
-    async showMainMenu(): Promise<void> {
-        console.clear();
-        console.log(this.getTitle());
-        console.log('═'.repeat(50));
-        console.log('1. Manage Interactions');
-        console.log('2. Generate Files');
-        console.log('3. Help');
-        console.log('4. Exit');
-        console.log('═'.repeat(50));
+    protected readonly menuSelection: MenuSelectionCLI = [
+        { label: "Manage Interactions", action: () => new InteractionCLI(this) },
+        { label: "Generate Files", action: () => new GenerationCLI(this) },
+        { label: "Help", action: () => this, onSelect: () => this.showHelp() },
+        { label: "Exit", action: () => null, onSelect: () => process.exit() },
+    ];
 
-        const choice = await this.prompt('Choose an option: ');
-        switch (choice) {
-            case '1': return new InteractionCLI(this).showMainMenu();
-            case '2': return new GenerationCLI(this).showMainMenu();
-            case '3': return this.showHelp();
-            case '4':
-            case 'exit': console.log('👋 Bye!'); process.exit(0);
-            default: return this.showMainMenu();
-        }
+    protected action(): Promise<void> {
+        throw new Error("Method not implemented.");
     }
 }
 
