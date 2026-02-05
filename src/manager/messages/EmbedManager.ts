@@ -1,4 +1,3 @@
-// src/discord/EmbedManager.ts
 import {
     EmbedBuilder,
     InteractionDeferReplyOptions,
