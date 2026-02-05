@@ -3,7 +3,7 @@ import {FolderName} from "../../../../type/FolderName";
 
 export class CommandManager extends BaseInteractionManager {
     public commandType: number[] = [CommandType.SLASH];
-    public folderPath = FolderName.COMMANDS;
+    public folderPath = FolderName.SLASH_COMMANDS;
 }
 
 export class ContextMenuManager extends BaseInteractionManager {
