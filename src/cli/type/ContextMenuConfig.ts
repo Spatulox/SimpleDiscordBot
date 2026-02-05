@@ -1,4 +1,5 @@
 import {PermissionFlagsBits} from "discord.js";
+import {InteractionContextType, InteractionIntegrationType} from "./InteractionType";
 
 export interface ContextMenuConfig {
     name: string;
@@ -6,18 +7,7 @@ export interface ContextMenuConfig {
     type_comment?: Array<string>;
     default_member_permissions?: Array<(keyof typeof PermissionFlagsBits)>;
     dm_permission: boolean;
-    integration_types: ContextMenuIntegrationType[]; // [0, 1] = [GUILD_INSTALL, USER_INSTALL]
-    contexts?: ContextMenuContextType[]; // [0, 1, 2] = [Server, Bot DMs, Group/Other DMs]
+    integration_types: InteractionIntegrationType[];
+    contexts?: InteractionContextType[];
     guildID?: Array<string>;
-}
-
-enum ContextMenuIntegrationType {
-    GUILD_INSTALLED = 0,
-    USER_INSTALLED = 1,
-}
-
-enum ContextMenuContextType {
-    SERVER_CHANNEL,
-    BOT_DM,
-    GROUP_DM
 }
