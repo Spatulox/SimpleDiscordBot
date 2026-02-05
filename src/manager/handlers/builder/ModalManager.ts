@@ -33,7 +33,7 @@ export class ModalManager {
     static async load(name: string): Promise<ModalBuilder | null> {
         const formData = await FileManager.readJsonFile(`./form/${name}.json`);
 
-        if (formData === 'Error') {
+        if (!formData) {
             Log.error(`Form ${name} not found!`);
             return null;
         }

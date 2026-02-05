@@ -11,13 +11,13 @@ export class FileManager {
      * @param filePath Full path to the JSON file
      * @returns Parsed JSON object or 'Error' string on failure
      */
-    static async readJsonFile(filePath: string): Promise<any | string> {
+    static async readJsonFile(filePath: string): Promise<any | false> {
         try {
             const data = await fs.readFile(filePath, 'utf8');
             return JSON.parse(data);
         } catch (error) {
             Log.error(`Failed to read JSON file ${filePath}: ${error}`);
-            return 'Error';
+            return false;
         }
     }
 
@@ -60,10 +60,10 @@ export class FileManager {
      * @param extension File extension (with or without dot)
      * @returns Array of matching filenames or 'Error' string on failure
      */
-    static async listFiles(directoryPath: string, extension: string): Promise<string[] | string> {
+    static async listFiles(directoryPath: string, extension: string): Promise<string[] | false> {
         if (typeof directoryPath !== 'string' || typeof extension !== 'string') {
             Log.error('Directory path and extension must be strings');
-            return 'Error';
+            return false;
         }
 
         try {
@@ -76,7 +76,7 @@ export class FileManager {
             return files.filter(file => path.extname(file) === `.${ext}`);
         } catch (error) {
             Log.error(`Failed to read directory ${directoryPath}: ${error}`);
-            return 'Error';
+            return false;
         }
     }
 
