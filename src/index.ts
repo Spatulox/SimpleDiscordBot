@@ -9,7 +9,7 @@ export { WebhookManager } from './manager/messages/WebhookManager';
 export { ModalManager } from "./manager/handlers/builder/ModalManager";
 
 export { ChannelManager } from './manager/discord/ChannelManager';
-export { DiscordRegex } from "./manager/discord/DiscordRegex";
+export { DiscordRegex } from "./utils/DiscordRegex";
 export { GuildManager } from "./manager/discord/GuildManager";
 export { InviteManager } from './manager/discord/InviteManager';
 export { RoleManager } from './manager/discord/RoleManager';

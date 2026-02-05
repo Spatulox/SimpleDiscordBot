@@ -1,7 +1,7 @@
 import {BaseCLI, MenuSelectionCLI} from "../BaseCLI";
 import {ContextMenuConfig} from "../type/ContextMenuConfig";
 import {PermissionFlagsBits} from "discord.js";
-import {DiscordRegex} from "../../manager/discord/DiscordRegex";
+import {DiscordRegex} from "../../utils/DiscordRegex";
 import {FolderName} from "../../type/FolderName";
 
 export class ContextMenuGeneratorCLI extends BaseCLI {

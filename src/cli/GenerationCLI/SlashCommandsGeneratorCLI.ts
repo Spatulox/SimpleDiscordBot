@@ -1,7 +1,7 @@
 import {BaseCLI, MenuSelectionCLI} from "../BaseCLI";
 import {FolderName} from "../../type/FolderName";
 import {PermissionFlagsBits} from "discord.js";
-import {DiscordRegex} from "../../manager/discord/DiscordRegex";
+import {DiscordRegex} from "../../utils/DiscordRegex";
 import {SlashCommandConfig} from "../type/SlashCommandConfig";
 
 export class SlashCommandGeneratorCLI extends BaseCLI {
