@@ -138,11 +138,16 @@ export abstract class BaseInteractionManager {
 
     async delete(commands: Command[]): Promise<void> {
         console.log(`Deleting ${commands.length} ${this.folderPath}(s)...`);
+
+        const IDList: string[] = [];
+
         for (const cmd of commands) {
             if (!cmd.id) {
                 Log.error(`${cmd.name}: No Discord ID, cannot delete the ${this.folderPath}`);
                 continue;
             }
+
+            IDList.push(cmd.id);
 
             try {
                 await this.rest.delete(Routes.applicationCommand(this.clientId, cmd.id));
@@ -151,6 +156,7 @@ export abstract class BaseInteractionManager {
                 Log.error(`${cmd.name} (${cmd.id.slice(-8)}): ${(error as Error).message}`);
             }
         }
+        await this.removeLocalIdFromFile(IDList);
     }
 
     async update(commands: Command[]): Promise<void> {
@@ -228,7 +234,30 @@ export abstract class BaseInteractionManager {
     }
 
     private async saveInteraction(fileName: string, cmd: Command): Promise<void> {
+        delete cmd.filename
         const filePath = `./handlers/${this.folderPath}/${fileName}`;
         await fs.writeFile(filePath, JSON.stringify(cmd, null, 2));
     }
+
+    private async removeLocalIdFromFile(idListToDelete: string[]): Promise<void> {
+
+        const files = await FileManager.listJsonFiles(`./handlers/${this.folderPath}`);
+        if (!files || files.length === 0) {
+            console.log('No local files to clean');
+            return
+        }
+
+        for (const file of files) {
+            const filePath = `./handlers/${this.folderPath}/${file}`;
+            const localCmd = await this.readInteraction(filePath);
+
+            if (localCmd && localCmd.id && idListToDelete.includes(localCmd.id)) {
+                delete localCmd.id;
+                await this.saveInteraction(file, localCmd);
+                console.log(`📝 Removed "id" from ${file}`);
+                break;
+            }
+        }
+    }
+
 }
