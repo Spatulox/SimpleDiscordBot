@@ -43,6 +43,11 @@ export abstract class BaseCLI {
         console.log('═'.repeat(40));
 
         const choice = await this.prompt('Choose an option: ');
+
+        if(choice == "exit") {
+            return this.goBack()
+        }
+
         const choiceIndex = parseInt(choice) - 1;
 
         if (choiceIndex >= 0 && choiceIndex < this.menuSelection.length) {
@@ -144,7 +149,10 @@ export abstract class BaseCLI {
     }
 
     protected async goBack(): Promise<void> {
-        await this.parent?.showMainMenu();
+        if(this.parent){
+            return this.parent?.showMainMenu();
+        }
+        return this.execute() // Fallback for MainCLI
     }
 
 
