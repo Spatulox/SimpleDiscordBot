@@ -4,7 +4,7 @@ import {
     ThreadChannel
 } from "discord.js";
 import {GuildChannelManager} from "./GuildChannelManager";
-import {TextChannelManager} from "./TextChannelManager";
+import {GuildTextChannelManager} from "./GuildTextChannelManager";
 import {Bot} from "../../../bot/Bot";
 import {Log} from "../../../utils/Log";
 
@@ -33,7 +33,7 @@ export class ThreadChannelManager extends GuildChannelManager {
         parentId: string,
         options: StartThreadOptions
     ): Promise<ThreadChannel> {
-        const channel = await TextChannelManager.find(parentId);
+        const channel = await GuildTextChannelManager.find(parentId);
         if (!channel || !channel.isTextBased()) {
             throw new Error('Parent must be a text-based channel');
         }

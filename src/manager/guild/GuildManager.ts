@@ -14,9 +14,9 @@ import {RoleManager} from "./RoleManager";
 import {ForumChannelManager} from "./ChannelManager/ForumChannelManager";
 import {NewsChannelManager} from "./ChannelManager/NewsChannelManager";
 import {StageChannelManager} from "./ChannelManager/StageChannelManager";
-import {TextChannelManager} from "./ChannelManager/TextChannelManager";
+import {GuildTextChannelManager} from "./ChannelManager/GuildTextChannelManager";
 import {ThreadChannelManager} from "./ChannelManager/ThreadChannelManager";
-import {VoiceChannelManager} from "./ChannelManager/VoiceChannelManager";
+import {GuildVoiceChannelManager} from "./ChannelManager/GuildVoiceChannelManager";
 
 export class GuildManager {
 
@@ -26,9 +26,9 @@ export class GuildManager {
     public static readonly guildChannel= GuildChannelManager;
     public static readonly newsChannel= NewsChannelManager;
     public static readonly stageChannel= StageChannelManager;
-    public static readonly textChannel= TextChannelManager;
+    public static readonly textChannel= GuildTextChannelManager;
     public static readonly threadChannel= ThreadChannelManager;
-    public static readonly voiceChannel= VoiceChannelManager;
+    public static readonly voiceChannel= GuildVoiceChannelManager;
 
     static list(): Guild[] {
         return Array.from(Bot.client.guilds.cache.values());

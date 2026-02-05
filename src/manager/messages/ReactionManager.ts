@@ -4,7 +4,7 @@ import {
 } from 'discord.js';
 import { Log } from '../../utils/Log';
 import { Bot } from '../../bot/Bot';
-import {TextChannelManager} from "../guild/ChannelManager/TextChannelManager";
+import {GuildTextChannelManager} from "../guild/ChannelManager/GuildTextChannelManager";
 
 export class ReactionManager {
 
@@ -17,7 +17,7 @@ export class ReactionManager {
         emoji: string | EmojiResolvable,
     ): Promise<void> {
         try {
-            const channel = await TextChannelManager.find(channelId);
+            const channel = await GuildTextChannelManager.find(channelId);
             if (!channel) {
                 throw new Error(`Channel ${channelId} not found`);
             }
@@ -46,7 +46,7 @@ export class ReactionManager {
         userId: string
     ): Promise<void> {
         try {
-            const channel = await TextChannelManager.find(channelId);
+            const channel = await GuildTextChannelManager.find(channelId);
             if (!channel) {
                 throw new Error(`Channel ${channelId} not found`);
             }
@@ -73,7 +73,7 @@ export class ReactionManager {
      */
     static async getAll(channelId: string, messageId: string): Promise<Reaction[]> {
         try {
-            const channel = await TextChannelManager.find(channelId);
+            const channel = await GuildTextChannelManager.find(channelId);
             if (!channel) {
                 throw new Error(`Channel ${channelId} not found`);
             }
@@ -104,7 +104,7 @@ export class ReactionManager {
      */
     static async clear(channelId: string, messageId: string): Promise<void> {
         try {
-            const channel = await TextChannelManager.find(channelId);
+            const channel = await GuildTextChannelManager.find(channelId);
             if (!channel) {
                 throw new Error(`Channel ${channelId} not found`);
             }

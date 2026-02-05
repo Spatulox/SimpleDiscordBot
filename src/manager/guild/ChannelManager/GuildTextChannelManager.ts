@@ -3,7 +3,7 @@ import {GuildChannelManager} from "./GuildChannelManager";
 import {Bot} from "../../../bot/Bot";
 import {Log} from "../../../utils/Log";
 
-export class TextChannelManager extends GuildChannelManager {
+export class GuildTextChannelManager extends GuildChannelManager {
 
     static async findInGuild(guildId: string, channelId: string): Promise<TextChannel | null> {
         const channel = await super.findInGuild(guildId, channelId);
