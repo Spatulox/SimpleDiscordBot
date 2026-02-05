@@ -85,7 +85,7 @@ export class FileManager {
      * @param directoryPath Full directory path (creates if missing)
      * @param filename Filename without extension
      * @param data Data to write (JSON serializable)
-     * @param errorToChannel Send error to the error channel
+     * @param sendErrorToErrorChannel Send error to the error channel
      * @returns true on success, false on failure
      */
     static async writeJsonFile(
