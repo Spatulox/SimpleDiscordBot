@@ -50,7 +50,7 @@ export abstract class BaseInteractionManager {
             const commandList: Command[] = [];
 
             for (const [index, file] of files.entries()) {
-                const cmd = await this.readCommand(`./handlers/${this.folderPath}/${file}`);
+                const cmd = await this.readInteraction(`./handlers/${this.folderPath}/${file}`);
                 if (!cmd || cmd.id) continue;
 
                 const commandWithIndex = {
@@ -191,7 +191,7 @@ export abstract class BaseInteractionManager {
                     if (!cmd.id || !found) {
                         const resp = await this.rest.post(Routes.applicationGuildCommands(this.clientId, guildId), { body: dataToSend });
                         cmd.id = (resp as any).id;
-                        await this.saveCommand(file, cmd);
+                        await this.saveInteraction(file, cmd);
                     } else {
                         await this.rest.patch(Routes.applicationGuildCommand(this.clientId, guildId, found.id), { body: dataToSend });
                     }
@@ -208,7 +208,7 @@ export abstract class BaseInteractionManager {
                 if (!cmd.id || !found) {
                     const resp = await this.rest.post(Routes.applicationCommands(this.clientId), { body: dataToSend });
                     cmd.id = (resp as any).id;
-                    await this.saveCommand(file, cmd);
+                    await this.saveInteraction(file, cmd);
                 } else {
                     await this.rest.patch(Routes.applicationCommand(this.clientId, found.id), { body: dataToSend });
                 }
@@ -218,7 +218,7 @@ export abstract class BaseInteractionManager {
         }
     }
 
-    private async readCommand(filePath: string): Promise<Command | null> {
+    private async readInteraction(filePath: string): Promise<Command | null> {
         try {
             const data = await fs.readFile(filePath, 'utf8');
             return JSON.parse(data) as Command;
@@ -227,7 +227,7 @@ export abstract class BaseInteractionManager {
         }
     }
 
-    private async saveCommand(fileName: string, cmd: Command): Promise<void> {
+    private async saveInteraction(fileName: string, cmd: Command): Promise<void> {
         const filePath = `./handlers/${this.folderPath}/${fileName}`;
         await fs.writeFile(filePath, JSON.stringify(cmd, null, 2));
     }
