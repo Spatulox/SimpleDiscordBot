@@ -6,7 +6,6 @@ import {randomActivityList} from "./randomActivityList";
 async function main() {
 
     const config: BotConfig = {
-        clientId: "// Your discord bot client id", // Only this one is mandatory for the config to works
         errorChannelId: "The channel where you want the error to appear",
         defaultEmbedColor: EmbedColor.blue, // (When embed are created with EmbedManager)
         botName: "Simple Discord Bot" // The name of the bot

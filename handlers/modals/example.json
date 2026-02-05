@@ -1,0 +1,51 @@
+{
+  "title": "Example Modal",
+  "customId": "example_modal",
+  "label": "example_modal",
+  "fields": [
+    {
+      "title": "Name",
+      "customId": "name",
+      "placeholder": "Name",
+      "required": true,
+      "style": 1,
+      "minLength": 3,
+      "maxLength": 100
+    },
+    {
+      "title": "Description",
+      "customId": "description",
+      "placeholder": "Description",
+      "required": true,
+      "style": 2,
+      "maxLength": 400
+    },
+    {
+      "title": "Phone",
+      "customId": "phone",
+      "placeholder": "Phone",
+      "required": true,
+      "style": "Phone",
+      "minLength": 10,
+      "maxLength": 10
+    },
+    {
+      "title": "Age",
+      "customId": "age",
+      "placeholder": "Age",
+      "required": true,
+      "style": "Number",
+      "minLength": 1,
+      "maxLength": 2
+    },
+    {
+      "title": "Birthday",
+      "customId": "birthday",
+      "placeholder": "Birthday",
+      "required": true,
+      "style": "Date",
+      "minLength": 10,
+      "maxLength": 10
+    }
+  ]
+}

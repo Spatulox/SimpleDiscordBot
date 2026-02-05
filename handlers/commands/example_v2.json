@@ -1,5 +1,5 @@
 {
-    "name": "nom_commande",
+    "name": "example",
     "description": "Description",
     "defaultMemberPermissions": ["Administrator"],
     "dmPermission": false,

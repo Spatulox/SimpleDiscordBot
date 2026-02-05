@@ -46,8 +46,12 @@ export enum EmbedColor {
 }
 
 export class EmbedManager {
-    private static readonly BOT_ICON = Bot.config.botIconUrl || "";
-    private static readonly DEFAULT_COLOR = Bot.config.defaultEmbedColor || EmbedColor.default;
+    private static get BOT_ICON(): string {
+        return Bot.config.botIconUrl || "";
+    }
+    private static get DEFAULT_COLOR(): number | EmbedColor {
+        return Bot.config.defaultEmbedColor || EmbedColor.default;
+    }
 
     /**
      * Creates base embed - SAME SIMPLE API !

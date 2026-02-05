@@ -9,5 +9,17 @@ export const BotEnv = {
     },
     get dev(): boolean {
         return process.env.DEV === 'true';
+    },
+    get clientId(): string {
+        const token = process.env.DISCORD_BOT_CLIENTID;
+        if (!token) throw new Error('Missing environment variable : DISCORD_BOT_CLIENTID');
+
+        const discordIdRegex = /^[0-9]{19}$/;
+
+        if(!discordIdRegex.test(token)){
+            throw new Error("Invalid token format")
+        }
+
+        return token;
     }
 } as const;

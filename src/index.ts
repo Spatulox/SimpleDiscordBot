@@ -6,11 +6,14 @@ export { FileManager } from './manager/FileManager'
 
 export { EmbedManager, EmbedColor } from './manager/messages/EmbedManager';
 export { WebhookManager } from './manager/messages/WebhookManager';
+export { ModalManager } from "./manager/handlers/builder/ModalManager";
 
 export { ChannelManager } from './manager/discord/ChannelManager';
-export { UserManager } from './manager/discord/UserManager';
-export { RoleManager } from './manager/discord/RoleManager';
+export { DiscordRegex } from "./utils/DiscordRegex";
+export { GuildManager } from "./manager/discord/GuildManager";
 export { InviteManager } from './manager/discord/InviteManager';
+export { RoleManager } from './manager/discord/RoleManager';
+export { UserManager } from './manager/discord/UserManager';
 
 // Utils
 export { Time } from "./utils/times/UnitTime"
