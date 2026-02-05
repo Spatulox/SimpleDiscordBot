@@ -20,12 +20,13 @@ export class MainCLI extends BaseCLI {
     protected readonly menuSelection: MenuSelectionCLI = [
         { label: "Manage Interactions", action: () => new InteractionCLI(this) },
         { label: "Generate Files", action: () => new GenerationCLI(this) },
-        { label: "Help", action: () => this, onSelect: () => this.showHelp() },
-        { label: "Exit", action: () => null, onSelect: () => process.exit() },
+        { label: "Help", action: () => this.showHelp() },
+        { label: "Exit", action: () => this },
     ];
 
-    protected action(): Promise<void> {
-        throw new Error("Method not implemented.");
+    protected execute(): Promise<void> {
+        console.log("👋 bye !")
+        process.exit()
     }
 }
 

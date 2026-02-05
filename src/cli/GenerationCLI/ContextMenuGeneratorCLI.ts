@@ -11,10 +11,10 @@ export class ContextMenuGeneratorCLI extends BaseCLI {
 
     protected readonly menuSelection: MenuSelectionCLI = [
         { label: "Generate Context Menu", action: () => this },
-        { label: "Back", action: () => null }
+        { label: "Back", action: () => this.goBack() },
     ];
 
-    protected async action(): Promise<void> {
+    protected async execute(): Promise<void> {
         const config: ContextMenuConfig = {dm_permission: false, integration_types: [], name: "", type: 2};
 
         // 1. Context Menu Name
@@ -65,9 +65,7 @@ export class ContextMenuGeneratorCLI extends BaseCLI {
         // 4. DM Permission
         console.clear();
         console.log("💬 4/10 - DM Permission");
-        config.dm_permission = (
-            await this.requireInput("DM permission? (true/false): ", val => ["true", "false"].includes(val.toLowerCase()))
-        ).toLowerCase() === "true";
+        config.dm_permission = (await this.yesNoInput("Allow in DMs? (y/n): "));
 
         // 5. Integration Types
         console.clear();

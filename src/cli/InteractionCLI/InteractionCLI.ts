@@ -14,7 +14,7 @@ export class InteractionCLI extends BaseCLI {
     protected readonly menuSelection: MenuSelectionCLI = [
         { label: "CommandManager", action: () => new InteractionManagerCLI(this, this.managers["CommandManager"], "CommandManager") },
         { label: "ContextMenuManager", action: () => new InteractionManagerCLI(this, this.managers["ContextMenuManager"], "ContextMenuManager") },
-        { label: 'Back', action: () => this, onSelect: () => this.goBack() },
+        { label: 'Back', action: () => this.goBack()},
     ];
 
     constructor(parent?: BaseCLI) {
@@ -24,7 +24,7 @@ export class InteractionCLI extends BaseCLI {
         this.managers['ContextMenuManager'] = new ContextMenuManager(clientId, token);
     }
 
-    protected async action(): Promise<void> {
+    protected async execute(): Promise<void> {
         throw new Error("Method not implemented.");
     }
 }

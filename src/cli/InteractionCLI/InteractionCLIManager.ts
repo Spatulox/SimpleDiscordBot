@@ -11,11 +11,11 @@ export class InteractionManagerCLI extends BaseCLI {
     }
 
     protected readonly menuSelection: MenuSelectionCLI = [
-        { label: "List remote", action: () => this, onSelect: () => this.listRemote() },
-        { label: "Deploy local", action: () => this, onSelect: () => this.handleDeploy() },
-        { label: "Update remote", action: () => this, onSelect: () => this.handleUpdate() },
-        { label: "Delete remote", action: () => this, onSelect: () => this.handleDelete() },
-        { label: 'Back', action: () => this, onSelect: () => this.goBack() },
+        { label: "List remote", action: () => this.listRemote() },
+        { label: "Deploy local", action: () => this.handleDeploy() },
+        { label: "Update remote", action: () => this.handleUpdate() },
+        { label: "Delete remote", action: () => this.handleDelete() },
+        { label: 'Back', action: () => this.goBack() },
     ];
 
     constructor(parent: BaseCLI, manager: BaseInteractionManager, managerKey: string) {
@@ -24,34 +24,30 @@ export class InteractionManagerCLI extends BaseCLI {
         this.managerKey = managerKey;
     }
 
-    protected action(): Promise<void> {
+    protected execute(): Promise<void> {
         throw new Error("Method not implemented.");
     }
 
     private async listRemote(): Promise<void> {
         await this.manager.list();
-        //await this.prompt('Press Enter to continue...');
     }
 
     private async handleDeploy(): Promise<void> {
         const selected = await this.selectCommands(this.manager, false);
         if (selected.length === 0) return;
         await this.manager.deploy(selected);
-        //await this.prompt('Press Enter to continue...');
     }
 
     private async handleUpdate(): Promise<void> {
         const selected = await this.selectCommands(this.manager);
         if (selected.length === 0) return;
         await this.manager.update(selected);
-        //await this.prompt('Press Enter to continue...');
     }
 
     private async handleDelete(): Promise<void> {
         const selected = await this.selectCommands(this.manager);
         if (selected.length === 0) return;
         await this.manager.delete(selected);
-        //await this.prompt('Press Enter to continue...');
     }
 
     private async selectCommands(manager: BaseInteractionManager, remote: boolean = true): Promise<Command[]> {

@@ -51,10 +51,10 @@ export class ModalGeneratorCLI extends BaseCLI {
 
     protected readonly menuSelection = [
         { label: "Generate Modal", action: () => this },
-        { label: "Back", action: () => null }
+        { label: "Back", action: () => this.goBack() },
     ];
 
-    protected async action(): Promise<void> {
+    protected async execute(): Promise<void> {
         const modal: ModalCreateOption = {
             title: '',
             customId: '',

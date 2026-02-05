@@ -3,9 +3,8 @@ import readline from "readline";
 import {FileManager} from "../manager/FileManager";
 
 export type MenuSelectionCLI = {
-    label: string;
-    action: () => BaseCLI | null,
-    onSelect?: () => Promise<void>
+    label: string; // The Label for the Menu Choice
+    action: () => BaseCLI | Promise<void> | null
 }[]
 
 /**
@@ -27,7 +26,7 @@ export abstract class BaseCLI {
     constructor(protected parent?: BaseCLI) {}
 
     protected abstract readonly menuSelection: MenuSelectionCLI;
-    protected abstract action(): Promise<void>;
+    protected abstract execute(): Promise<void>;
 
     protected getTitle(): string {
         return "BaseCLI";
@@ -53,15 +52,13 @@ export abstract class BaseCLI {
                 return this.showMainMenu();
             }
 
-            if(option.onSelect){
-                await option.onSelect()
-            } else if(option.action) {
-                const result = option.action();
-                if (result instanceof BaseCLI) {
-                    await result.showMainMenu();
+            const result = await option.action();
+            if (result instanceof BaseCLI) {
+                if(result == this){
+                    await this.execute();
+                } else {
+                    return await result.showMainMenu();
                 }
-            } else {
-                await this.goBack();
             }
         }
 
@@ -173,7 +170,7 @@ export abstract class BaseCLI {
 
         if (!await this.yesNoInput("\nSave this file? (y/n): ")) {
             console.log("Cancelled");
-            await this.prompt('Press Enter...');
+            await this.prompt('Press Enter to continue...');
             return this.showMainMenu();
         }
 
@@ -184,7 +181,6 @@ export abstract class BaseCLI {
             console.error("Error saving file:", error);
         }
 
-        await this.prompt('Press Enter to continue...');
         return
     }
 }
