@@ -30,7 +30,8 @@ export class InteractionCLI extends BaseCLI {
         switch (choice) {
             case '1': return this.handleManager('CommandManager');
             case '2': return this.handleManager('ContextMenuManager');
-            case '3': return this.goBack();
+            case '3':
+            case 'exit': return this.goBack();
             default: return this.showMainMenu();
         }
     }
