@@ -2,6 +2,7 @@ import {BaseCLI, MenuSelectionCLI} from "../BaseCLI";
 import {FolderName} from "../../type/FolderName";
 import {PermissionFlagsBits} from "discord.js";
 import {DiscordRegex} from "../../manager/discord/DiscordRegex";
+import {SlashCommandConfig} from "../type/SlashCommandConfig";
 
 export class SlashCommandGeneratorCLI extends BaseCLI {
     protected getTitle(): string {
@@ -14,7 +15,8 @@ export class SlashCommandGeneratorCLI extends BaseCLI {
     ];
 
     protected async execute(): Promise<void> {
-        const config: any = {
+        const config: SlashCommandConfig = {
+            type: 1,
             name: "",
             description: "",
             options: [],
@@ -183,7 +185,7 @@ export class SlashCommandGeneratorCLI extends BaseCLI {
 
         while (continueAdding) {
             console.clear();
-            console.log("Option Types:\n1=SUB_CMD,2=SUB_GRP,3=STRING,4=INT,5=BOOL,6=USER,7=CHNL,8=ROLE,9=MENT,10=NUM");
+            console.log("Option Types:\n1=SUB_COMMAND,2=SUB_GROUP,3=STRING,4=INTEGER,5=BOOLEAN,6=USER,7=CHANNEL,8=ROLE,9=MENTIONNABLE,10=NUMBER");
 
             const type = parseInt(await this.requireInput("Option type (3-10): ", val => {
                 const n = parseInt(val);
@@ -242,9 +244,8 @@ export class SlashCommandGeneratorCLI extends BaseCLI {
 
         config.options = [];
         while (continueAdding) {
-            // Simplified option creation (same logic as above but shorter)
-            console.log("Quick option types: 3=string,4=int,5=bool,6=user,7=channel,8=role");
-            const type = parseInt(await this.requireInput("Type (3-8): ", val => ["3","4","5","6","7","8"].includes(val)));
+            console.log("Quick option types: 3=string,4=int,5=bool,6=user,7=channel,8=role,9=mentionnable,10=number");
+            const type = parseInt(await this.requireInput("Type (3-10): ", val => ["3","4","5","6","7","8","9","10"].includes(val)));
             const name = await this.requireInput("Name: ");
             const desc = await this.requireInput("Description: ");
             const required = await this.yesNoInput("Required?: ");
