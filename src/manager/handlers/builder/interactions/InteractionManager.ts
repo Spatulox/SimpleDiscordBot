@@ -1,9 +1,5 @@
 import {BaseInteractionManager, CommandType} from "./BaseInteractionManager";
-
-export enum FolderName {
-    COMMANDS = 'commands',
-    CONTEXT_MENU = 'context_menu',
-}
+import {FolderName} from "../../../../type/FolderName";
 
 export class CommandManager extends BaseInteractionManager {
     public commandType: number[] = [CommandType.SLASH];
