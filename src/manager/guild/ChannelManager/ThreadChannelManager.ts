@@ -5,28 +5,22 @@ import {
 } from "discord.js";
 import {GuildChannelManager} from "./GuildChannelManager";
 import {GuildTextChannelManager} from "./GuildTextChannelManager";
-import {Bot} from "../../../bot/Bot";
-import {Log} from "../../../utils/Log";
 
-export class ThreadChannelManager extends GuildChannelManager {
+export class ThreadChannelManager {
 
     static async findInGuild(guildId: string, channelId: string): Promise<ThreadChannel | null> {
-        const channel = await super.findInGuild(guildId, channelId);
-        return channel instanceof ThreadChannel ? channel : null;
+        const channel = await GuildChannelManager.findInGuild(guildId, channelId);
+        return channel?.isThread() ? channel as ThreadChannel : null;
     }
 
     static async find(channelId: string): Promise<ThreadChannel | null> {
-        const channel = await super.find(channelId);
-        return channel instanceof ThreadChannel ? channel : null;
+        const channel = await GuildChannelManager.find(channelId);
+        return channel?.isThread() ? channel as ThreadChannel : null;
     }
 
     static findAll(guildId: string): ThreadChannel[] {
-        const guild = Bot.client.guilds.cache.get(guildId);
-        if (!guild) {
-            Log.warn(`Guild ${guildId} not found`);
-            return [];
-        }
-        return Array.from(guild.channels.cache.values()).filter(c => c instanceof ThreadChannel);
+        const channels = GuildChannelManager.findAll(guildId);
+        return channels.filter(c => c.isThread()) as ThreadChannel[];
     }
 
     static async createFromChannel(
@@ -43,7 +37,7 @@ export class ThreadChannelManager extends GuildChannelManager {
     }
 
     static async createFromMessage(message: Message, options: StartThreadOptions): Promise<ThreadChannel> {
-        const channel = await BasicChannelManager.find(message.id);
+        const channel = await GuildChannelManager.find(message.id);
         if (!channel) throw new Error('Message channel not found');
 
         return await message.startThread(options)
