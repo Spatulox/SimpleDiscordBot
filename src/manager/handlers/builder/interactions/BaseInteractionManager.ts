@@ -254,7 +254,6 @@ export abstract class BaseInteractionManager {
             if (localCmd && localCmd.id && idListToDelete.includes(localCmd.id)) {
                 delete localCmd.id;
                 await this.saveInteraction(file, localCmd);
-                console.log(`📝 Removed "id" from ${file}`);
                 break;
             }
         }

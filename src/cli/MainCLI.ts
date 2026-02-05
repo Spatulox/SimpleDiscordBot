@@ -25,7 +25,7 @@ export class MainCLI extends BaseCLI {
     ];
 
     protected execute(): Promise<void> {
-        console.log("👋 bye !")
+        console.log("👋 Bye !")
         process.exit()
     }
 }
