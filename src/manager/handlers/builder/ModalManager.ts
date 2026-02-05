@@ -1,153 +1,135 @@
 import {
-    ModalBuilder,
     ActionRowBuilder,
+    ModalActionRowComponentBuilder,
+    ModalBuilder,
     TextInputBuilder,
-    TextInputStyle
-} from 'discord.js';
-import {Log} from "../../../utils/Log";
+    TextInputStyle,
+} from "discord.js";
+import {FolderName} from "../../../type/FolderName";
 import {FileManager} from "../../FileManager";
 
-type ModalInput = {
-    type: 'text' | 'text_placeholder' | 'text_minmax_length' | 'number' | 'date' | 'date-hour';
-    id: string;
+export interface ModalJson {
     title: string;
-    style?: 'short' | 'paragraph';
-    required?: boolean;
-    placeholder?: string;
-    minLength?: number;
-    maxLength?: number;
-};
-
-type FormData = {
-    title: string;
-    id: string;
-    inputs: ModalInput[];
-};
-
-const MAX_COMPONENTS = 5;
+    customId: string;
+    label: string;
+    fields: any[];
+}
 
 export class ModalManager {
     /**
-     * Load and build modal from JSON file
+     * Load modal from JSON file and return ModalBuilder
      */
-    static async load(name: string): Promise<ModalBuilder | null> {
-        const formData = await FileManager.readJsonFile(`./form/${name}.json`);
-
-        if (!formData) {
-            Log.error(`Form ${name} not found!`);
-            return null;
+    static async load(filename: string): Promise<ModalBuilder | false> {
+        try {
+            const file = await FileManager.readJsonFile(`./handlers/${FolderName.MODAL}/${filename}`) as ModalJson;
+            if (!file) return false;
+            return ModalManager.jsonToBuilder(file);
+        } catch {
+            return false;
         }
-
-        if (!this.validateForm(formData)) {
-            Log.error(`${name}.json is not a valid modal json`)
-            return null;
-        }
-
-        return this.buildModal(formData as FormData);
     }
 
     /**
-     * Validate form structure
+     * List all modal files
      */
-    private static validateForm(form: any): boolean {
-        if (!form?.title || typeof form.title !== 'string') {
-            Log.error(`Form needs 'title' (string)`);
+    static async list(): Promise<string[] | false> {
+        try {
+            const files = await FileManager.listJsonFiles(`./handlers/${FolderName.MODAL}`);
+            return files || [];
+        } catch {
             return false;
         }
-
-        if (!form?.id || typeof form.id !== 'string') {
-            Log.error(`Form needs 'id' (string)`);
-            return false;
-        }
-
-        if (!form?.inputs || !Array.isArray(form.inputs)) {
-            Log.error(`Form needs 'inputs' array`);
-            return false;
-        }
-
-        return true;
     }
 
-    /**
-     * Build ModalBuilder from validated form
-     */
-    private static buildModal(form: FormData): ModalBuilder {
+    private static jsonToBuilder(json: ModalJson): ModalBuilder {
         const modal = new ModalBuilder()
-            .setCustomId(form.id)
-            .setTitle(form.title);
+            .setCustomId(json.customId)
+            .setTitle(json.title.slice(0, 45));
 
-        let componentCount = 0;
+        // Transformer chaque field JSON → TextInputBuilder
+        const actionRows: any[] = [];
+        for (const fieldJson of json.fields) {
+            const input = this.fieldJsonToInput(fieldJson);
+            const row = new ActionRowBuilder<ModalActionRowComponentBuilder>()
+                .addComponents(input);
+            actionRows.push(row);
+        }
 
-        for (const input of form.inputs.slice(0, MAX_COMPONENTS)) {
-            if (!this.isValidInput(input)) {
-                Log.error(`Invalid input in form '${form.title}'`);
-                continue;
+        return modal.addComponents(...actionRows);
+    }
+
+    private static fieldJsonToInput(fieldJson: any): TextInputBuilder {
+        const input = new TextInputBuilder()
+            .setCustomId(fieldJson.customId)
+            .setLabel(fieldJson.title.slice(0, 45))
+            .setPlaceholder(fieldJson.placeholder || 'Enter value...')
+            .setRequired(fieldJson.required !== false)
+            .setMinLength(fieldJson.minLength || 0)
+            .setMaxLength(fieldJson.maxLength || 400);
+
+        // Convertir style JSON (1, 2, "Number") → TextInputStyle
+        const style = fieldJson.style;
+        if (typeof style === 'number') {
+            // 1=Short, 2=Paragraph
+            input.setStyle(style as TextInputStyle);
+        } else {
+            // "Number", "Phone", "Date"
+            switch (style) {
+                case 'Number':
+                case 'Phone':
+                case 'Date':
+                    input.setStyle(TextInputStyle.Short);
+                    input.setPlaceholder(
+                        style === 'Number' ? '123' :
+                            style === 'Phone' ? '+33 6 12 34 56 78' :
+                                '2024-02-05'
+                    );
+                    break;
+                default:
+                    input.setStyle(TextInputStyle.Short);
             }
-
-            const row = this.createInputRow(input);
-            modal.addComponents(row);
-            componentCount++;
         }
 
-        if (form.inputs.length > MAX_COMPONENTS) {
-            Log.warn(`Form '${form.title}': ${form.inputs.length} inputs → ${MAX_COMPONENTS} max, Discord will force hide the 5th+ component`);
-        }
-
-        return modal;
+        return input;
     }
 
-    /**
-     * Validate single input
-     */
-    private static isValidInput(input: any): input is ModalInput {
-        const requiredFields = ['type', 'id', 'title'];
-        return requiredFields.every(field => input?.[field]);
+    static parseNumber(value: string): number | null {
+        if (!/^\d+$/.test(value)) return null;
+        const num = parseInt(value);
+        return isNaN(num) ? null : num;
     }
 
-    /**
-     * Create ActionRowBuilder from input config
-     */
-    private static createInputRow(input: ModalInput): ActionRowBuilder<TextInputBuilder> {
-        let textInput = new TextInputBuilder()
-            .setCustomId(input.id)
-            .setLabel(input.title)
-            .setRequired(input.required ?? false)
+    static parsePhone(value: string): string | null {
+        // 0604050359, +33604050359, 06 40 50 35 59, (06) 40-50-35-59
+        const clean = value.replace(/[\s\-\(\)]/g, '');
 
-        // Style mapping
-        const style = input.style === 'paragraph' ? TextInputStyle.Paragraph : TextInputStyle.Short;
-        textInput = textInput.setStyle(style);
-
-        // Type-specific options
-        switch (input.type) {
-            case 'text_placeholder':
-                textInput = textInput.setPlaceholder(input.placeholder ?? '');
-                break;
-
-            case 'text_minmax_length':
-                textInput = textInput
-                    .setMinLength(input.minLength ?? 0)
-                    .setMaxLength(input.maxLength ?? 4000);
-                break;
-
-            case 'number':
-                textInput = textInput
-                    .setStyle(TextInputStyle.Short)
-                    .setPlaceholder('Enter a number');
-                break;
-
-            case 'date':
-                textInput = textInput
-                    .setStyle(TextInputStyle.Short)
-                    .setPlaceholder('DD/MM/YYYY');
-                break;
-
-            case 'date-hour':
-                textInput = textInput
-                    .setStyle(TextInputStyle.Short)
-                    .setPlaceholder('DD/MM/YYYY HH:MM');
-                break;
+        // Français : 06/07/09 + 8 chiffres OU +33 + 9 chiffres
+        if (/^(06|07|09)\d{8}$/.test(clean) || /^(\+33|0033)?[6-9]\d{8}$/.test(clean)) {
+            // Normalise au format international
+            if (clean.startsWith('06') || clean.startsWith('07') || clean.startsWith('09')) {
+                return '+33' + clean.slice(2);
+            }
+            return clean.startsWith('0033') ? '+33' + clean.slice(4) : clean;
         }
 
-        return new ActionRowBuilder<TextInputBuilder>().addComponents(textInput);
+        return null;
+    }
+
+    static parseDate(value: string): Date | null {
+        // yyyy-mm-dd → Date
+        if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+            const [year, month, day] = value.split('-').map(Number);
+            const date = new Date(year!, month! - 1, day);
+            return isNaN(date.getTime()) ? null : date;
+        }
+
+        // dd/mm/yyyy → Date
+        if (/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
+            const [day, month, year] = value.split('/').map(Number);
+            const date = new Date(year!, month! - 1, day);
+            return isNaN(date.getTime()) ? null : date;
+        }
+
+        return null;
     }
 }
