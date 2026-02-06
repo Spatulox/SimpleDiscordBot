@@ -1,4 +1,4 @@
-// src/discord/RoleManager.ts
+// src/guild/RoleManager.ts
 import { GuildMember, Role, Snowflake } from 'discord.js';
 import {Log} from "../../utils/Log";
 

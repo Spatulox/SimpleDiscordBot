@@ -1,4 +1,3 @@
-// src/discord/WebhookManager.ts
 import {
     TextChannel,
     Webhook,

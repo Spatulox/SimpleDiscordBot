@@ -46,7 +46,6 @@ export class ModalManager {
             .setCustomId(json.customId)
             .setTitle(json.title.slice(0, 45));
 
-        // Transformer chaque field JSON → TextInputBuilder
         const actionRows: any[] = [];
         for (const fieldJson of json.fields) {
             const input = this.fieldJsonToInput(fieldJson);
