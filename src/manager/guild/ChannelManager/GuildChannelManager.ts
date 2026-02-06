@@ -82,7 +82,7 @@ export class GuildChannelManager {
         }
     }
 
-    static async delete(channelId: string): Promise<void> {
+    static async delete(channelId: string): Promise<boolean> {
         try {
             const channel = await GuildChannelManager.find(channelId);
             if (!channel) {
@@ -91,6 +91,7 @@ export class GuildChannelManager {
 
             await channel.delete();
             Log.info(`Deleted channel ${channelId}`);
+            return true
         } catch (error) {
             Log.error(`Failed to delete channel ${channelId}: ${error}`);
             throw error;
