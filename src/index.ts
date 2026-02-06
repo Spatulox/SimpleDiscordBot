@@ -9,9 +9,7 @@ export { WebhookManager } from './manager/messages/WebhookManager';
 export { ReactionManager } from "./manager/messages/ReactionManager";
 
 export { GuildManager } from "./manager/guild/GuildManager";
-export { InviteManager } from './manager/guild/InviteManager';
-export { RoleManager } from './manager/guild/RoleManager';
-export { UserManager } from './manager/guild/UserManager';
+export { UserManager } from './manager/direct/UserManager';
 
 
 // Handlers
