@@ -3,8 +3,11 @@ import {
 } from 'discord.js';
 import {Bot} from "../../../bot/Bot";
 import {Log} from "../../../utils/Log";
+import {GuildMessageManager} from "./GuildMessageManager";
 
 export class GuildChannelManager {
+
+    static readonly message = GuildMessageManager
 
     /**
      * Recherche un channel par ID dans une guild spécifique
