@@ -1,6 +1,6 @@
 import {BaseCLI, MenuSelectionCLI} from "../BaseCLI";
 import { BotEnv } from "../../bot/BotEnv";
-import { CommandManager, ContextMenuManager } from "../../manager/handlers/builder/interactions/InteractionManager";
+import { CommandManager, ContextMenuManager } from "../../manager/handlers/interactions/InteractionManager";
 import {InteractionManagerCLI} from "./InteractionCLIManager";
 
 export class InteractionCLI extends BaseCLI {

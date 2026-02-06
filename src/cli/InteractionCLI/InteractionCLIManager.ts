@@ -1,5 +1,5 @@
 import {BaseCLI, MenuSelectionCLI} from "../BaseCLI";
-import { BaseInteractionManager, Command } from "../../manager/handlers/builder/interactions/BaseInteractionManager";
+import { BaseInteractionManager, Command } from "../../manager/handlers/interactions/BaseInteractionManager";
 
 export class InteractionManagerCLI extends BaseCLI {
 
