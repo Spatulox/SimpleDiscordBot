@@ -3,11 +3,11 @@ import {
     Collection,
     Guild,
     GuildBan,
-    VoiceChannel, StageChannel, BanOptions, Channel
+    VoiceChannel, StageChannel, Channel
 } from 'discord.js';
 import {Log} from "../../utils/Log";
 import {Time} from "../../utils/times/UnitTime";
-import {UserManager} from "./UserManager";
+import {GuildUserManager} from "./GuildUserManager";
 import {Bot} from "../../bot/Bot";
 import {GuildChannelManager} from "./ChannelManager/GuildChannelManager";
 import {RoleManager} from "./RoleManager";
@@ -17,7 +17,7 @@ import {InviteManager} from "./InviteManager";
 export class GuildManager {
 
     public static readonly role = RoleManager;
-    public static readonly user= UserManager;
+    public static readonly user= GuildUserManager;
     public static readonly channel = GuildChannelList ;
     public static readonly invite = InviteManager;
 
@@ -42,7 +42,7 @@ export class GuildManager {
      */
     static async searchMember(memberId: string, guildId: string): Promise<GuildMember | null> {
         try {
-            return await UserManager.findInGuild(guildId, guildId);
+            return await this.user.findInGuild(guildId, guildId);
         } catch (error) {
             Log.error(`Failed to fetch member ${memberId} in guild ${guildId}: ${error}`);
             return null;
@@ -54,7 +54,7 @@ export class GuildManager {
      */
     static async isMemberInGuild(memberId: string, guildId: string): Promise<boolean> {
         try {
-            return await UserManager.isInGuild(memberId, guildId);
+            return await this.user.isInGuild(memberId, guildId);
         } catch (error: any) {
             return error.code !== 10007; // Unknown Member
         }
@@ -79,36 +79,6 @@ export class GuildManager {
             }
         }
         throw new Error(`Failed to fetch members after ${MAX_ATTEMPTS} attempts`);
-    }
-
-    static async ban(guildId: string, userId: string, banOption?: BanOptions): Promise<void> {
-        const guild = Bot.client.guilds.cache.get(guildId);
-        if (!guild) {
-            throw new Error(`Guild ${guildId} not found`);
-        }
-
-        try {
-            await guild.members.ban(userId, banOption);
-            Log.info(`Banned user ${userId} from guild ${guildId}`);
-        } catch (error) {
-            Log.error(`Failed to ban user ${userId} from guild ${guildId}: ${error}`);
-            throw error;
-        }
-    }
-
-    static async unban(guildId: string, userId: string, reason?: string): Promise<void> {
-        const guild = Bot.client.guilds.cache.get(guildId);
-        if (!guild) {
-            throw new Error(`Guild ${guildId} not found`);
-        }
-
-        try {
-            await guild.members.unban(userId, reason);
-            Log.info(`Unbanned user ${userId} from guild ${guildId}`);
-        } catch (error) {
-            Log.error(`Failed to unban user ${userId} from guild ${guildId}: ${error}`);
-            throw error;
-        }
     }
 
     static async listban(guildId: string, limit?: number): Promise<GuildBan[]> {

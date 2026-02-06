@@ -1,51 +1,9 @@
-import {GuildMember, User} from 'discord.js';
 import {Bot} from "../../bot/Bot";
 import {Log} from "../../utils/Log";
+import {UserManager} from "../direct/UserManager"
+import {BanOptions} from "discord.js";
 
-export class UserManager {
-    
-    /**
-     * Find member in specific guild
-     */
-    static async find(userId: string): Promise<User | null> {
-        try {
-            return await Bot.client.users.fetch(userId);
-        } catch (error) {
-            Log.error(`UserManager: Member ${userId} not found`);
-            return null;
-        }
-    }
-
-    /**
-     * Find member in specific guild
-     */
-    static async findInGuild(guildId: string, memberId: string): Promise<GuildMember | null> {
-        try {
-            const guild = Bot.client.guilds.cache.get(guildId);
-            if (!guild) throw new Error(`Guild ${guildId} not found`);
-
-            const member = await guild.members.fetch({ user: memberId, force: true });
-            return member ?? null;
-        } catch (error) {
-            Log.error(`UserManager: Member ${memberId} not found in ${guildId}`);
-            return null;
-        }
-    }
-
-    /**
-     * Check if user is still in guild
-     */
-    static async isInGuild(guildId: string, userId: string): Promise<boolean> {
-        try {
-            const guild = Bot.client.guilds.cache.get(guildId);
-            if (!guild) return false;
-
-            await guild.members.fetch({ user: userId, force: true });
-            return true;
-        } catch (error: any) {
-            return error.code !== 10007; // Unknown Member
-        }
-    }
+export class GuildUserManager extends UserManager {
 
     /**
      * Check if user is banned from guild
@@ -222,6 +180,36 @@ export class UserManager {
             Log.info(`Kicked ${memberId} from guild ${guildId}: ${reason || 'No reason'}`);
         } catch (error) {
             Log.error(`Failed to kick ${memberId} from ${guildId}: ${error}`);
+            throw error;
+        }
+    }
+
+    static async ban(guildId: string, userId: string, banOption?: BanOptions): Promise<void> {
+        const guild = Bot.client.guilds.cache.get(guildId);
+        if (!guild) {
+            throw new Error(`Guild ${guildId} not found`);
+        }
+
+        try {
+            await guild.members.ban(userId, banOption);
+            Log.info(`Banned user ${userId} from guild ${guildId}`);
+        } catch (error) {
+            Log.error(`Failed to ban user ${userId} from guild ${guildId}: ${error}`);
+            throw error;
+        }
+    }
+
+    static async unban(guildId: string, userId: string, reason?: string): Promise<void> {
+        const guild = Bot.client.guilds.cache.get(guildId);
+        if (!guild) {
+            throw new Error(`Guild ${guildId} not found`);
+        }
+
+        try {
+            await guild.members.unban(userId, reason);
+            Log.info(`Unbanned user ${userId} from guild ${guildId}`);
+        } catch (error) {
+            Log.error(`Failed to unban user ${userId} from guild ${guildId}: ${error}`);
             throw error;
         }
     }
