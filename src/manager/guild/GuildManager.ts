@@ -11,24 +11,15 @@ import {UserManager} from "./UserManager";
 import {Bot} from "../../bot/Bot";
 import {GuildChannelManager} from "./ChannelManager/GuildChannelManager";
 import {RoleManager} from "./RoleManager";
-import {ForumChannelManager} from "./ChannelManager/ForumChannelManager";
-import {NewsChannelManager} from "./ChannelManager/NewsChannelManager";
-import {StageChannelManager} from "./ChannelManager/StageChannelManager";
-import {GuildTextChannelManager} from "./ChannelManager/GuildTextChannelManager";
-import {ThreadChannelManager} from "./ChannelManager/ThreadChannelManager";
-import {GuildVoiceChannelManager} from "./ChannelManager/GuildVoiceChannelManager";
+import {GuildChannelList} from "./ChannelManager/GuildChannelList";
+import {InviteManager} from "./InviteManager";
 
 export class GuildManager {
 
     public static readonly role = RoleManager;
     public static readonly user= UserManager;
-    public static readonly forumChannel= ForumChannelManager;
-    public static readonly guildChannel= GuildChannelManager;
-    public static readonly newsChannel= NewsChannelManager;
-    public static readonly stageChannel= StageChannelManager;
-    public static readonly textChannel= GuildTextChannelManager;
-    public static readonly threadChannel= ThreadChannelManager;
-    public static readonly voiceChannel= GuildVoiceChannelManager;
+    public static readonly channel = GuildChannelList ;
+    public static readonly invite = InviteManager;
 
     static list(): Guild[] {
         return Array.from(Bot.client.guilds.cache.values());
