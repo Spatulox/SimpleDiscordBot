@@ -1,5 +1,5 @@
 import {
-    GuildBasedChannel
+    GuildBasedChannel, GuildChannelCreateOptions
 } from 'discord.js';
 import {Bot} from "../../../bot/Bot";
 import {Log} from "../../../utils/Log";
@@ -66,7 +66,7 @@ export class GuildChannelManager {
             );
     }
 
-    protected static async _create(guildId: string, options: any): Promise<GuildBasedChannel> {
+    protected static async _create(guildId: string, options: GuildChannelCreateOptions): Promise<GuildBasedChannel> {
         try {
             const guild = Bot.client.guilds.cache.get(guildId);
             if (!guild) {

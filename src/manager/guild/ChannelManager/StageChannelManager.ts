@@ -1,4 +1,4 @@
-import {ChannelType, StageChannel} from "discord.js";
+import {ChannelType, GuildChannelCreateOptions, StageChannel} from "discord.js";
 import {GuildChannelManager} from "./GuildChannelManager";
 import {Bot} from "../../../bot/Bot";
 import {Log} from "../../../utils/Log";
@@ -23,12 +23,7 @@ export class StageChannelManager extends GuildChannelManager {
         return Array.from(guild.channels.cache.values()).filter(c => c instanceof StageChannel);
     }
 
-    static async create(guildId: string, name: string, options?: {
-        parent?: string;
-        bitrate?: number;
-        userLimit?: number;
-        topic?: string;
-    }): Promise<StageChannel> {
+    static async create(guildId: string, name: string, options?: Omit<GuildChannelCreateOptions, 'type'>): Promise<StageChannel> {
         return await super._create(guildId, {
             name,
             type: ChannelType.GuildStageVoice,

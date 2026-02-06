@@ -1,4 +1,4 @@
-import {ChannelType, VoiceChannel} from "discord.js";
+import {ChannelType, GuildChannelCreateOptions, VoiceChannel} from "discord.js";
 import {GuildChannelManager} from "./GuildChannelManager";
 import {Bot} from "../../../bot/Bot";
 import {Log} from "../../../utils/Log";
@@ -23,11 +23,7 @@ export class GuildVoiceChannelManager extends GuildChannelManager {
         return Array.from(guild.channels.cache.values()).filter(c => c instanceof VoiceChannel);
     }
 
-    static async create(guildId: string, name: string, options?: {
-        parent?: string;
-        bitrate?: number;
-        userLimit?: number;
-    }): Promise<VoiceChannel> {
+    static async create(guildId: string, name: string, options?: Omit<GuildChannelCreateOptions, 'type'>): Promise<VoiceChannel> {
         return await super._create(guildId, {
             name,
             type: ChannelType.GuildVoice,

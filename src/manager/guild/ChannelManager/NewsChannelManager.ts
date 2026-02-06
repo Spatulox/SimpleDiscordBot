@@ -1,4 +1,4 @@
-import {ChannelType, NewsChannel} from "discord.js";
+import {ChannelType, GuildChannelCreateOptions, NewsChannel} from "discord.js";
 import {GuildChannelManager} from "./GuildChannelManager";
 import {Bot} from "../../../bot/Bot";
 import {Log} from "../../../utils/Log";
@@ -23,11 +23,7 @@ export class NewsChannelManager extends GuildChannelManager {
         return Array.from(guild.channels.cache.values()).filter(c => c instanceof NewsChannel);
     }
 
-    static async create(guildId: string, name: string, options?: {
-        parent?: string;
-        topic?: string;
-        nsfw?: boolean;
-    }): Promise<NewsChannel> {
+    static async create(guildId: string, name: string, options?: Omit<GuildChannelCreateOptions, 'type'>): Promise<NewsChannel> {
         return await super._create(guildId, {
             name,
             type: ChannelType.GuildAnnouncement,

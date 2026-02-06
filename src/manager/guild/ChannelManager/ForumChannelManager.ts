@@ -1,5 +1,5 @@
 import {GuildChannelManager} from "./GuildChannelManager";
-import {ChannelType, ForumChannel} from "discord.js";
+import {ChannelType, ForumChannel, GuildChannelCreateOptions} from "discord.js";
 import {Bot} from "../../../bot/Bot";
 import {Log} from "../../../utils/Log";
 
@@ -24,11 +24,7 @@ export class ForumChannelManager extends GuildChannelManager {
     }
 
 
-    static async create(guildId: string, name: string, options?: {
-        parent?: string;
-        topic?: string;
-        nsfw?: boolean;
-    }): Promise<ForumChannel> {
+    static async create(guildId: string, name: string, options?: Omit<GuildChannelCreateOptions, 'type'>): Promise<ForumChannel> {
         return await super._create(guildId, {
             name,
             type: ChannelType.GuildForum,

@@ -1,4 +1,4 @@
-import {TextChannel, ChannelType} from "discord.js";
+import {TextChannel, ChannelType, GuildChannelCreateOptions} from "discord.js";
 import {GuildChannelManager} from "./GuildChannelManager";
 import {Bot} from "../../../bot/Bot";
 import {Log} from "../../../utils/Log";
@@ -24,12 +24,7 @@ export class GuildTextChannelManager extends GuildChannelManager {
         return Array.from(guild.channels.cache.values()).filter(c => c instanceof TextChannel);
     }
 
-    static async create(guildId: string, name: string, options?: {
-        parent?: string;
-        topic?: string;
-        nsfw?: boolean;
-        rateLimitPerUser?: number;
-    }): Promise<TextChannel> {
+    static async create(guildId: string, name: string, options?: Omit<GuildChannelCreateOptions, 'type'>): Promise<TextChannel> {
         return await super._create(guildId, {
             name,
             type: ChannelType.GuildText,
