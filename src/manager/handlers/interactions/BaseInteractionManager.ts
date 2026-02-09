@@ -5,6 +5,7 @@ import {PermissionFlagsBits} from "discord.js";
 import * as fs from 'fs/promises';
 import {FileManager} from "../../FileManager";
 import {Log} from "../../../utils/Log";
+import {Guild} from "../../../cli/GuildListManager";
 
 // Types
 export interface Command {
@@ -26,7 +27,7 @@ export enum CommandType {
 }
 
 export abstract class BaseInteractionManager {
-    public abstract folderPath: string;
+    public abstract folderPath: string | undefined;
     public abstract commandType: number[];
 
     protected clientId: string;
@@ -83,43 +84,116 @@ export abstract class BaseInteractionManager {
         }
     }
 
-    async list(): Promise<Command[]> {
-        console.log(`Handlers ${this.folderPath} on Discord (global)...`);
+    private async fetchCommands(
+        endpoint:
+            | ReturnType<typeof Routes.applicationCommands>
+            | ReturnType<typeof Routes.applicationGuildCommands>,
+        scope: 'global' | string,
+        guildId?: string,
+        printResult: boolean = true,
+    ): Promise<Command[]> {
+        const scopeLabel = scope === 'global' ? 'global' : `guild ${scope}`;
+        console.log(`Handlers ${this.folderPath} on Discord (${scopeLabel})...`);
 
         try {
-            const globalCmds = await this.rest.get(
-                Routes.applicationCommands(this.clientId)
-            ) as any[];
+            const rawCmds = await this.rest.get(endpoint) as any[];
+            const commands = rawCmds.filter(cmd => this.commandType.includes(cmd.type));
 
-            const commands: Command[] = globalCmds.filter(cmd => this.commandType.includes(cmd.type));
-
-            const commandList: Command[] = commands.map((cmd: Command, index: number) => ({
+            const commandList: Command[] = commands.map((cmd: any, index: number) => ({
                 index: index,
                 name: cmd.name,
                 type: cmd.type,
                 description: cmd.description || 'N/A',
                 default_member_permissions: cmd.default_member_permissions,
                 default_member_permissions_string: this.bitfieldToPermissions(cmd.default_member_permissions),
-                id: cmd.id
+                id: cmd.id,
+                ...(guildId && { guildID: [guildId] })
             }));
 
-            console.log(`✅ ${commandList.length} ${this.folderPath}(s) found\n`);
+            if(printResult) {
+                console.log(`✅ ${commandList.length} ${this.folderPath}(s) found\n`);
 
-            console.table(
-                commandList.map((cmd: Command) => ({
-                    Nom: cmd.name,
-                    Type: cmd.type === CommandType.SLASH ? 'Slash' : cmd.type === CommandType.USER_CONTEXT_MENU ? 'User Context Menu' : 'Message Context Menu',
-                    Description: cmd.description,
-                    Permissions: cmd.default_member_permissions_string?.join(", "),
-                    ID: cmd?.id
-                }))
-            );
+                console.table(
+                    commandList.map((cmd: Command) => ({
+                        Nom: cmd.name,
+                        Type: cmd.type === CommandType.SLASH ? 'Slash' :
+                            cmd.type === CommandType.USER_CONTEXT_MENU ? 'User Context Menu' : 'Message Context Menu',
+                        Description: cmd.description,
+                        Permissions: cmd.default_member_permissions_string?.join(", "),
+                        ID: cmd.id
+                    })));
+            }
+
             return commandList;
         } catch (error) {
-            Log.error(`❌ Erreur: ${(error as Error).message}`);
-            return []
+            const errorMsg = scope === 'global'
+                ? `❌ Error: ${(error as Error).message}`
+                : `❌ Guild error ${scope}: ${(error as Error).message}`;
+            Log.error(errorMsg);
+            return [];
         }
     }
+
+    async list(): Promise<Command[]> {
+        return this.fetchCommands(
+            Routes.applicationCommands(this.clientId),
+            'global'
+        );
+    }
+
+    async listGuild(guildID: string): Promise<Command[]> {
+        return this.fetchCommands(
+            Routes.applicationGuildCommands(this.clientId, guildID),
+            guildID,
+            guildID
+        );
+    }
+
+    async listAllGuilds(guilds: Guild[]): Promise<{ guild: string; commands: Command[] }[]> {
+        console.log("📡 Getting all guilds...\n");
+        console.log(`📋 ${guilds.length} guild(s) found\n`);
+
+        if (!guilds.length) return [];
+
+        const guildCommandPromises = guilds.map(async (guild: Guild) => {
+            try {
+                const commands = await this.fetchCommands(
+                    Routes.applicationGuildCommands(this.clientId, guild.id),
+                    guild.id,
+                    guild.id,
+                    false
+                );
+
+                return {
+                    guild: `${guild.name} (${guild.id})`,
+                    guildId: guild.id,
+                    commands,
+                    count: commands.length
+                };
+            } catch (error) {
+                console.error(`⚠️ Guild ${guild.id}: ${(error as Error).message}`);
+                return {
+                    guild: `${guild.name} (${guild.id})`,
+                    guildId: guild.id,
+                    commands: [],
+                    count: 0
+                };
+            }
+        });
+
+        const results = await Promise.all(guildCommandPromises);
+
+        console.log("\n📊 RÉSUMÉ PAR GUILD :\n");
+        console.table(results.map(r => ({
+            "Guild": r.guild,
+            "Commandes": r.count,
+            "Total": r.commands.length
+        })));
+
+        return results.filter(r => r.count > 0);
+    }
+
+
 
     async deploy(commands: Command[]): Promise<void> {
         console.log(`Deploying ${commands.length} ${this.folderPath}(s)...`);
@@ -184,7 +258,6 @@ export abstract class BaseInteractionManager {
     }
 
     private async deploySingleInteraction(cmd: Command, file: string): Promise<void> {
-        console.log(cmd)
         const deployToGuilds = cmd.guildID?.length ? cmd.guildID! : [];
         const dataToSend = { ...cmd };
         delete dataToSend.guildID;
@@ -218,7 +291,7 @@ export abstract class BaseInteractionManager {
                         await this.rest.patch(Routes.applicationGuildCommand(this.clientId, guildId, found.id), { body: dataToSend });
                     }
                 } catch (error) {
-                    console.error(`⚠️  Guild ${guildId.slice(-4)}: ${(error as Error).message}`);
+                    console.error(`⚠️  Guild ${guildId}: ${(error as Error).message}`);
                 }
             }
         } else {
@@ -302,7 +375,7 @@ export abstract class BaseInteractionManager {
                 result.push(name);
             }
         }
-        console.log("Y'a un result", result);
+
         return result;
     }
 

@@ -1,5 +1,7 @@
 import {BaseCLI, MenuSelectionCLI} from "../BaseCLI";
 import { BaseInteractionManager, Command } from "../../manager/handlers/interactions/BaseInteractionManager";
+import {Guild, GuildListManager} from "../GuildListManager";
+import {BotEnv} from "../../bot/BotEnv";
 
 export class InteractionManagerCLI extends BaseCLI {
 
@@ -11,7 +13,9 @@ export class InteractionManagerCLI extends BaseCLI {
     }
 
     protected readonly menuSelection: MenuSelectionCLI = [
-        { label: "List remote", action: () => this.listRemote() },
+        { label: `List Global commands`, action: () => this.listRemote() },
+        { label: "List commands per GuildID", action: async () => this.guildListRemote(await new GuildListManager(BotEnv.clientId, BotEnv.token).chooseGuild()) },
+        { label: "List commands per Guild", action: async () => this.guildListAllRemote() },
         { label: "Deploy local", action: () => this.handleDeploy() },
         { label: "Update remote", action: () => this.handleUpdate() },
         { label: "Delete remote", action: () => this.handleDelete() },
@@ -30,6 +34,17 @@ export class InteractionManagerCLI extends BaseCLI {
 
     private async listRemote(): Promise<void> {
         await this.manager.list();
+    }
+
+    private async guildListRemote(guild: Guild | null): Promise<void> {
+        if(!guild) {
+            return
+        }
+        await this.manager.listGuild(guild.id)
+    }
+
+    private async guildListAllRemote(): Promise<void> {
+        await this.manager.listAllGuilds(await new GuildListManager(BotEnv.clientId, BotEnv.token).list(false))
     }
 
     private async handleDeploy(): Promise<void> {
