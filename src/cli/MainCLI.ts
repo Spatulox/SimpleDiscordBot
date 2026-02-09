@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import {BaseCLI, MenuSelectionCLI} from "./BaseCLI";
 import {InteractionCLI} from "./InteractionCLI/InteractionCLI";
 import {GenerationCLI} from "./GenerationCLI/GenerationCLI";
