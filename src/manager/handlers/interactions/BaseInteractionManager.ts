@@ -183,10 +183,10 @@ export abstract class BaseInteractionManager {
 
         const results = await Promise.all(guildCommandPromises);
 
-        console.log("\n📊 RÉSUMÉ PAR GUILD :\n");
+        console.log("\n📊 INTERACTION PER GUILD :\n");
         console.table(results.map(r => ({
             "Guild": r.guild,
-            "Commandes": r.count,
+            "Interactions": r.count,
             "Total": r.commands.length
         })));
 
