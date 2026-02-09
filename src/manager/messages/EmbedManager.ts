@@ -56,16 +56,17 @@ export class EmbedManager {
      * Creates base embed - SAME SIMPLE API !
      */
     static create(color: EmbedColor | null = null): EmbedBuilder {
-        return new EmbedBuilder()
+        const embed = new EmbedBuilder()
             .setColor(color ?? this.DEFAULT_COLOR)
-            .setTitle('Title')
-            .setDescription('')
-            .setThumbnail('')
-            .setFooter({
-                text: Bot.config.botName || "",
+            .setTimestamp(new Date());
+
+        if(this.BOT_ICON && Bot.config.botName) {
+            embed.setFooter({
+                text: Bot.config.botName,
                 iconURL: this.BOT_ICON
             })
-            .setTimestamp(new Date());
+        }
+        return embed
     }
 
     /**
@@ -93,6 +94,14 @@ export class EmbedManager {
     static success(description: string): EmbedBuilder {
         return this.create(EmbedColor.minecraft)
             .setTitle('Success')
+            .setDescription(description);
+    }
+
+    /**
+     * Creates success embed
+     */
+    static description(description: string): EmbedBuilder {
+        return this.create(EmbedColor.minecraft)
             .setDescription(description);
     }
 
