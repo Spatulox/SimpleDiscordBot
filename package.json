@@ -27,8 +27,14 @@
   },
   "keywords": [
     "discord",
-    "discord bot",
     "framework",
-    "bot"
-  ]
+    "bot",
+    "client",
+    "discordjs",
+    "discord.js",
+    "node"
+  ],
+  "bugs": {
+    "url": "https://github.com/Spatulox/SimpleDiscordBot/issues"
+  }
 }
