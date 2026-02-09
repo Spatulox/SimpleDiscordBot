@@ -104,7 +104,7 @@ export class ContextMenuGeneratorCLI extends BaseCLI {
 
                 const ids = val.split(",").map(id => id.trim());
                 const invalidIds = ids.filter(id =>
-                    !DiscordRegex.DISCORD_ID.test(id)
+                    !DiscordRegex.GUILD_ID.test(id)
                 );
 
                 if (invalidIds.length > 0) {

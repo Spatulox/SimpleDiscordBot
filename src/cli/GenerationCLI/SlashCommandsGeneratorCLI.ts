@@ -113,7 +113,7 @@ export class SlashCommandGeneratorCLI extends BaseCLI {
             (val) => {
                 if (!val || val.toLowerCase() === "none") return true;
                 const ids = val.split(",").map(id => id.trim());
-                const invalidIds = ids.filter(id => !DiscordRegex.DISCORD_ID.test(id));
+                const invalidIds = ids.filter(id => !DiscordRegex.GUILD_ID.test(id));
                 if (invalidIds.length > 0) {
                     console.log(`❌ Invalid Guild IDs: ${invalidIds.join(', ')}`);
                     return false;

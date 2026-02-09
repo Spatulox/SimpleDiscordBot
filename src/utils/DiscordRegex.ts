@@ -31,11 +31,10 @@ export class DiscordRegex {
         `(${this.DISCORD_PING_REGEX.source})|(${this.CHANNEL_REGEX.source})`
     );
 
-    // ID Discord (18 chiffres exactement)
-    static readonly DISCORD_ID = /^[0-9]{18}$/;
-
-    // ID utilisateur/guild/channel (18 chiffres)
-    static readonly SNOWFLAKE = /^[0-9]{18}$/;
+    // ID Discord (user, channel guild)
+    static readonly USER_ID = /^[0-9]{18}$/;
+    static readonly CHANNEL_ID = /^[0-9]{18}$/;
+    static readonly GUILD_ID = /^[0-9]{19}$/;
 
     // Username Discord (2-32 caractères alphanumériques + _ .)
     static readonly USERNAME = /^[a-zA-Z0-9_]{2,32}$/;
@@ -62,7 +61,7 @@ export class DiscordRegex {
      * Validate Discord ID Discord (18)
      */
     static isDiscordId(id: string): boolean {
-        return this.DISCORD_ID.test(id);
+        return this.USER_ID.test(id) || this.GUILD_ID.test(id) || this.CHANNEL_ID.test(id);
     }
 
     /**
@@ -120,7 +119,9 @@ export class DiscordRegex {
             ROLE_REGEX: this.ROLE_REGEX,
             DISCORD_PING_REGEX: this.DISCORD_PING_REGEX,
             DISCORD_MENTION_REGEX: this.DISCORD_MENTION_REGEX,
-            DISCORD_ID: this.DISCORD_ID,
+            USER_ID: this.USER_ID,
+            CHANNEL_ID: this.CHANNEL_ID,
+            GUILD_ID: this.GUILD_ID,
             USERNAME: this.USERNAME,
             USERNAME_DISCRIM: this.USERNAME_DISCRIM,
             CHANNEL_MENTION: this.CHANNEL_MENTION,
