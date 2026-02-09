@@ -93,22 +93,25 @@ export abstract class BaseInteractionManager {
 
             const commands: Command[] = globalCmds.filter(cmd => this.commandType.includes(cmd.type));
 
-            const commandList: Command[] = commands.map((cmd: any, index: number) => ({
+            const commandList: Command[] = commands.map((cmd: Command, index: number) => ({
                 index: index,
                 name: cmd.name,
                 type: cmd.type,
                 description: cmd.description || 'N/A',
+                default_member_permissions: cmd.default_member_permissions,
+                default_member_permissions_string: this.bitfieldToPermissions(cmd.default_member_permissions),
                 id: cmd.id
             }));
 
-            console.log(`✅ ${commands.length} ${this.folderPath}(s) found\n`);
+            console.log(`✅ ${commandList.length} ${this.folderPath}(s) found\n`);
 
             console.table(
-                commands.map((cmd: any) => ({
+                commandList.map((cmd: Command) => ({
                     Nom: cmd.name,
-                    Type: cmd.type === CommandType.SLASH ? 'Slash' : cmd.type === CommandType.USER_CONTEXT_MENU ? 'User' : 'Message',
-                    Description: cmd.descriCommandTypeption,
-                    ID: cmd.id.slice(-8)
+                    Type: cmd.type === CommandType.SLASH ? 'Slash' : cmd.type === CommandType.USER_CONTEXT_MENU ? 'User Context Menu' : 'Message Context Menu',
+                    Description: cmd.description,
+                    Permissions: cmd.default_member_permissions_string?.join(", "),
+                    ID: cmd?.id
                 }))
             );
             return commandList;
@@ -181,6 +184,7 @@ export abstract class BaseInteractionManager {
     }
 
     private async deploySingleInteraction(cmd: Command, file: string): Promise<void> {
+        console.log(cmd)
         const deployToGuilds = cmd.guildID?.length ? cmd.guildID! : [];
         const dataToSend = { ...cmd };
         delete dataToSend.guildID;
@@ -286,5 +290,21 @@ export abstract class BaseInteractionManager {
 
         return bits.toString();
     }
+
+    private bitfieldToPermissions(bitfield: string | number | bigint | undefined): string[] {
+        if (!bitfield) return [];
+
+        const bits = BigInt(bitfield);
+        const result: string[] = [];
+
+        for (const [name, value] of Object.entries(PermissionFlagsBits)) {
+            if ((bits & value) === value) {
+                result.push(name);
+            }
+        }
+        console.log("Y'a un result", result);
+        return result;
+    }
+
 
 }
