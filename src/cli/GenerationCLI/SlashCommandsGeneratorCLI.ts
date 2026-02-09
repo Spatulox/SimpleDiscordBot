@@ -131,7 +131,7 @@ export class SlashCommandGeneratorCLI extends BaseCLI {
         console.log("💾 9/12 - Filename");
         const filename = (await this.requireInput("Filename (without .json): ")) + ".json";
 
-        await this.saveFile(`./handlers/${FolderName.SLASH_COMMANDS}`, filename, config);
+        await this.saveFile(FolderName.SLASH_COMMANDS, filename, config);
     }
 
     private async addCommandStructure(config: any): Promise<void> {

@@ -141,7 +141,7 @@ export class ModalGeneratorCLI extends BaseCLI {
         console.log("💾  6/6 - Save");
         const filename = await this.requireInput("Filename (ex: server-config): ") + ".json";
 
-        await this.saveFile(`./handlers/${FolderName.MODAL}`, filename, modal)
+        await this.saveFile(FolderName.MODAL, filename, modal)
         return this.showMainMenu();
     }
 

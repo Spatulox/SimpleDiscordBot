@@ -157,13 +157,12 @@ export abstract class BaseCLI {
 
 
     protected async saveFile<T>(
-        folderPath: string,
+        folderName: string,
         filename: string,
         data: T,
     ): Promise<void> {
         let finalFilename = filename;
-
-        if(await FileManager.readJsonFile(`./handlers/${folderPath}/${filename}`)){
+        if(await FileManager.readJsonFile(`./handlers/${folderName}/${filename}`)){
             if (!await this.yesNoInput(`"${finalFilename}" already exists. Overwrite? (y/n): `)) {
                 const timestamp = Date.now();
                 finalFilename = `${filename.replace('.json', '')}-${timestamp}`;
@@ -183,8 +182,8 @@ export abstract class BaseCLI {
         }
 
         try {
-            await FileManager.writeJsonFile(folderPath, finalFilename, data, false);
-            console.log(`File saved: ./handlers/${folderPath}/${finalFilename}`);
+            await FileManager.writeJsonFile(`./handlers/${folderName}`, finalFilename, data, false);
+            console.log(`File saved: ./handlers/${folderName}/${finalFilename}`);
         } catch (error) {
             console.error("Error saving file:", error);
         }
