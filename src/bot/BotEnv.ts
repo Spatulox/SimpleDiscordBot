@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import {DiscordRegex} from "../utils/DiscordRegex";
 dotenv.config();
 
 export const BotEnv = {
@@ -14,9 +15,7 @@ export const BotEnv = {
         const token = process.env.DISCORD_BOT_CLIENTID;
         if (!token) throw new Error('Missing environment variable : DISCORD_BOT_CLIENTID');
 
-        const discordIdRegex = /^[0-9]{19}$/;
-
-        if(!discordIdRegex.test(token)){
+        if(!DiscordRegex.BOT_ID.test(token)){
             throw new Error("Invalid token format")
         }
 

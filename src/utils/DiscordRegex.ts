@@ -35,6 +35,7 @@ export class DiscordRegex {
     static readonly USER_ID = /^[0-9]{18}$/;
     static readonly CHANNEL_ID = /^[0-9]{18}$/;
     static readonly GUILD_ID = /^[0-9]{19}$/;
+    static readonly BOT_ID = /^[0-9]{19}$/;
 
     // Username Discord (2-32 caractères alphanumériques + _ .)
     static readonly USERNAME = /^[a-zA-Z0-9_]{2,32}$/;
