@@ -135,20 +135,12 @@ export class Bot {
             return;
         }
 
-        if(intervalMs != null) {
-            setInterval(async () => {
-                const random = randomActivity[Math.floor(Math.random() * randomActivity.length)]!;
-                Bot.setActivity(random.message, random.type);
-            }, intervalMs);
-            return
-        }
-
         pickRandom();
-        setInterval(() => {
+        setInterval(async () => {
             pickRandom();
         }, intervalMs);
-
         Log.info(`Random activity started (every ${Math.round(intervalMs / 60000)}min)`);
+        return
     }
 
 }
