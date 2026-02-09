@@ -4,7 +4,7 @@ import { Time } from '../utils/times/UnitTime';
 import {Log} from "../utils/Log";
 import {InternetChecker} from "../utils/network/InternetChecker";
 import {BotLog, ConfigLog} from "./BotLog";
-import {EmbedColor} from "../manager/messages/EmbedManager";
+import {EmbedColor, EmbedManager} from "../manager/messages/EmbedManager";
 import {BotMessage} from "./BotMessage";
 import {BotEnv} from "./BotEnv";
 
@@ -47,7 +47,7 @@ export class Bot {
     constructor(client: Client, config: BotConfig) {
 
         Log.info('----------------------------------------------------');
-        Log.info("Starting Program")
+        Log.info("Starting Bot")
 
         Bot.criticConfig = { dev: BotEnv.dev, token: BotEnv.token };
         Bot._config = { ...config, clientId: BotEnv.clientId};
@@ -64,6 +64,7 @@ export class Bot {
             Bot._client.on(Events.ClientReady, () => {
                 if(client && client.user){
                     Log.info(`${client.user.username} has logged in, waiting...`)
+                    Bot.log.sendLog(EmbedManager.success("Bot Started"))
                 }
             })
 
