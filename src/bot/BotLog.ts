@@ -4,6 +4,8 @@ import {Log} from "../utils/Log";
 import {Bot} from "./Bot";
 
 export type ConfigLog = {
+    logChannelId: string;
+    errorChannelId: string;
     info: {console: boolean, discord: boolean}
     error: {console: boolean, discord: boolean}
     warn: {console: boolean, discord: boolean}
@@ -11,46 +13,56 @@ export type ConfigLog = {
 }
 
 export class BotLog {
-    private logChannel: TextChannel | null = null;
-    private errorChannel: TextChannel | null = null;
-    //private static config: ConfigLog;
+    private static logChannel: TextChannel | null = null;
+    private static  errorChannel: TextChannel | null = null;
 
-    constructor(/*config: ConfigLog*/) {
-        /*BotLog.config = config;
-        console.log(BotLog.config);*/
+    constructor() {}
+
+    static config(): ConfigLog | undefined {
+        return Bot.config.log
     }
 
     /**
      * Initialize Discord logging channels and update Bot.log references
      */
-    public static initDiscordLogging(): void {
-        // Find log channel
-        if(Bot.config.logChannelId) {
-            const logCh = Bot.client.channels.cache.get(Bot.config.logChannelId);
-            if (logCh && logCh.isTextBased()) {
-                Bot.log.logChannel = logCh as TextChannel;
-                Log.info(`Discord log channel initialized: ${Bot.log.logChannel.name}`);
-            } else {
-                Log.warn(`Discord Log channel ${Bot.config.logChannelId} not found or not accessible`);
+    public static async initDiscordLogging(): Promise<void> {
+        if (!Bot.client.isReady()) {
+            Log.warn('Client not ready for Discord logging init');
+            return;
+        }
+
+        if (Bot.config.log?.logChannelId) {
+            try {
+                const logCh = await Bot.client.channels.fetch(Bot.config.log.logChannelId) as TextChannel;
+                if (logCh?.isTextBased()) {
+                    BotLog.logChannel = logCh;
+                } else {
+                    Log.warn(`❌ Log channel ${Bot.config.log.logChannelId} invalid`);
+                }
+            } catch (error) {
+                Log.error(`❌ Log channel fetch failed: ${error}`);
             }
         }
 
-        if(Bot.config.errorChannelId) {
-            // Find error channel
-            const errorCh = Bot.client.channels.cache.get(Bot.config.errorChannelId);
-            if (errorCh && errorCh.isTextBased()) {
-                Bot.log.errorChannel = errorCh as TextChannel;
-                Log.info(`Discord error channel initialized: ${Bot.log.errorChannel.name}`);
-            } else {
-                Log.warn(`Discord Error channel ${Bot.config.errorChannelId} not found or not accessible`);
+        if (Bot.config.log?.errorChannelId) {
+            try {
+                const errorCh = await Bot.client.channels.fetch(Bot.config.log.errorChannelId) as TextChannel;
+                if (errorCh?.isTextBased()) {
+                    BotLog.errorChannel = errorCh;
+                } else {
+                    Log.warn(`❌ Error channel ${Bot.config.log.errorChannelId} invalid`);
+                }
+            } catch (error) {
+                Log.error(`❌ Error channel fetch failed: ${error}`);
             }
         }
     }
 
+
     /**
      * Send content to specific Discord channel
      */
-    private async _sendToChannel(
+    private static  async _sendToChannel(
         channel: TextChannel | null,
         content: string | EmbedBuilder,
         prefix: "info" | "warn" | "error" | "debug" = 'info'
@@ -73,34 +85,67 @@ export class BotLog {
     }
 
     /**
-     * Send INFO log - TEXT or EMBED !
+     * Send INFO log - TEXT or EMBED ! Respecte config.log.info
      */
-    async sendLog(content: string | EmbedBuilder): Promise<Message | void> {
-        Log.info(content instanceof EmbedBuilder ? 'Embed logged' : content);
-        return await this._sendToChannel(this.logChannel, content, 'info');
+    static async sendLog(content: string | EmbedBuilder): Promise<Message | void> {
+        const logConfig = Bot.config.log;
+
+        // 1. CONSOLE selon config (ou défaut ON)
+        if (!logConfig || logConfig.info.console) {
+            if(!(content instanceof EmbedBuilder)) { Log.info(content) }
+        }
+
+        // 2. Discord seulement si config + channel
+        if (logConfig?.info.discord && this.logChannel) {
+            return await this._sendToChannel(this.logChannel, content, 'info');
+        }
     }
 
     /**
-     * Send ERROR log - TEXT or EMBED !
+     * Send ERROR log - TEXT or EMBED ! Respecte config.log.error
      */
-    async sendError(content: string | EmbedBuilder): Promise<Message | void> {
-        Log.error(content instanceof EmbedBuilder ? 'Embed error logged' : content);
-        return await this._sendToChannel(this.errorChannel, content, 'error');
+    static async sendError(content: string | EmbedBuilder): Promise<Message | void> {
+        const logConfig = Bot.config.log;
+
+        // 1. CONSOLE selon config (ou défaut ON)
+        if (!logConfig || logConfig.error.console) {
+            if(!(content instanceof EmbedBuilder)) { Log.error(content) }
+        }
+
+        // 2. Discord seulement si config + channel
+        if (logConfig?.error.discord && this.errorChannel) {
+            return await this._sendToChannel(this.errorChannel, content, 'error');
+        }
     }
 
     /**
-     * Send WARNING log - TEXT or EMBED (log channel)
+     * Send WARNING log - TEXT or EMBED ! Respecte config.log.warn
      */
-    async sendWarn(content: string | EmbedBuilder): Promise<Message | void> {
-        Log.warn(content instanceof EmbedBuilder ? 'Embed warning logged' : content);
-        return await this._sendToChannel(this.logChannel, content, 'warn');
+    static async sendWarn(content: string | EmbedBuilder): Promise<Message | void> {
+        const logConfig = Bot.config.log;
+
+        if (!logConfig || logConfig?.warn.console) {
+            if(!(content instanceof EmbedBuilder)) { Log.warn(content) }
+        }
+
+        if (logConfig?.warn.discord && this.logChannel) {
+            return await this._sendToChannel(this.logChannel, content, 'warn');
+        }
     }
 
     /**
-     * Send DEBUG log - TEXT or EMBED (log channel)
+     * Send DEBUG log - TEXT or EMBED ! Respecte config.log.debug
      */
-    async sendDebug(content: string | EmbedBuilder): Promise<Message | void> {
-        Log.debug(content instanceof EmbedBuilder ? 'Embed debug logged' : content);
-        return await this._sendToChannel(this.logChannel, content, 'debug');
+    static async sendDebug(content: string | EmbedBuilder): Promise<Message | void> {
+        const logConfig = Bot.config.log;
+
+        if (!logConfig || logConfig?.debug.console) {
+            if(!(content instanceof EmbedBuilder)) { Log.debug(content) }
+        }
+
+        if (logConfig?.debug.discord && this.logChannel) {
+            return await this._sendToChannel(this.logChannel, content, 'debug');
+        }
     }
+
 }

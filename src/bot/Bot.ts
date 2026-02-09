@@ -17,8 +17,6 @@ type CriticConfig = {
 
 export type BotConfig = {
     botIconUrl?: string;
-    logChannelId?: string;
-    errorChannelId?: string;
     defaultEmbedColor?: number | EmbedColor;
     botName?: string
     log?: ConfigLog
@@ -33,7 +31,7 @@ export type RandomBotActivity = {type: ActivityType, message: string}[]
 export class Bot {
     // Instance properties
     public static _client: Client;
-    public static readonly log = new BotLog()
+    public static readonly log = BotLog
     public static readonly message = new BotMessage()
     private static criticConfig: CriticConfig;
     private static _config: InternalBotConfig;
@@ -61,17 +59,6 @@ export class Bot {
 
             await this.login()
 
-            Bot._client.on(Events.ClientReady, () => {
-                if(client && client.user){
-                    Log.info(`${client.user.username} has logged in, waiting...`)
-                    Bot.log.sendLog(EmbedManager.success("Bot Started"))
-                }
-            })
-
-            /*Bot.client.on(Events.InteractionCreate, async (interaction: Interaction) =>{
-                console.log(interaction);
-            })*/
-
         })()
     }
 
@@ -84,12 +71,13 @@ export class Bot {
                 await Bot._client.login(Bot.criticConfig.token);
                 success = true;
 
-                Bot._client.once(Events.ClientReady, () => {
+                Bot._client.on(Events.ClientReady, async () => {
                     if (Bot._client.user) {
-                        BotLog.initDiscordLogging()
+                        await Bot.log.initDiscordLogging()
                         Log.info(`Connected as ${Bot._client.user.tag}`);
                         Log.info(`Connected on : ${Bot._client.guilds.cache.size} servers`);
                         Bot._client.guilds.cache.forEach(g => console.log(` - ${g.name}`));
+                        Bot.log.sendLog(EmbedManager.description("Bot Started"))
                     }
                 });
 
