@@ -46,6 +46,7 @@ export interface SlashCommandConfig {
     options?: CommandOption[];
 
     default_member_permissions?: PermissionString[];
+    default_member_permissions_string?: PermissionString[];
 
     dm_permission: boolean;
 

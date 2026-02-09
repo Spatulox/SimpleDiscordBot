@@ -22,6 +22,7 @@ export class SlashCommandGeneratorCLI extends BaseCLI {
             options: [],
             dm_permission: false,
             default_member_permissions: undefined,
+            default_member_permissions_string: undefined,
             integration_types: [0, 1],
             contexts: [0]
         };
@@ -59,7 +60,7 @@ export class SlashCommandGeneratorCLI extends BaseCLI {
         );
 
         if (permsInput && permsInput.toLowerCase() !== "none") {
-            config.default_member_permissions = permsInput.split(",").map(p => p.trim()) as (keyof typeof PermissionFlagsBits)[];
+            config.default_member_permissions_string = permsInput.split(",").map(p => p.trim()) as (keyof typeof PermissionFlagsBits)[];
         }
 
         // 4. DM Permission

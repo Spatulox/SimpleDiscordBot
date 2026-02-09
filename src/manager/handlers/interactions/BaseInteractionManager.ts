@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v10';
+import {PermissionFlagsBits} from "discord.js";
 import * as fs from 'fs/promises';
 import {FileManager} from "../../FileManager";
 import {Log} from "../../../utils/Log";
@@ -11,6 +12,7 @@ export interface Command {
     description: string;
     options?: any[];
     default_member_permissions?: string | bigint | number;
+    default_member_permissions_string?: string[];
     guildID?: string[];
     type: CommandType;
     id?: string;
@@ -127,7 +129,7 @@ export abstract class BaseInteractionManager {
             }
 
             try {
-                await this.deploySingleCommand(cmd, file);
+                await this.deploySingleInteraction(cmd, file);
                 updatedCount++;
             } catch (error) {
                 Log.error(`Error ${file}: ${(error as Error).message}`);
@@ -178,10 +180,20 @@ export abstract class BaseInteractionManager {
         }
     }
 
-    private async deploySingleCommand(cmd: Command, file: string): Promise<void> {
+    private async deploySingleInteraction(cmd: Command, file: string): Promise<void> {
         const deployToGuilds = cmd.guildID?.length ? cmd.guildID! : [];
         const dataToSend = { ...cmd };
         delete dataToSend.guildID;
+
+        if (cmd.default_member_permissions_string && Array.isArray(cmd.default_member_permissions_string)) {
+            const bitfield = this.permissionsToBitfield(cmd.default_member_permissions_string);
+            if (bitfield !== undefined) {
+                dataToSend.default_member_permissions = bitfield;
+                cmd.default_member_permissions = bitfield;
+            } else {
+                delete dataToSend.default_member_permissions;
+            }
+        }
 
         if (cmd.type === CommandType.MESSAGE_CONTEXT_MENU || cmd.type === CommandType.USER_CONTEXT_MENU) {
             delete dataToSend.options;
@@ -257,6 +269,22 @@ export abstract class BaseInteractionManager {
                 break;
             }
         }
+    }
+
+    private permissionsToBitfield(perms: string[] | undefined): string | undefined {
+        if (!perms || perms.length === 0) return undefined;
+
+        let bits = 0n;
+        for (const name of perms) {
+            const value = (PermissionFlagsBits as Record<string, bigint>)[name];
+            if (!value) {
+                console.warn(`Unknow permission in default_member_permissions: ${name}`);
+                continue;
+            }
+            bits |= value;
+        }
+
+        return bits.toString();
     }
 
 }
