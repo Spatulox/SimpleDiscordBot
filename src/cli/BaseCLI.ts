@@ -138,6 +138,7 @@ export abstract class BaseCLI {
 
         console.log('');
         console.log('🔗 Wiki: https://github.com/Spatulox/SimpleDiscordBot/wiki');
+        console.log('🔗 Bugs: https://github.com/Spatulox/SimpleDiscordBot/issues')
         console.log('═'.repeat(80));
 
         await this.prompt('Press Enter to continue...');

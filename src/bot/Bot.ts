@@ -74,9 +74,8 @@ export class Bot {
                 Bot._client.on(Events.ClientReady, async () => {
                     if (Bot._client.user) {
                         await Bot.log.initDiscordLogging()
-                        Log.info(`Connected as ${Bot._client.user.tag}`);
-                        Log.info(`Connected on : ${Bot._client.guilds.cache.size} servers`);
-                        Bot._client.guilds.cache.forEach(g => console.log(` - ${g.name}`));
+                        Log.info(`Connected on ${Bot._client.guilds.cache.size} servers as ${Bot._client.user.tag}`);
+                        //Bot._client.guilds.cache.forEach(g => console.log(` - ${g.name}`));
                         Bot.log.sendLog(EmbedManager.description("Bot Started"))
                     }
                 });
