@@ -26,5 +26,6 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
 
-  }
+  },
+  "exclude": ["src_example"]
 }
