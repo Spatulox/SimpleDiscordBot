@@ -3,11 +3,22 @@ import {TextChannel, EmbedBuilder, Message} from 'discord.js';
 import {Log} from "../utils/Log";
 import {Bot} from "./Bot";
 
+export type ConfigLog = {
+    info: {console: boolean, discord: boolean}
+    error: {console: boolean, discord: boolean}
+    warn: {console: boolean, discord: boolean}
+    debug: {console: boolean, discord: boolean}
+}
+
 export class BotLog {
     private logChannel: TextChannel | null = null;
     private errorChannel: TextChannel | null = null;
+    //private static config: ConfigLog;
 
-    constructor() {}
+    constructor(/*config: ConfigLog*/) {
+        /*BotLog.config = config;
+        console.log(BotLog.config);*/
+    }
 
     /**
      * Initialize Discord logging channels and update Bot.log references

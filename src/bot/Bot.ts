@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { Time } from '../utils/times/UnitTime';
 import {Log} from "../utils/Log";
 import {InternetChecker} from "../utils/network/InternetChecker";
-import {BotLog} from "./BotLog";
+import {BotLog, ConfigLog} from "./BotLog";
 import {EmbedColor} from "../manager/messages/EmbedManager";
 import {BotMessage} from "./BotMessage";
 import {BotEnv} from "./BotEnv";
@@ -21,6 +21,7 @@ export type BotConfig = {
     errorChannelId?: string;
     defaultEmbedColor?: number | EmbedColor;
     botName?: string
+    log?: ConfigLog
 }
 
 export type InternalBotConfig = {
