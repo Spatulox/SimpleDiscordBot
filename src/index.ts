@@ -1,4 +1,5 @@
 export { Bot } from "./bot/Bot"
+export {BotEnv} from "./bot/BotEnv";
 
 
 // Manager
