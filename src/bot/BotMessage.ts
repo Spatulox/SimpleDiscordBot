@@ -59,7 +59,7 @@ export class BotMessage {
                 return await targetUser.send(content)
             }
         } catch (error) {
-            Bot.log.sendError(`Failed to send message to ${user}: ${error}`);
+            Log.error(`Failed to send message to ${user}: ${error}`);
             return false
         }
     }
