@@ -1,0 +1,13 @@
+# .npmignore
+src/
+handlers/
+*.ts
+tsconfig.json
+.env
+.idea
+.gitattributes
+node_modules/
+dist/test
+.nyc_output/
+coverage/
+.DS_Store
