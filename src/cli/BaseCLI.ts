@@ -4,7 +4,7 @@ import {FileManager} from "../manager/FileManager";
 
 export type MenuSelectionCLI = {
     label: string; // The Label for the Menu Choice
-    action: () => BaseCLI | Promise<void> | null
+    action: () => BaseCLI | Promise<any> | null
 }[]
 
 /**
