@@ -18,10 +18,14 @@ export type SendableComponent = EmbedBuilder | ActionRowBuilder<MessageActionRow
 
 export class SendableComponentBuilder {
 
+    static isSendableComponent(thing: any): boolean{
+        return thing instanceof EmbedBuilder || thing instanceof ActionRowBuilder;
+    }
+
     private static build<T extends MessageFields>(
         base: T,
-        content?: string,
-        components?: SendableComponent | SendableComponent[]
+        content?: string | null,
+        components?: SendableComponent | SendableComponent[] | null | undefined
     ): T {
         if (content) {
             base.content = content;
@@ -55,13 +59,13 @@ export class SendableComponentBuilder {
         let base: InteractionReplyOptions | InteractionUpdateOptions = {}
 
         // Case 1
-        if (typeof contentOrComponent === 'string' && component === undefined) {
+        if (typeof contentOrComponent === 'string' && !component) {
             base = this.build(base, contentOrComponent);
         }
 
         // Case 2
-        if (typeof contentOrComponent == "string" && component) {
-            base = this.build(base, contentOrComponent, component);
+        if (typeof contentOrComponent !== 'string' && !component) {
+            base = this.build(base, null, contentOrComponent);
         }
 
         // Cas 3: content and component not null
@@ -93,13 +97,13 @@ export class SendableComponentBuilder {
         }
 
         // Case 2
-        if (typeof contentOrComponent == "string" && component) {
-            return this.build(base, contentOrComponent, component);
+        if (typeof contentOrComponent !== 'string' && !component) {
+            return this.build(base, null, contentOrComponent);
         }
 
-        // Cas 3: content and component not null
-        if (contentOrComponent && typeof contentOrComponent === 'string' && component) {
-            return this.build(base, contentOrComponent, component)
+        // Case 3
+        if (typeof contentOrComponent == 'string' && component) {
+            return this.build(base, contentOrComponent, component);
         }
 
         throw new Error("At least content or component need to be defined to build a message");
