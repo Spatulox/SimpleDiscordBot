@@ -1,10 +1,11 @@
 import {
-    Message,
+    Message, MessageCreateOptions,
     StartThreadOptions,
     ThreadChannel
 } from "discord.js";
 import {GuildChannelManager} from "./GuildChannelManager";
 import {GuildTextChannelManager} from "./GuildTextChannelManager";
+import {SendableComponent, SendableComponentBuilder} from "../../builder/SendableComponentBuilder";
 
 export class ThreadChannelManager {
 
@@ -41,6 +42,28 @@ export class ThreadChannelManager {
         if (!channel) throw new Error('Message channel not found');
 
         return await message.startThread(options)
+    }
+
+
+    static async send(channelId: string, content: string): Promise<Message>;
+    static async send(channelId: string, component: SendableComponent | SendableComponent[]): Promise<Message>;
+    static async send(channelId: string, options: MessageCreateOptions): Promise<Message>;
+
+    /**
+     * Impl
+     */
+    static async send(
+        channelId: string,
+        content_or_component_or_options: string | SendableComponent | SendableComponent[] | MessageCreateOptions
+    ): Promise<Message | null> {
+
+        if(typeof content_or_component_or_options == 'string') {
+            return await GuildTextChannelManager.message.send(channelId, content_or_component_or_options)
+        } else if (SendableComponentBuilder.isSendableComponent(content_or_component_or_options) || Array.isArray(content_or_component_or_options)) {
+            return await GuildTextChannelManager.message.send(channelId, content_or_component_or_options as SendableComponent| SendableComponent[])
+        } else {
+            return await GuildTextChannelManager.message.send(channelId, content_or_component_or_options as MessageCreateOptions)
+        }
     }
 
 }

@@ -1,14 +1,14 @@
 import {
     TextChannel,
     Webhook,
-    EmbedBuilder,
     Message,
     ThreadChannel,
-    MessageCreateOptions, WebhookMessageCreateOptions
+    WebhookMessageCreateOptions
 } from 'discord.js';
 import {EmbedManager} from "./EmbedManager";
 import {Log} from "../../utils/Log";
 import {Bot} from "../../bot/Bot";
+import {SendableComponent, SendableComponentBuilder} from "../builder/SendableComponentBuilder";
 
 export class WebhookManager {
     private webhook: Webhook | null = null;
@@ -49,14 +49,22 @@ export class WebhookManager {
     }
 
     /**
-     * Send message/text/embed - EmbedBuilder NATIVE !
+     * Send message/text/component !
      */
-    async send(content: string | EmbedBuilder | MessageCreateOptions): Promise<Message | null> {
+    async send(content: string): Promise<Message | null>
+    async send(content: SendableComponent): Promise<Message | null>
+    async send(content: WebhookMessageCreateOptions): Promise<Message | null>
+
+    async send(content: string | SendableComponent | WebhookMessageCreateOptions): Promise<Message | null> {
         const webhook = await this.getWebhook();
         const options: WebhookMessageCreateOptions = {};
 
-        if (content instanceof EmbedBuilder) {
-            options.embeds = [content];
+        if (SendableComponentBuilder.isSendableComponent(content)) {
+            const t = SendableComponentBuilder.buildMessage(content as SendableComponent | SendableComponent[])
+            options.embeds = t.embeds;
+            options.components = t.components;
+        } else if( typeof content == 'string'){
+            options.content = content
         } else if (typeof content === 'object') {
             Object.assign(options, content);
         } else {
