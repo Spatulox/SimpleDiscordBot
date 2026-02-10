@@ -3,9 +3,9 @@ import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v10';
 import {PermissionFlagsBits} from "discord.js";
 import * as fs from 'fs/promises';
-import {FileManager} from "../../FileManager";
-import {Log} from "../../../utils/Log";
-import {Guild} from "../../../cli/GuildListManager";
+import {FileManager} from "../../manager/FileManager";
+import {Log} from "../../utils/Log";
+import {Guild} from "../GuildListManager";
 
 // Types
 export interface Command {
