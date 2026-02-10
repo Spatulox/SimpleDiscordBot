@@ -4,7 +4,7 @@ import {
     //AllInteractionManager,
     CommandManager,
     ContextMenuManager
-} from "../../manager/handlers/interactions/InteractionManager";
+} from "../interactions/InteractionManager";
 import {InteractionManagerCLI} from "./InteractionCLIManager";
 
 export class InteractionCLI extends BaseCLI {

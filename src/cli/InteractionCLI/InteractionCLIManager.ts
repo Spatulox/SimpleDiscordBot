@@ -1,5 +1,5 @@
 import {BaseCLI, MenuSelectionCLI} from "../BaseCLI";
-import { BaseInteractionManager, Command } from "../../manager/handlers/interactions/BaseInteractionManager";
+import { BaseInteractionManager, Command } from "../interactions/BaseInteractionManager";
 import {Guild, GuildListManager} from "../GuildListManager";
 import {BotEnv} from "../../bot/BotEnv";
 
