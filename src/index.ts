@@ -15,6 +15,7 @@ export { UserManager } from './manager/direct/UserManager';
 
 // Handlers
 export { ModalManager } from "./manager/interactions/ModalManager";
+export { SelectMenuManager } from "./manager/interactions/SelectMenuManager";
 
 // Utils
 export { Time } from "./utils/times/UnitTime"
