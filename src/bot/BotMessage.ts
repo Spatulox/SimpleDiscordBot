@@ -2,7 +2,6 @@ import {
     TextChannel,
     DMChannel,
     ThreadChannel,
-    EmbedBuilder,
     Message,
     User,
     GuildMember
@@ -10,6 +9,8 @@ import {
 import {Log} from "../utils/Log";
 import {Bot} from "./Bot";
 import {EmbedManager} from "../manager/messages/EmbedManager";
+import {SendableComponent, SendableComponentBuilder} from "../manager/builder/SendableComponentBuilder";
+
 
 export class BotMessage {
     /**
@@ -17,34 +18,39 @@ export class BotMessage {
      */
     async send(
         channel: TextChannel | DMChannel | ThreadChannel | string,
-        content: string | EmbedBuilder
+        content?: string,
+        component?: SendableComponent
     ): Promise<Message | boolean> {
         if (!channel) {
             Log.warn('Cannot send message: invalid channel');
             return false;
         }
 
-        if(typeof channel == "string") {
-            channel = Bot.client.channels.cache.get(channel) as TextChannel;
+        if(!content && !component) {
+            throw new Error("content and component cannot be null at the same time");
+        }
+
+        if (typeof channel === "string") {
+            const fetchedChannel = Bot.client.channels.cache.get(channel);
+            if (!fetchedChannel?.isTextBased()) {
+                Log.warn(`Invalid channel ID: ${channel}`);
+                return false;
+            }
+            channel = fetchedChannel as TextChannel;
         }
 
         try {
-            if (content instanceof EmbedBuilder) {
-                const msg = await channel.send({ embeds: [content] });
-                Log.info(`Embed sent to ${channel.id}`);
-                return msg;
-            } else {
-                const msg = await channel.send(content);
-                Log.info(`Message sent to ${channel.id}: ${content.slice(0, 50)}...`);
-                return msg;
-            }
+            return await channel.send(SendableComponentBuilder.buildMessage(content, component));
         } catch (error) {
             Log.error(`Failed to send message to ${channel.id}: ${error}`);
             return false;
         }
     }
 
-    async sendDM(user: User | GuildMember | string, content: string | EmbedBuilder): Promise<Message | boolean> {
+    async sendDM(user: User | GuildMember | string, content?: string, component?: SendableComponent): Promise<Message | boolean> {
+        if(!content && !component) {
+            throw new Error("content and component cannot be null at the same time");
+        }
         try {
             let targetUser: User;
             if (user instanceof User || user instanceof GuildMember) {
@@ -53,11 +59,7 @@ export class BotMessage {
                 targetUser = await Bot.client.users.fetch(user)
             }
 
-            if (content instanceof EmbedBuilder) {
-                return await targetUser.send({embeds: [content]})
-            } else {
-                return await targetUser.send(content)
-            }
+            return await targetUser.send(SendableComponentBuilder.buildMessage(content, component))
         } catch (error) {
             Log.error(`Failed to send message to ${user}: ${error}`);
             return false
@@ -70,9 +72,9 @@ export class BotMessage {
     success(channel: TextChannel | DMChannel | ThreadChannel | User | GuildMember, message: string): Promise<Message | boolean> {
         const embed = EmbedManager.success(message);
         if(channel instanceof User || channel instanceof GuildMember) {
-            return this.sendDM(channel, embed)
+            return this.sendDM(channel, message, embed)
         }
-        return this.send(channel, embed);
+        return this.send(channel, message, embed);
     }
 
     /**
@@ -81,8 +83,8 @@ export class BotMessage {
     error(channel: TextChannel | DMChannel | ThreadChannel | User | GuildMember, message: string): Promise<Message | boolean> {
         const embed = EmbedManager.error(message);
         if(channel instanceof User || channel instanceof GuildMember) {
-            return this.sendDM(channel, embed)
+            return this.sendDM(channel, message, embed)
         }
-        return this.send(channel, embed);
+        return this.send(channel, message, embed);
     }
 }

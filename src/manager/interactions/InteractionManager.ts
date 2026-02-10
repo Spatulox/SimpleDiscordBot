@@ -1,12 +1,10 @@
 import {
     BaseInteraction,
-    EmbedBuilder,
     InteractionReplyOptions, InteractionResponse,
     InteractionUpdateOptions, Message,
-    MessageFlags
 } from "discord.js";
 
-type Sendable = string | EmbedBuilder | InteractionReplyOptions;
+import {SendableComponent, SendableComponentBuilder} from "../builder/SendableComponentBuilder";
 
 export class InteractionManager {
 
@@ -14,35 +12,27 @@ export class InteractionManager {
      * InteractionReplyOptions && InteractionUpdateOptions
      * The two have "content", "embeds" & "flags" field, so an internal cast is ok, unless discord/discordjs deprecate it
      */
-    private buildReplyOptions(content: Sendable, ephemeral: boolean): InteractionReplyOptions {
-        return this._buildOptions(content, ephemeral) as InteractionReplyOptions;
+    private static buildReplyOptions(content: string, component: SendableComponent, ephemeral: boolean): InteractionReplyOptions {
+        return this._buildOptions(content, component, ephemeral) as InteractionReplyOptions;
     }
 
-    private buildUpdateOptions(content: Sendable): InteractionUpdateOptions {
-        return this._buildOptions(content, false) as InteractionUpdateOptions;
+    private static buildUpdateOptions(content: string, component: SendableComponent): InteractionUpdateOptions {
+        return this._buildOptions(content, component, false) as InteractionUpdateOptions;
     }
 
-    private _buildOptions(content: Sendable, ephemeral: boolean): InteractionReplyOptions | InteractionUpdateOptions {
-        if (typeof content === "string") {
-            return { content };
-        }
-        if (content instanceof EmbedBuilder) {
-            if(ephemeral){
-                return { embeds: [content], flags: MessageFlags.Ephemeral };
-            }
-            return { embeds: [content] };
-        }
-        return content;
+    private static _buildOptions(content: string, component: SendableComponent, ephemeral: boolean): InteractionReplyOptions | InteractionUpdateOptions {
+        return SendableComponentBuilder.buildInteraction(content, component, ephemeral);
     }
 
-    async send(
+    static async send(
         interaction: BaseInteraction,
-        content: Sendable,
+        content: string,
+        component: SendableComponent,
         ephemeral: boolean = false
     ): Promise<InteractionResponse<boolean> | Message<boolean> | boolean> {
         if (!interaction.isRepliable()) return false;
 
-        const options = this.buildReplyOptions(content, ephemeral);
+        const options = this.buildReplyOptions(content, component, ephemeral);
 
         if (!interaction.deferred && !interaction.replied) {
             return await interaction.reply(options);
@@ -52,23 +42,25 @@ export class InteractionManager {
     }
 
 
-    async reply(
+    static async reply(
         interaction: BaseInteraction,
-        content: Sendable,
+        content: string,
+        component: SendableComponent,
         ephemeral: boolean = false
     ): Promise<InteractionResponse<boolean> | Message<boolean> | boolean> {
-        return await this.send(interaction, content, ephemeral);
+        return await this.send(interaction, content, component, ephemeral);
     }
 
-    async followUp(
+    static async followUp(
         interaction: BaseInteraction,
-        content: Sendable,
+        content: string,
+        component: SendableComponent,
         ephemeral: boolean = false
     ): Promise<InteractionResponse<boolean> | Message<boolean> | boolean> {
-        return await this.send(interaction, content, ephemeral)
+        return await this.send(interaction, content, component, ephemeral)
     }
 
-    async defer(interaction: BaseInteraction): Promise<void> {
+    static async defer(interaction: BaseInteraction): Promise<void> {
         if (!interaction.isRepliable()) return;
 
         if (interaction.isChatInputCommand() || interaction.isContextMenuCommand()) {
@@ -89,13 +81,14 @@ export class InteractionManager {
         }
     }
 
-    async update(
+    static async update(
         interaction: BaseInteraction,
-        content: Sendable,
+        content: string,
+        component: SendableComponent,
     ): Promise<void> {
         if (!interaction.isRepliable()) return;
 
-        const options = this.buildUpdateOptions(content)
+        const options = this.buildUpdateOptions(content, component)
 
         // MessageComponent → update()
         if (interaction.isMessageComponent()) {
