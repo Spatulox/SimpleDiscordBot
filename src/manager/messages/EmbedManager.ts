@@ -128,6 +128,13 @@ export class EmbedManager {
         return embed.addFields({ name, value, inline });
     }
 
+    static fields(embed: EmbedBuilder, fields: {name: string, value: string, inline?: boolean}[]): EmbedBuilder {
+        fields.forEach((f) => {
+            embed.addFields({ name: f.name, value: f.value, inline: f.inline ?? false })
+        })
+        return embed;
+    }
+
     /**
      * Fluent API shortcuts
      */
@@ -157,7 +164,7 @@ export class EmbedManager {
     static toInteraction(embed: EmbedBuilder, ephemeral: boolean = false): InteractionReplyOptions | InteractionEditReplyOptions {
         return {
             embeds: [embed],
-            flags: ephemeral ? MessageFlags.Ephemeral : []
+            flags: ephemeral ? [MessageFlags.Ephemeral] : undefined
         };
     }
 
