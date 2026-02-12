@@ -1,6 +1,6 @@
 import {
     EmbedBuilder,
-    InteractionDeferReplyOptions,
+    InteractionDeferReplyOptions, InteractionEditReplyOptions, InteractionReplyOptions, MessageCreateOptions,
     MessageFlags,
 } from "discord.js";
 import { Bot } from '../../bot/Bot';
@@ -154,17 +154,17 @@ export class EmbedManager {
     /**
      * Transform embed into objet for interaction.reply()
      */
-    static toInteraction(embed: EmbedBuilder, ephemeral: boolean = false): object {
+    static toInteraction(embed: EmbedBuilder, ephemeral: boolean = false): InteractionReplyOptions | InteractionEditReplyOptions {
         return {
             embeds: [embed],
-            ephemeral
+            flags: ephemeral ? MessageFlags.Ephemeral : []
         };
     }
 
     /**
      * Transform embed into objet to send a message
      */
-    static toMessage(embed: EmbedBuilder): object {
+    static toMessage(embed: EmbedBuilder): MessageCreateOptions {
         return {
             embeds: [embed]
         };
