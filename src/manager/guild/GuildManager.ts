@@ -63,9 +63,15 @@ export class GuildManager {
     /**
      * Fetch all members with retry (heavy operation)
      */
-    static async fetchAllMembers(guildId: string, MAX_ATTEMPTS: number = 3, RETRY_DELAY: number = Time.minute.MIN_05.toMilliseconds()): Promise<Collection<string, GuildMember>> {
-        const guild = Bot.client.guilds.cache.get(guildId);
-        if (!guild) throw new Error(`Guild ${guildId} not found`);
+    static async fetchAllMembers(guildId: string | Guild, MAX_ATTEMPTS: number = 3, RETRY_DELAY: number = Time.minute.MIN_05.toMilliseconds()): Promise<Collection<string, GuildMember>> {
+        let guild: Guild
+        if(guildId instanceof  Guild){
+            guild = guildId
+        } else {
+            let tmp = Bot.client.guilds.cache.get(guildId);
+            if (!tmp) throw new Error(`Guild ${guildId} not found`);
+            guild = tmp
+        }
 
         for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
             try {
