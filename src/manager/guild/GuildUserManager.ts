@@ -1,10 +1,35 @@
 import {Bot} from "../../bot/Bot";
 import {Log} from "../../utils/Log";
 import {UserManager} from "../direct/UserManager"
-import {BanOptions} from "discord.js";
+import {BanOptions, GuildMember} from "discord.js";
+import {setTimeout} from "timers/promises";
+import {EmbedManager} from "../messages/EmbedManager";
+
+const MAX_NICKNAME_LENGTH = 32;
 
 export class GuildUserManager extends UserManager {
 
+    static async rename(member: GuildMember, nickname: string, maxAttempts: number = 3): Promise<boolean> {
+        if (nickname.length > MAX_NICKNAME_LENGTH) {
+            nickname = nickname.slice(0, MAX_NICKNAME_LENGTH);
+        }
+
+        for (let attempts = 0; attempts < maxAttempts; attempts++) {
+            try {
+                const oldName = member.displayName;
+                await member.setNickname(nickname.trim());
+                Log.info(`Renaming user: ${oldName} → ${nickname.trim()}`);
+                await setTimeout(1500)
+                return true;
+            } catch (error: any) {
+                console.error(`Attempt ${attempts + 1} failed when renaming ${member.displayName} into ${nickname.trim()}:`, error);
+                await setTimeout(1000)
+            }
+        }
+
+        Bot.log.sendLog(EmbedManager.error(`Failed to rename ${member.displayName} to ${nickname.trim()} after ${maxAttempts} attempts.`))
+        return false;
+    }
     /**
      * Check if user is banned from guild
      */
