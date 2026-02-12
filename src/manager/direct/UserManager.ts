@@ -1,6 +1,7 @@
-import {EmbedBuilder, GuildMember, Message, MessageCreateOptions, User} from "discord.js";
+import {GuildMember, Message, MessageCreateOptions, User} from "discord.js";
 import {Bot} from "../../bot/Bot";
 import {Log} from "../../utils/Log";
+import {SendableComponent, SendableComponentBuilder} from "../builder/SendableComponentBuilder";
 
 export class UserManager {
     /**
@@ -49,18 +50,25 @@ export class UserManager {
     /**
      * Overload for send
      */
+    // Normal message
     static async send(user_id: string, content: string): Promise<Message>;
     static async send(user: User, content: string): Promise<Message>;
-    static async send(user_id: string, embed: EmbedBuilder): Promise<Message>;
-    static async send(user: User, embed: EmbedBuilder): Promise<Message>;
+    // Component Message
+    static async send(user_id: string, component: SendableComponent | SendableComponent[]): Promise<Message>;
+    static async send(user: User, component: SendableComponent | SendableComponent[]): Promise<Message>;
+    static async send(user_id: string, content: string, component: SendableComponent | SendableComponent[]): Promise<Message>;
+    static async send(user: User, content: string, component: SendableComponent | SendableComponent[]): Promise<Message>;
+    // Discord Message Create Option
     static async send(user_id_or_user: string | User, options: MessageCreateOptions): Promise<Message>;
+
 
     /**
      * Impl
      */
     static async send(
         user_id_or_user: string | User,
-        content_or_options: string | EmbedBuilder | MessageCreateOptions
+        content_or_component_or_options: string | SendableComponent | SendableComponent[] | MessageCreateOptions,
+        component?: SendableComponent | SendableComponent[]
     ): Promise<Message> {
         try {
             let user: User;
@@ -72,13 +80,24 @@ export class UserManager {
 
             const dmChannel = await user.createDM();
 
-            const payload: MessageCreateOptions = typeof content_or_options === 'string'
-                ? { content: content_or_options }
-                : content_or_options as MessageCreateOptions;
+            let payload: MessageCreateOptions;
+
+            if (component && typeof content_or_component_or_options == "string") { // component + content
+                payload = SendableComponentBuilder.buildMessage(
+                    content_or_component_or_options,
+                    component
+                );
+            } else if (typeof content_or_component_or_options === 'string') { // content only
+                payload = SendableComponentBuilder.buildMessage(content_or_component_or_options);
+            } else if(SendableComponentBuilder.isSendableComponent(content_or_component_or_options)) { // component only
+                payload = SendableComponentBuilder.buildMessage(content_or_component_or_options as SendableComponent | SendableComponent[]);
+            } else { // MessageCreationOptionOnly
+                payload = content_or_component_or_options as MessageCreateOptions;
+            }
 
             const message = await dmChannel.send(payload);
 
-            Log.info(`Sent DM to ${user.id} (${user.username}): "${(payload.content || 'Embed').substring(0, 50)}..."`);
+            Log.info(`Sent DM to ${user.id} (${user.username}): "${(payload.content || 'Embed/Component').substring(0, 50)}..."`);
             return message;
         } catch (error) {
             Log.error(`Failed to send DM to ${user_id_or_user}: ${error}`);

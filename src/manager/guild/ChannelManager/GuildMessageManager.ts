@@ -1,6 +1,7 @@
-import {EmbedBuilder, Message, MessageCreateOptions} from "discord.js";
+import {Message, MessageCreateOptions} from "discord.js";
 import {GuildTextChannelManager} from "./GuildTextChannelManager";
 import {Log} from "../../../utils/Log";
+import {SendableComponent, SendableComponentBuilder} from "../../builder/SendableComponentBuilder";
 
 export class GuildMessageManager {
 
@@ -9,7 +10,7 @@ export class GuildMessageManager {
      * Overloads for send
      */
     static async send(channelId: string, content: string): Promise<Message>;
-    static async send(channelId: string, embed: EmbedBuilder): Promise<Message>;
+    static async send(channelId: string, component: SendableComponent | SendableComponent[]): Promise<Message>;
     static async send(channelId: string, options: MessageCreateOptions): Promise<Message>;
 
     /**
@@ -17,7 +18,7 @@ export class GuildMessageManager {
      */
     static async send(
         channelId: string,
-        content_or_options: string | EmbedBuilder | MessageCreateOptions
+        content_or_component_or_options: string | SendableComponent | SendableComponent[] | MessageCreateOptions
     ): Promise<Message | null> {
         try {
             const channel = await GuildTextChannelManager.find(channelId);
@@ -27,9 +28,16 @@ export class GuildMessageManager {
                 return null
             }
 
-            const payload: MessageCreateOptions = typeof content_or_options === 'string'
-                ? { content: content_or_options }
-                : content_or_options as MessageCreateOptions;
+            let payload: MessageCreateOptions;
+
+            if (typeof content_or_component_or_options === 'string') {
+                payload = SendableComponentBuilder.buildMessage(content_or_component_or_options);
+
+            } else if (SendableComponentBuilder.isSendableComponent(content_or_component_or_options) || Array.isArray(content_or_component_or_options)) {
+                payload = SendableComponentBuilder.buildMessage(content_or_component_or_options as SendableComponent | SendableComponent[]);
+            } else {
+                payload = content_or_component_or_options as MessageCreateOptions;
+            }
 
             return await channel.send(payload);
         } catch (error) {

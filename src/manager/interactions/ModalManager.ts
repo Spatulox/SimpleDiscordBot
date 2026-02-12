@@ -5,8 +5,8 @@ import {
     TextInputBuilder,
     TextInputStyle,
 } from "discord.js";
-import {FolderName} from "../../../type/FolderName";
-import {FileManager} from "../../FileManager";
+import {FolderName} from "../../type/FolderName";
+import {FileManager} from "../FileManager";
 
 export interface ModalJson {
     title: string;
