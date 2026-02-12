@@ -150,4 +150,23 @@ export class EmbedManager {
     static footer(embed: EmbedBuilder, text: string): EmbedBuilder {
         return embed.setFooter({ text, iconURL: this.BOT_ICON });
     }
+
+    /**
+     * Transform embed into objet for interaction.reply()
+     */
+    static toInteraction(embed: EmbedBuilder, ephemeral: boolean = false): object {
+        return {
+            embeds: [embed],
+            ephemeral
+        };
+    }
+
+    /**
+     * Transform embed into objet to send a message
+     */
+    static toMessage(embed: EmbedBuilder): object {
+        return {
+            embeds: [embed]
+        };
+    }
 }
