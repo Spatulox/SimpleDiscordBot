@@ -15,6 +15,9 @@ handlers/
 *.ts
 
 # npm repo conf
-!*.d.ts
+#!*.d.ts
+
+dist/**/*.d.ts
+!dist/index.d.ts
 
 dist/**/*.map
