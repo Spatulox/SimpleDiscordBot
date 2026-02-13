@@ -24,15 +24,22 @@ export class BotInteraction {
         return SendableComponentBuilder.buildInteraction(content, component, ephemeral);
     }
 
+    static async send(interaction: BaseInteraction, content: SendableComponent, ephemeral?: boolean): Promise<InteractionResponse<boolean> | Message<boolean> | boolean>
+    static async send(interaction: BaseInteraction, content: string, component: SendableComponent, ephemeral?: boolean): Promise<InteractionResponse<boolean> | Message<boolean> | boolean>
     static async send(
         interaction: BaseInteraction,
-        content: string,
-        component: SendableComponent,
+        content: SendableComponent | string,
+        component: SendableComponent | boolean = false,
         ephemeral: boolean = false
     ): Promise<InteractionResponse<boolean> | Message<boolean> | boolean> {
         if (!interaction.isRepliable()) return false;
 
-        const options = this.buildReplyOptions(content, component, ephemeral);
+        const options = this.buildReplyOptions(
+            typeof content === 'string' ? content : "",
+            typeof content === 'string' ? component as SendableComponent : content,
+            typeof content === 'string' ? ephemeral : component as boolean
+        );
+
 
         if (!interaction.deferred && !interaction.replied) {
             return await interaction.reply(options);
