@@ -1,5 +1,4 @@
 import {Client, ActivityType, Events, version} from 'discord.js';
-import dotenv from 'dotenv';
 import { Time } from '../utils/times/UnitTime';
 import {Log} from "../utils/Log";
 import {InternetChecker} from "../utils/network/InternetChecker";
@@ -8,8 +7,6 @@ import {EmbedColor, EmbedManager} from "../manager/messages/EmbedManager";
 import {BotMessage} from "./BotMessage";
 import {BotEnv} from "./BotEnv";
 import {BotInteraction} from "./BotInteraction";
-
-dotenv.config();
 
 type CriticConfig = {
     dev: boolean;

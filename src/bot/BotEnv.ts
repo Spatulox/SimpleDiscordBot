@@ -1,6 +1,4 @@
-//import dotenv from 'dotenv';
 import {DiscordRegex} from "../utils/DiscordRegex";
-//dotenv.config();
 
 export const BotEnv = {
     get token(): string {
