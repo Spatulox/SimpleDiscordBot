@@ -11,7 +11,7 @@
   "scripts": {
     "build": "rm -rf ./dist && tsc",
     "patch": "npm run build && npm version patch",
-    "publish": "npm run patch && npm publish --access public",
+    "pub": "npm run patch && npm publish --access public",
     "dev": "nodemon --exec tsx src/test/index.ts"
   },
   "license": "MIT",
