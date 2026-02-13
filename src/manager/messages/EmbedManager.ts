@@ -1,7 +1,7 @@
 import {
     EmbedBuilder,
     InteractionDeferReplyOptions, InteractionEditReplyOptions, InteractionReplyOptions, MessageCreateOptions,
-    MessageFlags,
+    MessageFlags
 } from "discord.js";
 import { Bot } from '../../bot/Bot';
 

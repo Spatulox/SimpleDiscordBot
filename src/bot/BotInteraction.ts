@@ -48,23 +48,42 @@ export class BotInteraction {
         }
     }
 
-
+    static async reply(interaction: BaseInteraction, content: SendableComponent, ephemeral?: boolean): Promise<InteractionResponse<boolean> | Message<boolean> | boolean>
+    static async reply(interaction: BaseInteraction, content: string, component: SendableComponent, ephemeral?: boolean): Promise<InteractionResponse<boolean> | Message<boolean> | boolean>
     static async reply(
         interaction: BaseInteraction,
-        content: string,
-        component: SendableComponent,
+        content: SendableComponent | string,
+        component: SendableComponent | boolean = false,
         ephemeral: boolean = false
     ): Promise<InteractionResponse<boolean> | Message<boolean> | boolean> {
-        return await this.send(interaction, content, component, ephemeral);
+        if (!interaction.isRepliable()) return false;
+
+        const options = this.buildReplyOptions(
+            typeof content === 'string' ? content : "",
+            typeof content === 'string' ? component as SendableComponent : content,
+            typeof content === 'string' ? ephemeral : component as boolean
+        );
+
+        return interaction.reply(options);
     }
 
+    static async followUp(interaction: BaseInteraction, content: SendableComponent, ephemeral?: boolean): Promise<InteractionResponse<boolean> | Message<boolean> | boolean>
+    static async followUp(interaction: BaseInteraction, content: string, component: SendableComponent, ephemeral?: boolean): Promise<InteractionResponse<boolean> | Message<boolean> | boolean>
     static async followUp(
         interaction: BaseInteraction,
-        content: string,
-        component: SendableComponent,
+        content: SendableComponent | string,
+        component: SendableComponent | boolean = false,
         ephemeral: boolean = false
     ): Promise<InteractionResponse<boolean> | Message<boolean> | boolean> {
-        return await this.send(interaction, content, component, ephemeral)
+        if (!interaction.isRepliable()) return false;
+
+        const options = this.buildReplyOptions(
+            typeof content === 'string' ? content : "",
+            typeof content === 'string' ? component as SendableComponent : content,
+            typeof content === 'string' ? ephemeral : component as boolean
+        );
+
+        return interaction.followUp(options);
     }
 
     static async defer(interaction: BaseInteraction): Promise<void> {
@@ -88,24 +107,29 @@ export class BotInteraction {
         }
     }
 
+    static async update(interaction: BaseInteraction, content: SendableComponent): Promise<InteractionResponse<boolean> | Message<boolean> | boolean>
+    static async update(interaction: BaseInteraction, content: string, component: SendableComponent): Promise<InteractionResponse<boolean> | Message<boolean> | boolean>
     static async update(
         interaction: BaseInteraction,
-        content: string,
-        component: SendableComponent,
-    ): Promise<void> {
-        if (!interaction.isRepliable()) return;
+        content: SendableComponent | string,
+        component?: SendableComponent,
+    ): Promise<InteractionResponse<boolean> | Message<boolean> | boolean> {
+        if (!interaction.isRepliable()) return false;
 
-        const options = this.buildUpdateOptions(content, component)
+        const options = this.buildUpdateOptions(
+            typeof content === 'string' ? content : "",
+            typeof content === 'string' ? component as SendableComponent : content as SendableComponent
+        );
 
         // MessageComponent → update()
         if (interaction.isMessageComponent()) {
-            await interaction.update(options);
-            return;
+            return await interaction.update(options);
         }
 
         // Slash commands → editReply()
         if (interaction.deferred || interaction.replied) {
-            await interaction.editReply(options);
+            return await interaction.editReply(options);
         }
+        return false
     }
 }
