@@ -16,19 +16,19 @@ export class BotMessage {
     /**
      * Send message to any text-based channel
      */
-    static async send(channel:TextChannel | DMChannel | ThreadChannel | string, content?: string | null, component?: SendableComponent): Promise<Message | boolean>
-    static async send(channel:TextChannel | DMChannel | ThreadChannel | string, content: SendableComponent): Promise<Message | boolean>
-    static async send(channel:TextChannel | DMChannel | ThreadChannel | string, content: MessageCreateOptions): Promise<Message | boolean>
+    static async send(channel:TextChannel | DMChannel | ThreadChannel | string, content?: string | null, component?: SendableComponent): Promise<Message | null>
+    static async send(channel:TextChannel | DMChannel | ThreadChannel | string, content: SendableComponent): Promise<Message | null>
+    static async send(channel:TextChannel | DMChannel | ThreadChannel | string, content: MessageCreateOptions): Promise<Message | null>
     static async send(
         channel: TextChannel | DMChannel | ThreadChannel | string,
         content?: string | null | SendableComponent | MessageCreateOptions,
         component?: SendableComponent
-    ): Promise<Message | boolean> {
+    ): Promise<Message | null> {
 
         try {
             if (!channel) {
                 Log.warn('Cannot send message: invalid channel');
-                return false;
+                return null;
             }
 
 
@@ -36,7 +36,7 @@ export class BotMessage {
                 const fetchedChannel = Bot.client.channels.cache.get(channel);
                 if (!fetchedChannel?.isTextBased()) {
                     Log.warn(`Invalid channel ID: ${channel}`);
-                    return false;
+                    return null;
                 }
                 channel = fetchedChannel as TextChannel;
             }
@@ -69,11 +69,11 @@ export class BotMessage {
             }
         } catch (e) {
             Log.error(`Failed to send message : ${e}`);
-            return false;
+            return null;
         }
     }
 
-    static async sendDM(user: User | GuildMember | string, content?: string, component?: SendableComponent): Promise<Message | boolean> {
+    static async sendDM(user: User | GuildMember | string, content?: string, component?: SendableComponent): Promise<Message | null> {
         try {
             let targetUser: User;
             if (user instanceof User || user instanceof GuildMember) {
@@ -97,14 +97,14 @@ export class BotMessage {
             return await targetUser.send(messageCreate)
         } catch (error) {
             Log.error(`Failed to send message to ${user}: ${error}`);
-            return false
+            return null
         }
     }
 
     /**
      * Quick success message
      */
-    static success(channel: TextChannel | DMChannel | ThreadChannel | User | GuildMember, message: string): Promise<Message | boolean> {
+    static success(channel: TextChannel | DMChannel | ThreadChannel | User | GuildMember, message: string): Promise<Message | null> {
         const embed = EmbedManager.success(message);
         if(channel instanceof User || channel instanceof GuildMember) {
             return this.sendDM(channel, message, embed)
@@ -115,7 +115,7 @@ export class BotMessage {
     /**
      * Quick error message
      */
-    static error(channel: TextChannel | DMChannel | ThreadChannel | User | GuildMember, message: string): Promise<Message | boolean> {
+    static error(channel: TextChannel | DMChannel | ThreadChannel | User | GuildMember, message: string): Promise<Message | null> {
         const embed = EmbedManager.error(message);
         if(channel instanceof User || channel instanceof GuildMember) {
             return this.sendDM(channel, message, embed)
