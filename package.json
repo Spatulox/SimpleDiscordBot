@@ -9,8 +9,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
-    "patch": "rm -rf ./dist && npm run build && npm version patch",
+    "build": "rm -rf ./dist && tsc",
+    "patch": "npm run build && npm version patch",
     "publish": "npm run patch && npm publish --access public",
     "dev": "nodemon --exec tsx src/test/index.ts"
   },
