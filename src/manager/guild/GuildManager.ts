@@ -25,6 +25,10 @@ export class GuildManager {
         return Array.from(Bot.client.guilds.cache.values());
     }
 
+    static async find(guild_id: string): Promise<Guild> {
+        return await Bot.client.guilds.fetch(guild_id)
+    }
+
     /**
      * Search channel by ID (TextChannel, DMChannel, ThreadChannel)
      */
