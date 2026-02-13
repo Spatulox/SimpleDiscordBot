@@ -1,15 +1,25 @@
 # .npmignore
-src/
-handlers/
-*.ts
+
+# conf files
 tsconfig.json
 .env
 .idea
 .gitattributes
 node_modules/
-dist/test/*
+
+
+# project files
+src/
+src_example
+handlers/
+*.ts
+
+# npm repo conf
+!*.d.ts
+dist/test/**    # test files
+dist/type/*.d*  # no need to have the doc for
+
+dist/manager/builder/*.d.ts
+dist/manager/direct/Basic*.d.ts
+
 dist/**/*.map
-!dist/index.*
-.nyc_output/
-coverage/
-.DS_Store
