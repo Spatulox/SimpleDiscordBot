@@ -10,7 +10,7 @@
   },
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsup",
+    "build": "rm -r dist/ && tsup",
     "patch": "npm run build && npm version patch",
     "pub": "npm run patch && npm publish --access public",
     "test-pack": "npm run patch && npm publish --access public",
