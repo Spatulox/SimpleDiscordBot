@@ -18,7 +18,7 @@ export type SendableComponent = EmbedBuilder | ActionRowBuilder<MessageActionRow
 
 export class SendableComponentBuilder {
 
-    static isSendableComponent(thing: any): boolean{
+    static isSendableComponent(thing: any): boolean {
         return thing instanceof EmbedBuilder || thing instanceof ActionRowBuilder;
     }
 

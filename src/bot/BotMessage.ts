@@ -17,10 +17,11 @@ export class BotMessage {
      * Send message to any text-based channel
      */
     static async send(channel:TextChannel | DMChannel | ThreadChannel | string, content?: string | null, component?: SendableComponent): Promise<Message | boolean>
+    static async send(channel:TextChannel | DMChannel | ThreadChannel | string, content: SendableComponent): Promise<Message | boolean>
     static async send(channel:TextChannel | DMChannel | ThreadChannel | string, content: MessageCreateOptions): Promise<Message | boolean>
     static async send(
         channel: TextChannel | DMChannel | ThreadChannel | string,
-        content?: string | null | MessageCreateOptions,
+        content?: string | null | SendableComponent | MessageCreateOptions,
         component?: SendableComponent
     ): Promise<Message | boolean> {
 
@@ -43,9 +44,13 @@ export class BotMessage {
             let messageCreate: MessageCreateOptions;
 
             if(typeof content !== "string" && !component) {
-                messageCreate = content as MessageCreateOptions;
+                if(SendableComponentBuilder.isSendableComponent(content)){
+                    messageCreate = SendableComponentBuilder.buildMessage(content as SendableComponent);
+                } else {
+                    messageCreate = content as MessageCreateOptions;
+                }
             } else {
-                content = content as string
+                content = content as string | null
                 if (content && component) {
                     messageCreate = SendableComponentBuilder.buildMessage(content, component);
                 } else if (content) {
