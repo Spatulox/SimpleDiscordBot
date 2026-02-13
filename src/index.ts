@@ -26,3 +26,4 @@ export { DiscordRegex } from "./utils/DiscordRegex";
 
 // Type
 export type { BotConfig, RandomBotActivity } from './bot/Bot';
+export { SimpleDiscordBotInfo } from "./SimpleDiscordBotInfo";
