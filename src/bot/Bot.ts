@@ -33,11 +33,11 @@ export class Bot {
 
     // Static ref
     public static readonly log = BotLog
+    public static readonly message = BotMessage
     public static readonly interaction = BotInteraction
 
     // Instance properties
     public static _client: Client;
-    public static readonly message = new BotMessage()
     private static criticConfig: CriticConfig;
     private static _config: InternalBotConfig;
 

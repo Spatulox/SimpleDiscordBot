@@ -16,9 +16,9 @@ export class BotMessage {
     /**
      * Send message to any text-based channel
      */
-    async send(channel:TextChannel | DMChannel | ThreadChannel | string, content?: string | null, component?: SendableComponent): Promise<Message | boolean>
-    async send(channel:TextChannel | DMChannel | ThreadChannel | string, content: MessageCreateOptions): Promise<Message | boolean>
-    async send(
+    static async send(channel:TextChannel | DMChannel | ThreadChannel | string, content?: string | null, component?: SendableComponent): Promise<Message | boolean>
+    static async send(channel:TextChannel | DMChannel | ThreadChannel | string, content: MessageCreateOptions): Promise<Message | boolean>
+    static async send(
         channel: TextChannel | DMChannel | ThreadChannel | string,
         content?: string | null | MessageCreateOptions,
         component?: SendableComponent
@@ -68,7 +68,7 @@ export class BotMessage {
         }
     }
 
-    async sendDM(user: User | GuildMember | string, content?: string, component?: SendableComponent): Promise<Message | boolean> {
+    static async sendDM(user: User | GuildMember | string, content?: string, component?: SendableComponent): Promise<Message | boolean> {
         try {
             let targetUser: User;
             if (user instanceof User || user instanceof GuildMember) {
@@ -99,7 +99,7 @@ export class BotMessage {
     /**
      * Quick success message
      */
-    success(channel: TextChannel | DMChannel | ThreadChannel | User | GuildMember, message: string): Promise<Message | boolean> {
+    static success(channel: TextChannel | DMChannel | ThreadChannel | User | GuildMember, message: string): Promise<Message | boolean> {
         const embed = EmbedManager.success(message);
         if(channel instanceof User || channel instanceof GuildMember) {
             return this.sendDM(channel, message, embed)
@@ -110,7 +110,7 @@ export class BotMessage {
     /**
      * Quick error message
      */
-    error(channel: TextChannel | DMChannel | ThreadChannel | User | GuildMember, message: string): Promise<Message | boolean> {
+    static error(channel: TextChannel | DMChannel | ThreadChannel | User | GuildMember, message: string): Promise<Message | boolean> {
         const embed = EmbedManager.error(message);
         if(channel instanceof User || channel instanceof GuildMember) {
             return this.sendDM(channel, message, embed)
