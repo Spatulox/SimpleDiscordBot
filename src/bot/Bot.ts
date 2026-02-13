@@ -7,6 +7,7 @@ import {BotLog, ConfigLog} from "./BotLog";
 import {EmbedColor, EmbedManager} from "../manager/messages/EmbedManager";
 import {BotMessage} from "./BotMessage";
 import {BotEnv} from "./BotEnv";
+import {BotInteraction} from "./BotInteraction";
 
 dotenv.config();
 
@@ -29,9 +30,13 @@ export type InternalBotConfig = {
 export type RandomBotActivity = {type: ActivityType, message: string}[]
 
 export class Bot {
+
+    // Static ref
+    public static readonly log = BotLog
+    public static readonly interaction = BotInteraction
+
     // Instance properties
     public static _client: Client;
-    public static readonly log = BotLog
     public static readonly message = new BotMessage()
     private static criticConfig: CriticConfig;
     private static _config: InternalBotConfig;
