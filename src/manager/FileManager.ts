@@ -130,7 +130,7 @@ export class FileManager {
         } catch (error) {
             const cleanFilename = filename.replace(/\.json$/i, '') || 'unknown';
             if(sendErrorToErrorChannel){
-                await Bot.log.sendError(EmbedManager.error(`Failed to write file ${directoryPath}/${cleanFilename}.json: ${error}`))
+                await Bot.log.info(EmbedManager.error(`Failed to write file ${directoryPath}/${cleanFilename}.json: ${error}`))
             } else {
                 Log.error(`Failed to write file ${directoryPath}/${cleanFilename}.json: ${error}`);
             }

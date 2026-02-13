@@ -41,7 +41,7 @@ export class GuildUserManager extends BasicUserManager {
             }
         }
 
-        Bot.log.sendLog(EmbedManager.error(`Failed to rename ${member.displayName} to ${nickname.trim()} after ${maxAttempts} attempts.`))
+        Bot.log.info(EmbedManager.error(`Failed to rename ${member.displayName} to ${nickname.trim()} after ${maxAttempts} attempts.`))
         return false;
     }
     /**

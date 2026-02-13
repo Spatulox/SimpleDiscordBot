@@ -87,7 +87,7 @@ export class BotLog {
     /**
      * Send INFO log - TEXT or EMBED ! Respecte config.log.info
      */
-    static async sendLog(content: string | EmbedBuilder): Promise<Message | void> {
+    static async info(content: string | EmbedBuilder): Promise<Message | void> {
         const logConfig = Bot.config.log;
 
         // 1. CONSOLE selon config (ou défaut ON)
@@ -104,7 +104,7 @@ export class BotLog {
     /**
      * Send ERROR log - TEXT or EMBED ! Respecte config.log.error
      */
-    static async sendError(content: string | EmbedBuilder): Promise<Message | void> {
+    static async error(content: string | EmbedBuilder): Promise<Message | void> {
         const logConfig = Bot.config.log;
 
         // 1. CONSOLE selon config (ou défaut ON)
@@ -121,7 +121,7 @@ export class BotLog {
     /**
      * Send WARNING log - TEXT or EMBED ! Respecte config.log.warn
      */
-    static async sendWarn(content: string | EmbedBuilder): Promise<Message | void> {
+    static async warn(content: string | EmbedBuilder): Promise<Message | void> {
         const logConfig = Bot.config.log;
 
         if (!logConfig || logConfig?.warn.console) {
@@ -136,7 +136,7 @@ export class BotLog {
     /**
      * Send DEBUG log - TEXT or EMBED ! Respecte config.log.debug
      */
-    static async sendDebug(content: string | EmbedBuilder): Promise<Message | void> {
+    static async debug(content: string | EmbedBuilder): Promise<Message | void> {
         const logConfig = Bot.config.log;
 
         if (!logConfig || logConfig?.debug.console) {

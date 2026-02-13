@@ -81,7 +81,7 @@ export class Bot {
                         await Bot.log.initDiscordLogging()
                         Log.info(`Connected on ${Bot._client.guilds.cache.size} servers as ${Bot._client.user.tag}`);
                         //Bot._client.guilds.cache.forEach(g => console.log(` - ${g.name}`));
-                        Bot.log.sendLog(EmbedManager.description("Bot Started"))
+                        Bot.log.info(EmbedManager.description("Bot Started"))
                     }
                 });
 
