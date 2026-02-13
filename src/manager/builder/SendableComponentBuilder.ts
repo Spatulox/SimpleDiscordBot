@@ -16,6 +16,7 @@ type MessageFields = {
 
 export type SendableComponent = EmbedBuilder | ActionRowBuilder<MessageActionRowComponentBuilder>;
 
+/** @internal */
 export class SendableComponentBuilder {
 
     static isSendableComponent(thing: any): boolean {

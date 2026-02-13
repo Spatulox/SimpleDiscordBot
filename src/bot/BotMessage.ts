@@ -11,7 +11,6 @@ import {Bot} from "./Bot";
 import {EmbedManager} from "../manager/messages/EmbedManager";
 import {SendableComponent, SendableComponentBuilder} from "../manager/builder/SendableComponentBuilder";
 
-
 export class BotMessage {
     /**
      * Send message to any text-based channel

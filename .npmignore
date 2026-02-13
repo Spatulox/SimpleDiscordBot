@@ -16,10 +16,5 @@ handlers/
 
 # npm repo conf
 !*.d.ts
-dist/test/**    # test files
-dist/type/*.d*  # no need to have the doc for
-
-dist/manager/builder/*.d.ts
-dist/manager/direct/Basic*.d.ts
 
 dist/**/*.map
