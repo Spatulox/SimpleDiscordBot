@@ -13,8 +13,13 @@ npm i @spatulox/simplediscordbot
 ```
 
 > **TypeScript Discord.js framework** - Simple, powerful, framework-ready. Built for developers who want clean bot architecture.
-
 ## Quick Start
+
+Env Variables:
+```bash
+DISCORD_BOT_TOKEN="" // Your bot Token
+DISCORD_BOT_CLIENTID="" // Yout bot client id
+```
 
 ```typescript
 import {Bot, BotConfig, EmbedColor, Time} from "@spatulox/simplediscordbot";
