@@ -44,39 +44,48 @@ export class SendableComponentBuilder {
                 base.components!.push(comp);
             }
         }
-
         return base
     }
 
-    static buildInteraction (content: string): InteractionReplyOptions | InteractionUpdateOptions;
-    static buildInteraction (component: SendableComponent | SendableComponent[]): InteractionReplyOptions | InteractionUpdateOptions;
-    static buildInteraction (content?: string | null, component?: SendableComponent | SendableComponent[] | null, ephemeral?: boolean): InteractionReplyOptions | InteractionUpdateOptions;
+    /*static buildInteraction (content: string, epheremal?: boolean): InteractionReplyOptions | InteractionUpdateOptions;
+    static buildInteraction (component: SendableComponent | SendableComponent[], epheremal?: boolean): InteractionReplyOptions | InteractionUpdateOptions;
+    static buildInteraction (content?: string | null, component?: SendableComponent | SendableComponent[] | null, ephemeral?: boolean): InteractionReplyOptions | InteractionUpdateOptions;*/
 
-    static buildInteraction(
+    static buildInteraction(content: string | null, component: SendableComponent, ephemeral: boolean): InteractionReplyOptions | InteractionUpdateOptions {
+    /*static buildInteraction(
         contentOrComponent?: string | null | SendableComponent | SendableComponent[],
-        component?: SendableComponent | SendableComponent[] | null,
+        component?: SendableComponent | SendableComponent[] | null | boolean,
         ephemeral: boolean = false
-    ): InteractionReplyOptions | InteractionUpdateOptions {
+    ): InteractionReplyOptions | InteractionUpdateOptions {*/
         let base: InteractionReplyOptions | InteractionUpdateOptions = {}
 
+        this.build(base, content, component);
+
         // Case 1
-        if (typeof contentOrComponent === 'string' && !component) {
-            base = this.build(base, contentOrComponent);
+        /*if (typeof content === 'string' && !component) {
+            console.log("1")
+            base = this.build(base, content);
         }
 
+        console.log(typeof content, content, component, ephemeral);
         // Case 2
-        if (typeof contentOrComponent !== 'string' && !component) {
-            base = this.build(base, null, contentOrComponent);
+        if (typeof content !== 'string' && typeof component == 'boolean') {
+            console.log("2")
+            base = this.build(base, null, content);
         }
+
 
         // Cas 3: content and component not null
-        if (contentOrComponent && typeof contentOrComponent === 'string' && component) {
-            base = this.build(base, contentOrComponent, component)
-        }
+        if (content && typeof content === 'string' && typeof component != 'boolean' && component) {
+            console.log("3")
+            base = this.build(base, content, component)
+        }*/
 
-        if (ephemeral) {
+        if (ephemeral || typeof component == 'boolean' && component) {
             base.flags = [MessageFlags.Ephemeral]
         }
+
+        console.log(base)
 
         return base;
     }
