@@ -3,6 +3,8 @@
 # conf files
 tsconfig.json
 .env
+.env.HDFR_dev
+.env.SpatuloxTest
 .idea
 .gitattributes
 node_modules/
