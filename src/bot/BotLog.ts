@@ -1,7 +1,8 @@
 // src/utils/BotLog.ts
-import {TextChannel, EmbedBuilder, Message} from 'discord.js';
+import {TextChannel, EmbedBuilder, Message, ActionRowBuilder} from 'discord.js';
 import {Log} from "../utils/Log";
 import {Bot} from "./Bot";
+import {SendableComponent} from "../manager/builder/SendableComponentBuilder";
 
 export type ConfigLog = {
     logChannelId: string;
@@ -64,7 +65,7 @@ export class BotLog {
      */
     private static  async _sendToChannel(
         channel: TextChannel | null,
-        content: string | EmbedBuilder,
+        content: string | SendableComponent,
         prefix: "info" | "warn" | "error" | "debug" = 'info'
     ): Promise<Message | void> {
         if (!channel) return;
@@ -72,10 +73,16 @@ export class BotLog {
 
         try {
             if (content instanceof EmbedBuilder) {
-                msg = await channel.send({ embeds: [content] });
+                const text = content.data.description ?? content.data.title;
+                if (text) {
+                    Log.info(text);
+                }
+                msg = await channel.send({embeds: [content]});
+            } else if (content instanceof ActionRowBuilder) {
+                msg = await channel.send({components: [content]});
             } else {
                 const timestamp = `\`${new Date().toISOString()}\``;
-                msg = await channel.send(`${prefix.toUpperCase()} ${timestamp} ${content}`);
+                msg = await channel.send(`[${timestamp}] [${prefix.toUpperCase()}] ${content}`);
             }
         } catch (error) {
             Log.error(`Failed to send to Discord channel: ${error}`);
@@ -87,12 +94,12 @@ export class BotLog {
     /**
      * Send INFO log - TEXT or EMBED ! Respecte config.log.info
      */
-    static async info(content: string | EmbedBuilder): Promise<Message | void> {
+    static async info(content: string | SendableComponent): Promise<Message | void> {
         const logConfig = Bot.config.log;
 
         // 1. CONSOLE selon config (ou défaut ON)
         if (!logConfig || logConfig.info.console) {
-            if(!(content instanceof EmbedBuilder)) { Log.info(content) }
+            if(typeof content == 'string') { Log.info(content) }
         }
 
         // 2. Discord seulement si config + channel
@@ -104,12 +111,12 @@ export class BotLog {
     /**
      * Send ERROR log - TEXT or EMBED ! Respecte config.log.error
      */
-    static async error(content: string | EmbedBuilder): Promise<Message | void> {
+    static async error(content: string | SendableComponent): Promise<Message | void> {
         const logConfig = Bot.config.log;
 
         // 1. CONSOLE selon config (ou défaut ON)
         if (!logConfig || logConfig.error.console) {
-            if(!(content instanceof EmbedBuilder)) { Log.error(content) }
+            if(typeof content == 'string') { Log.error(content) }
         }
 
         // 2. Discord seulement si config + channel
@@ -121,11 +128,11 @@ export class BotLog {
     /**
      * Send WARNING log - TEXT or EMBED ! Respecte config.log.warn
      */
-    static async warn(content: string | EmbedBuilder): Promise<Message | void> {
+    static async warn(content: string | SendableComponent): Promise<Message | void> {
         const logConfig = Bot.config.log;
 
         if (!logConfig || logConfig?.warn.console) {
-            if(!(content instanceof EmbedBuilder)) { Log.warn(content) }
+            if(typeof content == 'string') { Log.warn(content) }
         }
 
         if (logConfig?.warn.discord && this.logChannel) {
@@ -136,11 +143,11 @@ export class BotLog {
     /**
      * Send DEBUG log - TEXT or EMBED ! Respecte config.log.debug
      */
-    static async debug(content: string | EmbedBuilder): Promise<Message | void> {
+    static async debug(content: string | SendableComponent): Promise<Message | void> {
         const logConfig = Bot.config.log;
 
         if (!logConfig || logConfig?.debug.console) {
-            if(!(content instanceof EmbedBuilder)) { Log.debug(content) }
+            if(typeof content == 'string') { Log.debug(content) }
         }
 
         if (logConfig?.debug.discord && this.logChannel) {
