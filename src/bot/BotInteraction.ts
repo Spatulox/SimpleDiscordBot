@@ -12,15 +12,15 @@ export class BotInteraction {
      * InteractionReplyOptions && InteractionUpdateOptions
      * The two have "content", "embeds" & "flags" field, so an internal cast is ok, unless discord/discordjs deprecate it
      */
-    private static buildReplyOptions(content: string, component: SendableComponent, ephemeral: boolean): InteractionReplyOptions {
+    private static buildReplyOptions(content: string | null, component: SendableComponent, ephemeral: boolean): InteractionReplyOptions {
         return this._buildOptions(content, component, ephemeral) as InteractionReplyOptions;
     }
 
-    private static buildUpdateOptions(content: string, component: SendableComponent): InteractionUpdateOptions {
+    private static buildUpdateOptions(content: string | null, component: SendableComponent): InteractionUpdateOptions {
         return this._buildOptions(content, component, false) as InteractionUpdateOptions;
     }
 
-    private static _buildOptions(content: string, component: SendableComponent, ephemeral: boolean): InteractionReplyOptions | InteractionUpdateOptions {
+    private static _buildOptions(content: string | null, component: SendableComponent, ephemeral: boolean): InteractionReplyOptions | InteractionUpdateOptions {
         return SendableComponentBuilder.buildInteraction(content, component, ephemeral);
     }
 
@@ -35,11 +35,10 @@ export class BotInteraction {
         if (!interaction.isRepliable()) return false;
 
         const options = this.buildReplyOptions(
-            typeof content === 'string' ? content : "",
+            typeof content === 'string' ? content : null,
             typeof content === 'string' ? component as SendableComponent : content,
             typeof content === 'string' ? ephemeral : component as boolean
         );
-
 
         if (!interaction.deferred && !interaction.replied) {
             return await interaction.reply(options);
