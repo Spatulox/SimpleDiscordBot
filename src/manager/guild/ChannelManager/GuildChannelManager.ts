@@ -29,39 +29,54 @@ export class GuildChannelManager {
     }
 
     static async find(channelId: string): Promise<GuildBasedChannel | null> {
-        const cached = Bot.client.channels.cache.get(channelId);
-        if (cached && cached instanceof GuildChannel) return cached;
+        try {
+            const cached = Bot.client.channels.cache.get(channelId);
+            if (cached && cached instanceof GuildChannel) return cached;
 
-        const channel = await Bot.client.channels.fetch(channelId);
-        if (channel && channel instanceof GuildChannel) return channel;
+            const channel = await Bot.client.channels.fetch(channelId);
+            if (channel && channel instanceof GuildChannel) return channel;
 
-        Log.warn(`Channel ${channelId} not found in any guild`);
-        return null;
+            Log.warn(`Channel ${channelId} not found in any guild`);
+            return null;
+        } catch (error) {
+            Log.error(`Failed to find channel ${channelId}: ${error}`,);
+            return null
+        }
     }
 
     static findAll(guildId: string): GuildBasedChannel[] {
-        const guild = Bot.client.guilds.cache.get(guildId);
-        if (!guild) {
-            Log.warn(`Guild ${guildId} not found`);
-            return [];
+        try {
+            const guild = Bot.client.guilds.cache.get(guildId);
+            if (!guild) {
+                Log.warn(`Guild ${guildId} not found`);
+                return [];
+            }
+            return Array.from(guild.channels.cache.values());
+        } catch (error) {
+            Log.error(`Failed to find channel ${guildId}: ${error}`,);
+            return []
         }
-        return Array.from(guild.channels.cache.values());
     }
 
     /**
      * Recherche channels par nom (insensible à la casse)
      */
     static findByName(guildId: string, name: string): GuildBasedChannel[] {
-        const guild = Bot.client.guilds.cache.get(guildId);
-        if (!guild) {
-            Log.warn(`Guild ${guildId} not found`);
-            return [];
-        }
+        try {
+            const guild = Bot.client.guilds.cache.get(guildId);
+            if (!guild) {
+                Log.warn(`Guild ${guildId} not found`);
+                return [];
+            }
 
-        return Array.from(guild.channels.cache.values())
-            .filter(channel =>
-                channel.name.toLowerCase().includes(name.toLowerCase())
-            );
+            return Array.from(guild.channels.cache.values())
+                .filter(channel =>
+                    channel.name.toLowerCase().includes(name.toLowerCase())
+                );
+        } catch (error) {
+            Log.error(`Failed to find channel ${guildId}: ${error}`);
+            return []
+        }
     }
 
     protected static async _create(guildId: string, options: GuildChannelCreateOptions): Promise<GuildBasedChannel> {
