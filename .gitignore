@@ -93,3 +93,7 @@ dist/
 .idea
 
 src_example/*.js
+
+.env.HDFR_dev
+
+.env.SpatuloxTest
