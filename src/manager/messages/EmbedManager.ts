@@ -1,5 +1,5 @@
 import {
-    EmbedBuilder,
+    EmbedBuilder, EmbedFooterData,
     InteractionDeferReplyOptions, InteractionEditReplyOptions, InteractionReplyOptions, MessageCreateOptions,
     MessageFlags
 } from "discord.js";
@@ -46,8 +46,10 @@ export enum EmbedColor {
 
 export class EmbedManager {
     private static get BOT_ICON(): string {
-        return Bot.config.botIconUrl || "";
+        if (Bot.config.botIconUrl) return Bot.config.botIconUrl;
+        return Bot.client?.user?.displayAvatarURL({ forceStatic: false, size: 128 }) || "";
     }
+
     private static get DEFAULT_COLOR(): number | EmbedColor {
         return Bot.config.defaultEmbedColor || EmbedColor.default;
     }
@@ -60,11 +62,16 @@ export class EmbedManager {
             .setColor(color ?? this.DEFAULT_COLOR)
             .setTimestamp(new Date());
 
-        if(this.BOT_ICON && Bot.config.botName) {
-            embed.setFooter({
-                text: Bot.config.botName,
-                iconURL: this.BOT_ICON
-            })
+        if (Bot.config.botName) {
+            const footer: EmbedFooterData = {
+                text: Bot.config.botName
+            };
+
+            if (this.BOT_ICON) {
+                footer.iconURL = this.BOT_ICON;
+            }
+
+            embed.setFooter(footer);
         }
         return embed
     }
@@ -74,7 +81,6 @@ export class EmbedManager {
      */
     static simple(description: string, color: EmbedColor | null = null): EmbedBuilder {
         return this.create(color)
-            .setTitle('')
             .setDescription(description)
             .setTimestamp(null);
     }
