@@ -82,7 +82,6 @@ export class EmbedManager {
     static simple(description: string, color: EmbedColor | null = null): EmbedBuilder {
         return this.create(color)
             .setDescription(description)
-            .setTimestamp(null);
     }
 
     /**
@@ -104,11 +103,12 @@ export class EmbedManager {
     }
 
     /**
-     * Creates success embed
+     * Creates a simply description embed
      */
     static description(description: string): EmbedBuilder {
-        return this.create(EmbedColor.minecraft)
-            .setDescription(description);
+        return this.create()
+            .setDescription(description)
+            .setFooter(null)
     }
 
     /**
