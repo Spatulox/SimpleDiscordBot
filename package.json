@@ -11,14 +11,24 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "rm -r dist/ && tsup",
+
     "patch": "npm run build && npm version patch",
+    "minor": "npm run build && npm version minor",
+
+    "major": "npm run build && npm version major",
+    "premajor": "npm run build && npm version premajor",
+    "premajor:alpha": "npm run build && npm version premajor --preid=alpha",
+
     "pub": "npm run patch && npm publish --access public",
+    "pub:major": "npm run major && npm publish --access public",
+    "pub:alpha": "npm run premajor:alpha && npm publish --tag alpha --access public",
+
     "test-pack": "npm run patch && npm publish --access public",
     "dev": "nodemon --exec tsx src/test/index.ts"
   },
   "license": "MIT",
   "dependencies": {
-    "@spatulox/discord-interaction-manager": "^1.0.14",
+    "@spatulox/discord-interaction-manager": "^1.0.15",
     "discord.js": "^14.25.1"
   },
   "devDependencies": {
