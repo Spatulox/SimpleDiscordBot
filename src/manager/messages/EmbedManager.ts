@@ -109,6 +109,7 @@ export class EmbedManager {
         return this.create()
             .setDescription(description)
             .setFooter(null)
+            .setTimestamp(null)
     }
 
     /**
