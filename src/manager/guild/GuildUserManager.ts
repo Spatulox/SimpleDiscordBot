@@ -1,7 +1,7 @@
 import {Bot} from "../../core/Bot";
 import {Log} from "../../utils/Log";
 import {BasicUserManager} from "../direct/BasicUserManager"
-import {BanOptions, Guild, GuildMember} from "discord.js";
+import {BanOptions, GuildMember} from "discord.js";
 import {setTimeout} from "timers/promises";
 import {EmbedManager} from "../messages/EmbedManager";
 import {GuildManager} from "./GuildManager";
@@ -9,19 +9,6 @@ import {GuildManager} from "./GuildManager";
 const MAX_NICKNAME_LENGTH = 32;
 
 export class GuildUserManager extends BasicUserManager {
-
-    static async find(userId: string, guild: Guild | string): Promise<GuildMember | null> {
-        try {
-            if(guild instanceof  Guild){
-                return await guild.members.fetch(userId);
-            } else {
-                return await (await GuildManager.find(guild)).members.fetch(userId)
-            }
-        } catch (error) {
-            Log.error(`UserManager: Member ${userId} not found`);
-            return null;
-        }
-    }
 
     static async rename(member: GuildMember, nickname: string, maxAttempts: number = 3): Promise<boolean> {
         if (nickname.length > MAX_NICKNAME_LENGTH) {
