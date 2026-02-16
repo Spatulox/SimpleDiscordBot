@@ -1,24 +1,30 @@
-import {GuildMember, Message, MessageCreateOptions, User} from "discord.js";
+import {Guild, GuildMember, Message, MessageCreateOptions, User} from "discord.js";
 import {Bot} from "../../bot/Bot";
 import {Log} from "../../utils/Log";
 import {SendableComponent, SendableComponentBuilder} from "../builder/SendableComponentBuilder";
+import {GuildManager} from "../guild/GuildManager";
 
 export abstract class BasicUserManager {
 
     /**
      * Find member in specific guild
      */
-    static async findInGuild(guildId: string, memberId: string): Promise<GuildMember | null> {
-        try {
-            const guild = Bot.client.guilds.cache.get(guildId);
-            if (!guild) throw new Error(`Guild ${guildId} not found`);
+    static async findInGuild(guild: string | Guild, memberId: string) : Promise<GuildMember | null>{
+        let targetGuild: Guild | null = null;
 
-            const member = await guild.members.fetch({ user: memberId, force: true });
-            return member ?? null;
-        } catch (error) {
-            Log.error(`UserManager: Member ${memberId} not found in ${guildId}`);
-            return null;
+        if (typeof guild === 'string') {
+            targetGuild = await GuildManager.find(guild);
+            if (!targetGuild) return null;
+        } else {
+            targetGuild = guild;
         }
+
+        const cached = targetGuild.members.cache.get(memberId);
+        if (cached) return cached;
+
+        const member = await targetGuild.members.fetch(memberId).catch(() => null);
+        if (!member) Log.error(`UserManager: Member ${memberId} not found in guild ${targetGuild.id}`);
+        return member;
     }
 
     /**

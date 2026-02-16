@@ -49,7 +49,7 @@ export class GuildUserManager extends BasicUserManager {
      */
     static async isBanned(guildId: string, userId: string): Promise<boolean> {
         try {
-            const guild = Bot.client.guilds.cache.get(guildId);
+            const guild = await GuildManager.find(guildId) //await GuildManager.find(guildId);
             if (!guild) {
                 Log.warn(`Guild ${guildId} not found`);
                 return false;
@@ -68,14 +68,9 @@ export class GuildUserManager extends BasicUserManager {
      */
     static async deconnectFromVoice(guildId: string, memberId: string): Promise<void> {
         try {
-            const guild = Bot.client.guilds.cache.get(guildId);
-            if (!guild) {
-                throw new Error(`Guild ${guildId} not found`);
-            }
-
-            const member = await guild.members.fetch(memberId);
-            if (!member.voice.channel) {
-                throw new Error(`Member ${memberId} is not in a voice channel`);
+            const member = await GuildManager.user.findInGuild(guildId, memberId)
+            if (!member || !member.voice.channel) {
+                throw new Error(`Member ${memberId} not found or not in a voice channel`);
             }
 
             await member.voice.disconnect();
@@ -91,10 +86,10 @@ export class GuildUserManager extends BasicUserManager {
      */
     static async isInVoice(memberId: string, guildId: string): Promise<boolean> {
         try {
-            const guild = Bot.client.guilds.cache.get(guildId);
-            if (!guild) return false;
-
-            const member = await guild.members.fetch(memberId);
+            const member = await GuildManager.user.findInGuild(guildId, memberId)
+            if(!member){
+                throw new Error(`User ${guildId} not found`);
+            }
             return member.voice.channelId !== null;
         } catch (error) {
             Log.debug(`Member ${memberId} not found or not in voice in guild ${guildId}`);
@@ -107,10 +102,10 @@ export class GuildUserManager extends BasicUserManager {
      */
     static async mute(guildId: string, memberId: string, reason?: string): Promise<void> {
         try {
-            const guild = Bot.client.guilds.cache.get(guildId);
-            if (!guild) throw new Error(`Guild ${guildId} not found`);
-
-            const member = await guild.members.fetch(memberId);
+            const member = await GuildManager.user.findInGuild(guildId, memberId)
+            if(!member){
+                throw new Error(`User ${guildId} not found`);
+            }
             await member.voice.setMute(true, reason);
             Log.info(`Server muted ${memberId} in guild ${guildId}: ${reason || 'No reason'}`);
         } catch (error) {
@@ -124,10 +119,10 @@ export class GuildUserManager extends BasicUserManager {
      */
     static async unmute(guildId: string, memberId: string, reason?: string): Promise<void> {
         try {
-            const guild = Bot.client.guilds.cache.get(guildId);
-            if (!guild) throw new Error(`Guild ${guildId} not found`);
-
-            const member = await guild.members.fetch(memberId);
+            const member = await GuildManager.user.findInGuild(guildId, memberId)
+            if(!member){
+                throw new Error(`User ${guildId} not found`);
+            }
             await member.voice.setMute(false, reason);
             Log.info(`Server unmuted ${memberId} in guild ${guildId}: ${reason || 'No reason'}`);
         } catch (error) {
@@ -141,10 +136,10 @@ export class GuildUserManager extends BasicUserManager {
      */
     static async deafen(guildId: string, memberId: string, reason?: string): Promise<void> {
         try {
-            const guild = Bot.client.guilds.cache.get(guildId);
-            if (!guild) throw new Error(`Guild ${guildId} not found`);
-
-            const member = await guild.members.fetch(memberId);
+            const member = await GuildManager.user.findInGuild(guildId, memberId)
+            if(!member){
+                throw new Error(`User ${guildId} not found`);
+            }
             await member.voice.setDeaf(true, reason);
             Log.info(`Server deafened ${memberId} in guild ${guildId}: ${reason || 'No reason'}`);
         } catch (error) {
@@ -158,10 +153,10 @@ export class GuildUserManager extends BasicUserManager {
      */
     static async undeafen(guildId: string, memberId: string, reason?: string): Promise<void> {
         try {
-            const guild = Bot.client.guilds.cache.get(guildId);
-            if (!guild) throw new Error(`Guild ${guildId} not found`);
-
-            const member = await guild.members.fetch(memberId);
+            const member = await GuildManager.user.findInGuild(guildId, memberId)
+            if(!member){
+                throw new Error(`User ${guildId} not found`);
+            }
             await member.voice.setDeaf(false, reason);
             Log.info(`Server undeafened ${memberId} in guild ${guildId}: ${reason || 'No reason'}`);
         } catch (error) {
@@ -175,10 +170,11 @@ export class GuildUserManager extends BasicUserManager {
      */
     static async timeout(guildId: string, memberId: string, duration: number, reason?: string): Promise<void> {
         try {
-            const guild = Bot.client.guilds.cache.get(guildId);
-            if (!guild) throw new Error(`Guild ${guildId} not found`);
-
-            const member = await guild.members.fetch(memberId);
+            const member = await GuildManager.user.findInGuild(guildId, memberId)
+            if(!member){
+                throw new Error(`User ${guildId} not found`);
+            }
+            //const member = await guild.members.fetch(memberId);
             const expires = Date.now() + duration
 
             await member.timeout(expires, reason);
@@ -194,10 +190,10 @@ export class GuildUserManager extends BasicUserManager {
      */
     static async untimeout(guildId: string, memberId: string, reason?: string): Promise<void> {
         try {
-            const guild = Bot.client.guilds.cache.get(guildId);
-            if (!guild) throw new Error(`Guild ${guildId} not found`);
-
-            const member = await guild.members.fetch(memberId);
+            const member = await GuildManager.user.findInGuild(guildId, memberId)
+            if(!member){
+                throw new Error(`User ${guildId} not found`);
+            }
             await member.timeout(null, reason);
             Log.info(`Untimed out ${memberId} in guild ${guildId}: ${reason || 'No reason'}`);
         } catch (error) {
@@ -211,10 +207,10 @@ export class GuildUserManager extends BasicUserManager {
      */
     static async kick(guildId: string, memberId: string, reason?: string): Promise<void> {
         try {
-            const guild = Bot.client.guilds.cache.get(guildId);
-            if (!guild) throw new Error(`Guild ${guildId} not found`);
-
-            const member = await guild.members.fetch(memberId);
+            const member = await GuildManager.user.findInGuild(guildId, memberId)
+            if(!member){
+                throw new Error(`User ${guildId} not found`);
+            }
             await member.kick(reason);
             Log.info(`Kicked ${memberId} from guild ${guildId}: ${reason || 'No reason'}`);
         } catch (error) {
@@ -224,7 +220,7 @@ export class GuildUserManager extends BasicUserManager {
     }
 
     static async ban(guildId: string, userId: string, banOption?: BanOptions): Promise<void> {
-        const guild = Bot.client.guilds.cache.get(guildId);
+        const guild = await GuildManager.find(guildId);
         if (!guild) {
             throw new Error(`Guild ${guildId} not found`);
         }
@@ -239,7 +235,7 @@ export class GuildUserManager extends BasicUserManager {
     }
 
     static async unban(guildId: string, userId: string, reason?: string): Promise<void> {
-        const guild = Bot.client.guilds.cache.get(guildId);
+        const guild = await GuildManager.find(guildId);
         if (!guild) {
             throw new Error(`Guild ${guildId} not found`);
         }

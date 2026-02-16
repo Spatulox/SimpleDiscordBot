@@ -1,5 +1,5 @@
 import {
-    GuildBasedChannel, GuildChannelCreateOptions
+    GuildBasedChannel, GuildChannel, GuildChannelCreateOptions
 } from 'discord.js';
 import {Bot} from "../../../bot/Bot";
 import {Log} from "../../../utils/Log";
@@ -29,14 +29,12 @@ export class GuildChannelManager {
     }
 
     static async find(channelId: string): Promise<GuildBasedChannel | null> {
-        for (const guild of Bot.client.guilds.cache.values()) {
-            try {
-                const channel = await guild.channels.fetch(channelId);
-                if (channel) return channel;
-            } catch {
+        const cached = Bot.client.channels.cache.get(channelId);
+        if (cached && cached instanceof GuildChannel) return cached;
 
-            }
-        }
+        const channel = await Bot.client.channels.fetch(channelId);
+        if (channel && channel instanceof GuildChannel) return channel;
+
         Log.warn(`Channel ${channelId} not found in any guild`);
         return null;
     }
