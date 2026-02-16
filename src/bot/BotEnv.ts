@@ -7,7 +7,7 @@ export const BotEnv = {
         return token;
     },
     get dev(): boolean {
-        return process.env.DEV === 'true';
+        return !!process.env.DISCORD_BOT_DEV;
     },
     get clientId(): string {
         const token = process.env.DISCORD_BOT_CLIENTID;

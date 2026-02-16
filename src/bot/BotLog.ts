@@ -37,10 +37,10 @@ export class BotLog {
                 if (logCh?.isTextBased()) {
                     BotLog.logChannel = logCh;
                 } else {
-                    Log.warn(`❌ Log channel ${Bot.config.log.logChannelId} invalid`);
+                    Log.warn(`Log channel ${Bot.config.log.logChannelId} invalid`);
                 }
             } catch (error) {
-                Log.error(`❌ Log channel fetch failed: ${error}`);
+                Log.error(`Log channel fetch failed: ${error}`);
             }
         }
 
@@ -50,10 +50,10 @@ export class BotLog {
                 if (errorCh?.isTextBased()) {
                     BotLog.errorChannel = errorCh;
                 } else {
-                    Log.warn(`❌ Error channel ${Bot.config.log.errorChannelId} invalid`);
+                    Log.warn(`Error channel ${Bot.config.log.errorChannelId} invalid`);
                 }
             } catch (error) {
-                Log.error(`❌ Error channel fetch failed: ${error}`);
+                Log.error(`Error channel fetch failed: ${error}`);
             }
         }
     }

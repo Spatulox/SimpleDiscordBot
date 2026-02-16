@@ -26,7 +26,7 @@ export class BotMessage {
 
         try {
             if (!channel) {
-                Log.warn('Cannot send message: invalid channel');
+                Log.warn('Cannot send message: Invalid channel ID');
                 return null;
             }
 
@@ -34,7 +34,7 @@ export class BotMessage {
             if (typeof channel === "string") {
                 const fetchedChannel = Bot.client.channels.cache.get(channel);
                 if (!fetchedChannel?.isTextBased()) {
-                    Log.warn(`Invalid channel ID: ${channel}`);
+                    Log.warn(`Cannot send message : Invalid channel ID: ${channel}`);
                     return null;
                 }
                 channel = fetchedChannel as TextChannel;
@@ -57,7 +57,7 @@ export class BotMessage {
                 } else if (component) {
                     messageCreate = SendableComponentBuilder.buildMessage(component);
                 } else {
-                    throw new Error("content and component cannot be null at the same time");
+                    throw new Error("Cannot send message : content and component cannot be null at the same time");
                 }
             }
 
@@ -67,7 +67,7 @@ export class BotMessage {
                 throw e
             }
         } catch (e) {
-            Log.error(`Failed to send message : ${e}`);
+            Log.error(`Cannot send message : ${e}`);
             return null;
         }
     }
@@ -90,12 +90,12 @@ export class BotMessage {
             } else if (component) {
                 messageCreate = SendableComponentBuilder.buildMessage(component);
             } else {
-                throw new Error("content and component cannot be null at the same time");
+                throw new Error("Cannot send message : content and component cannot be null at the same time");
             }
 
             return await targetUser.send(messageCreate)
         } catch (error) {
-            Log.error(`Failed to send message to ${user}: ${error}`);
+            Log.error(`Cannot send message to ${user}: ${error}`);
             return null
         }
     }
