@@ -5,14 +5,21 @@
 [![downloads](https://img.shields.io/npm/dm/@spatulox/simplediscordbot.svg)](https://npmjs.com/package/@spatulox/simplediscordbot)
 [![license](https://img.shields.io/npm/l/@spatulox/simplediscordbot.svg)](LICENSE)
 
-**Ultra-simple Framework Discord.js TypeScript**
+> **TypeScript Discord.js framework** - Simple, powerful, framework-ready. Built for developers who want clean bot architecture.
+
+## ✨ Features :
+> - Fully compatible with discordjs
+> - Include the [DiscordInterationManager](https://github.com/Spatulox/DiscordInteractionManager) package
+> - Simple Log package
+> - Provides easy Managers to avoid repetitive code everywhere
+> - Simple yet powerful builders (Embeds, Modals, SelectMenus, Components) that rely on discord.js for full compatibility
+
 
 ## Installation
 ```bash
 npm i @spatulox/simplediscordbot
 ```
 
-> **TypeScript Discord.js framework** - Simple, powerful, framework-ready. Built for developers who want clean bot architecture.
 ## Quick Start
 
 Env Variables:
