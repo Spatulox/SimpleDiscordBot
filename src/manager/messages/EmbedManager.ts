@@ -103,7 +103,7 @@ export class EmbedManager {
     }
 
     /**
-     * Creates a simply description embed
+     * Creates a simple description embed
      */
     static description(description: string): EmbedBuilder {
         return this.create()

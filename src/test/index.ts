@@ -25,8 +25,6 @@ async function main() {
         Bot.setRandomActivity(randomActivityList, Time.minute.MIN_10.toMilliseconds())
     })
 
-    // After that, you can implement what you want
-
     bot.client.on(Events.InteractionCreate, async (interaction) => {
         console.log(interaction);
     })
