@@ -3,8 +3,8 @@ import {
     InviteCreateOptions
 } from 'discord.js';
 import { Log } from '../../utils/Log';
-import { Bot } from '../../bot/Bot';
 import {GuildChannelManager} from "./ChannelManager/GuildChannelManager";
+import {GuildManager} from "./GuildManager";
 
 export class InviteManager {
 
@@ -64,7 +64,7 @@ export class InviteManager {
      */
     static async list(guildId: string): Promise<Invite[]> {
         try {
-            const guild = Bot.client.guilds.cache.get(guildId);
+            const guild = await GuildManager.find(guildId);
             if (!guild) {
                 throw new Error(`Guild ${guildId} not found`);
             }
