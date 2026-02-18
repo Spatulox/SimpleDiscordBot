@@ -26,5 +26,10 @@ async function main() {
     })
 
     // After that, you can implement what you want
+
+    bot.client.on(Events.InteractionCreate, async (interaction) => {
+        console.log(interaction);
+    })
+
 }
 main()
