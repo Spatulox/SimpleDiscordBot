@@ -1,97 +1,188 @@
 import {
-    ActionRowBuilder,
-    ModalActionRowComponentBuilder,
     ModalBuilder,
     TextInputBuilder,
     TextInputStyle,
+    LabelBuilder,
 } from "discord.js";
-import {FolderName} from "../../type/FolderName";
-import {FileManager} from "../FileManager";
+import {Bot} from "../../bot/Bot";
 
-export interface ModalJson {
-    title: string;
-    customId: string;
+export enum ModalFieldType {
+    SHORT,
+    LONG,
+    NUMBER,
+    DATE,
+    PHONE,
+}
+
+export interface ModalField {
+    type: ModalFieldType;
     label: string;
-    fields: any[];
+    placeholder?: string;
+    required?: boolean;
+}
+
+interface InternalModalField extends ModalField {
+    customId: string;
 }
 
 export class ModalManager {
+
     /**
-     * Load modal from JSON file and return ModalBuilder
+     * Creates base Modal - SIMPLE API !
      */
-    static async load(filename: string): Promise<ModalBuilder | false> {
-        try {
-            const file = await FileManager.readJsonFile(`./handlers/${FolderName.MODAL}/${filename}`) as ModalJson;
-            if (!file) return false;
-            return ModalManager.jsonToBuilder(file);
-        } catch {
-            return false;
-        }
+    public static create(modalTitle: string, customId: string): ModalBuilder {
+        return new ModalBuilder()
+            .setTitle(modalTitle)
+            .setCustomId(customId)
     }
 
     /**
-     * List all modal files
+     * Individual field creator
      */
-    static async list(): Promise<string[] | false> {
-        try {
-            const files = await FileManager.listJsonFiles(`./handlers/${FolderName.MODAL}`);
-            return files || [];
-        } catch {
-            return false;
-        }
-    }
+    private static _createField(
+        opt: InternalModalField
+    ): LabelBuilder {
 
-    private static jsonToBuilder(json: ModalJson): ModalBuilder {
-        const modal = new ModalBuilder()
-            .setCustomId(json.customId)
-            .setTitle(json.title.slice(0, 45));
+        const builder = new TextInputBuilder()
+            .setCustomId(opt.customId)
+            .setRequired(opt.required ?? false);
 
-        const actionRows: any[] = [];
-        for (const fieldJson of json.fields) {
-            const input = this.fieldJsonToInput(fieldJson);
-            const row = new ActionRowBuilder<ModalActionRowComponentBuilder>()
-                .addComponents(input);
-            actionRows.push(row);
-        }
-
-        return modal.addComponents(...actionRows);
-    }
-
-    private static fieldJsonToInput(fieldJson: any): TextInputBuilder {
-        const input = new TextInputBuilder()
-            .setCustomId(fieldJson.customId)
-            .setLabel(fieldJson.title.slice(0, 45))
-            .setPlaceholder(fieldJson.placeholder || 'Enter value...')
-            .setRequired(fieldJson.required !== false)
-            .setMinLength(fieldJson.minLength || 0)
-            .setMaxLength(fieldJson.maxLength || 400);
-
-        // Convertir style JSON (1, 2, "Number") → TextInputStyle
-        const style = fieldJson.style;
-        if (typeof style === 'number') {
-            // 1=Short, 2=Paragraph
-            input.setStyle(style as TextInputStyle);
+        if(opt.placeholder) {
+            builder.setPlaceholder(opt.placeholder);
         } else {
-            // "Number", "Phone", "Date"
-            switch (style) {
-                case 'Number':
-                case 'Phone':
-                case 'Date':
-                    input.setStyle(TextInputStyle.Short);
-                    input.setPlaceholder(
-                        style === 'Number' ? '123' :
-                            style === 'Phone' ? '+33 6 12 34 56 78' :
-                                '2024-02-05'
-                    );
-                    break;
-                default:
-                    input.setStyle(TextInputStyle.Short);
-            }
+            builder.setPlaceholder(`Enter ${opt.label.toLowerCase()}`);
         }
 
-        return input;
+        switch (opt.type) {
+            case ModalFieldType.SHORT:
+                builder.setStyle(TextInputStyle.Short).setMaxLength(4000);
+                break;
+            case ModalFieldType.LONG:
+                builder.setStyle(TextInputStyle.Paragraph).setMaxLength(4000);
+                break;
+            case ModalFieldType.NUMBER:
+                builder.setStyle(TextInputStyle.Short).setMaxLength(10);
+                break;
+            case ModalFieldType.DATE:
+                builder.setStyle(TextInputStyle.Short).setMaxLength(10);
+                break;
+            case ModalFieldType.PHONE:
+                builder.setStyle(TextInputStyle.Short).setMaxLength(20);
+                break;
+        }
+
+        return new LabelBuilder().setLabel(opt.label).setTextInputComponent(builder);
     }
 
+    /**
+     * Simple modal with ONE field - DIRECT ModalBuilder return !
+     */
+    static simple(
+        customId: string,
+        modalTitle: string | null,
+        field: ModalField
+    ): ModalBuilder {
+        const modal = this.create(modalTitle ?? Bot.config?.botName ?? "Bot", customId);
+        const opt: InternalModalField = {
+            ...field,
+            customId: `${customId}_input`,
+            placeholder : field.placeholder ?? `Enter ${field.label.toLowerCase()}`,
+        }
+
+        modal.addLabelComponents(this._createField(opt));
+        return modal;
+    }
+
+    /**
+     * Title + Description modal preset
+     */
+    static titleDescription(
+        customId: string,
+        modalTitle: string,
+        title: Omit<ModalField, "type">,
+        description: Omit<ModalField, "type">,
+    ): ModalBuilder {
+        const modal = this.create(modalTitle, customId);
+
+        const titleField: InternalModalField = {
+            customId: `${customId}_title`,
+            label: title.label,
+            placeholder: title.placeholder ?? `Enter ${title.label.toLowerCase()}`,
+            type: ModalFieldType.SHORT,
+            required: title.required
+        }
+
+        const descField: InternalModalField = {
+            customId: `${customId}_desc`,
+            label: description.label,
+            placeholder: description.placeholder ?? `Enter ${description.label.toLowerCase()}`,
+            type: ModalFieldType.LONG,
+            required: description.required
+        }
+
+        modal.addLabelComponents(this._createField(titleField))
+        modal.addLabelComponents(this._createField(descField))
+
+        return modal;
+    }
+
+    /**
+     * Date modal preset
+     */
+    static date(
+        customId: string,
+        modalTitle: string = "Select Date",
+        inputLabel: string = "Date"
+    ): ModalBuilder {
+        return this.simple(`${customId}_date`, modalTitle, {label:inputLabel, type: ModalFieldType.DATE, placeholder: "YYYY-MM-DD or DD/MM/YYYY"});
+    }
+
+    /**
+     * Number modal preset
+     */
+    static number(
+        customId: string,
+        modalTitle: string = "Enter a Number",
+        inputLabel: string = "Number"
+    ): ModalBuilder {
+        return this.simple(`${customId}_number`, modalTitle, {label:inputLabel, type: ModalFieldType.NUMBER, placeholder: "Enter a number"});
+    }
+
+    /**
+     * Number modal preset
+     */
+    static phone(
+        customId: string,
+        modalTitle: string = "Enter a Phone number",
+        inputLabel: string = "Phone number"
+    ): ModalBuilder {
+        return this.simple(`${customId}_phone_number`, modalTitle, {label:inputLabel, type: ModalFieldType.PHONE, placeholder: "Enter a phone number"});
+    }
+
+    /**
+     * Add field to existing modal (Fluent API)
+     */
+    static add(modal: ModalBuilder, field: ModalField[]): ModalBuilder
+    static add(modal: ModalBuilder, field: ModalField): ModalBuilder
+    static add(modal: ModalBuilder, field: ModalField | ModalField[]): ModalBuilder {
+
+        if(Array.isArray(field)){
+            for (const f of field) {
+                this.add(modal, f);
+            }
+            return modal
+        }
+
+        const opt = {
+            ...field,
+            customId:`${modal.data.custom_id}_${field.label}`
+        }
+
+        modal.addLabelComponents(this._createField(opt))
+        return modal;
+    }
+
+    // Keep your existing parse methods
     static parseNumber(value: string): number | null {
         if (!/^\d+$/.test(value)) return null;
         const num = parseInt(value);
@@ -99,36 +190,34 @@ export class ModalManager {
     }
 
     static parsePhone(value: string): string | null {
-        // 0604050359, +33604050359, 06 40 50 35 59, (06) 40-50-35-59
         const clean = value.replace(/[\s\-\(\)]/g, '');
-
-        // Français : 06/07/09 + 8 chiffres OU +33 + 9 chiffres
         if (/^(06|07|09)\d{8}$/.test(clean) || /^(\+33|0033)?[6-9]\d{8}$/.test(clean)) {
-            // Normalise au format international
             if (clean.startsWith('06') || clean.startsWith('07') || clean.startsWith('09')) {
                 return '+33' + clean.slice(2);
             }
             return clean.startsWith('0033') ? '+33' + clean.slice(4) : clean;
         }
-
         return null;
     }
 
     static parseDate(value: string): Date | null {
-        // yyyy-mm-dd → Date
         if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
             const [year, month, day] = value.split('-').map(Number);
             const date = new Date(year!, month! - 1, day);
             return isNaN(date.getTime()) ? null : date;
         }
-
-        // dd/mm/yyyy → Date
         if (/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
             const [day, month, year] = value.split('/').map(Number);
             const date = new Date(year!, month! - 1, day);
             return isNaN(date.getTime()) ? null : date;
         }
-
         return null;
+    }
+
+    /**
+     * Transform modal to interaction.showModal() format
+     */
+    static toInteraction(modal: ModalBuilder): ModalBuilder {
+        return modal;
     }
 }
