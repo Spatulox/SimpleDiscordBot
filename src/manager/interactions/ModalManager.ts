@@ -1,18 +1,24 @@
 import {
-    ActionRowBuilder,
     ModalBuilder,
     TextInputBuilder,
     TextInputStyle,
-    ModalActionRowComponentBuilder,
+    LabelBuilder,
 } from "discord.js";
 import {Bot} from "../../bot/Bot";
 
-export type FieldType = 'text' | 'paragraph' | 'number' | 'date' | 'phone';
+export enum ModalFieldType {
+    SHORT,
+    LONG,
+    NUMBER,
+    DATE,
+    PHONE,
+}
 
 export interface ModalField {
-    type: FieldType;
+    type: ModalFieldType;
     label: string;
     placeholder?: string;
+    required?: boolean;
 }
 
 interface InternalModalField extends ModalField {
@@ -35,11 +41,11 @@ export class ModalManager {
      */
     private static _createField(
         opt: InternalModalField
-    ): TextInputBuilder {
+    ): LabelBuilder {
+
         const builder = new TextInputBuilder()
             .setCustomId(opt.customId)
-            .setLabel(opt.label)
-            .setRequired(true);
+            .setRequired(opt.required ?? false);
 
         if(opt.placeholder) {
             builder.setPlaceholder(opt.placeholder);
@@ -48,24 +54,24 @@ export class ModalManager {
         }
 
         switch (opt.type) {
-            case 'text':
+            case ModalFieldType.SHORT:
                 builder.setStyle(TextInputStyle.Short).setMaxLength(4000);
                 break;
-            case 'paragraph':
+            case ModalFieldType.LONG:
                 builder.setStyle(TextInputStyle.Paragraph).setMaxLength(4000);
                 break;
-            case 'number':
+            case ModalFieldType.NUMBER:
                 builder.setStyle(TextInputStyle.Short).setMaxLength(10);
                 break;
-            case 'date':
-                builder.setStyle(TextInputStyle.Short).setMaxLength(30).setLabel("Date");
+            case ModalFieldType.DATE:
+                builder.setStyle(TextInputStyle.Short).setMaxLength(10);
                 break;
-            case 'phone':
-                builder.setStyle(TextInputStyle.Short).setMaxLength(20).setLabel("Phone");
+            case ModalFieldType.PHONE:
+                builder.setStyle(TextInputStyle.Short).setMaxLength(20);
                 break;
         }
 
-        return builder;
+        return new LabelBuilder().setLabel(opt.label).setTextInputComponent(builder);
     }
 
     /**
@@ -82,9 +88,8 @@ export class ModalManager {
             customId: `${customId}_input`,
             placeholder : field.placeholder ?? `Enter ${field.label.toLowerCase()}`,
         }
-        const internalfield = this._createField(opt);
-        const row = new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(internalfield);
-        modal.addComponents(row);
+
+        modal.addLabelComponents(this._createField(opt));
         return modal;
     }
 
@@ -99,26 +104,24 @@ export class ModalManager {
     ): ModalBuilder {
         const modal = this.create(modalTitle, customId);
 
-        const titleField = new TextInputBuilder()
-            .setCustomId(`${customId}_title`)
-            .setLabel(title.label)
-            .setStyle(TextInputStyle.Short)
-            .setPlaceholder( title.placeholder ?? `Enter ${title.label.toLowerCase()}`)
-            .setRequired(true)
-            .setMaxLength(100);
+        const titleField: InternalModalField = {
+            customId: `${customId}_title`,
+            label: title.label,
+            placeholder: title.placeholder ?? `Enter ${title.label.toLowerCase()}`,
+            type: ModalFieldType.SHORT,
+            required: title.required
+        }
 
-        const descField = new TextInputBuilder()
-            .setCustomId(`${customId}_desc`)
-            .setLabel(description.label)
-            .setStyle(TextInputStyle.Paragraph)
-            .setPlaceholder( description.placeholder ?? `Enter ${description.label.toLowerCase()}`)
-            .setRequired(true)
-            .setMaxLength(4000);
+        const descField: InternalModalField = {
+            customId: `${customId}_desc`,
+            label: description.label,
+            placeholder: description.placeholder ?? `Enter ${description.label.toLowerCase()}`,
+            type: ModalFieldType.LONG,
+            required: description.required
+        }
 
-        modal.addComponents(
-            new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(titleField),
-            new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(descField)
-        );
+        modal.addLabelComponents(this._createField(titleField))
+        modal.addLabelComponents(this._createField(descField))
 
         return modal;
     }
@@ -131,7 +134,7 @@ export class ModalManager {
         modalTitle: string = "Select Date",
         inputLabel: string = "Date"
     ): ModalBuilder {
-        return this.simple(`${customId}_date`, modalTitle, {label:inputLabel, type: "date", placeholder: "YYYY-MM-DD or DD/MM/YYYY"});
+        return this.simple(`${customId}_date`, modalTitle, {label:inputLabel, type: ModalFieldType.DATE, placeholder: "YYYY-MM-DD or DD/MM/YYYY"});
     }
 
     /**
@@ -142,7 +145,7 @@ export class ModalManager {
         modalTitle: string = "Enter a Number",
         inputLabel: string = "Number"
     ): ModalBuilder {
-        return this.simple(`${customId}_number`, modalTitle, {label:inputLabel, type: "number", placeholder: "Enter a number"});
+        return this.simple(`${customId}_number`, modalTitle, {label:inputLabel, type: ModalFieldType.NUMBER, placeholder: "Enter a number"});
     }
 
     /**
@@ -153,7 +156,7 @@ export class ModalManager {
         modalTitle: string = "Enter a Phone number",
         inputLabel: string = "Phone number"
     ): ModalBuilder {
-        return this.simple(`${customId}_phone_number`, modalTitle, {label:inputLabel, type: "phone", placeholder: "Enter a phone number"});
+        return this.simple(`${customId}_phone_number`, modalTitle, {label:inputLabel, type: ModalFieldType.PHONE, placeholder: "Enter a phone number"});
     }
 
     /**
@@ -174,8 +177,8 @@ export class ModalManager {
             ...field,
             customId:`${modal.data.custom_id}_${field.label}`
         }
-        const comp = this._createField(opt)
-        modal.addComponents(comp)
+
+        modal.addLabelComponents(this._createField(opt))
         return modal;
     }
 
