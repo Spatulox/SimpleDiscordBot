@@ -33,7 +33,7 @@ export interface ComponentManagerFileInput {
 
 export class ComponentManager {
 
-    private static get DEFAULT_COLOR(): number {
+    private static get DEFAULT_COLOR(): number | EmbedColor {
         return Bot.config?.defaultEmbedColor || EmbedColor.default;
     }
 
@@ -42,7 +42,11 @@ export class ComponentManager {
      */
     static create(option?: ComponentManagerCreate | null): ContainerBuilder {
         const container = new ContainerBuilder()
-            .setAccentColor(option?.color ?? ComponentManager.DEFAULT_COLOR);
+
+        const colorC = option?.color ?? this.DEFAULT_COLOR;
+        if(colorC !== EmbedColor.transparent){
+            container.setAccentColor(colorC)
+        }
 
         if (option?.title || option?.thumbnailUrl) {
             if (option?.thumbnailUrl) {
