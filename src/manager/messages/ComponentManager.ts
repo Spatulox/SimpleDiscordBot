@@ -30,13 +30,9 @@ export class ComponentManager {
         if(title){
             container.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(title),
-            );
-            container.addSeparatorComponents(
-                new SeparatorBuilder()
-                    .setDivider(true)
-                    .setSpacing(SeparatorSpacingSize.Small)
+                    .setContent("## " + title)
             )
+            .addSeparatorComponents(this.separator())
         }
 
         return container;
@@ -47,7 +43,8 @@ export class ComponentManager {
      */
     static simple(description: string, color: EmbedColor | null = null): ContainerBuilder {
         return this.create(null, color)
-            .addTextDisplayComponents(new TextDisplayBuilder().setContent(description));
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent(description))
+            .addSeparatorComponents(this.separator())
     }
 
     /**
@@ -57,7 +54,8 @@ export class ComponentManager {
         return this.create("Something went wrong", EmbedColor.error)
             .addTextDisplayComponents(
                 new TextDisplayBuilder().setContent(description)
-            );
+            )
+            .addSeparatorComponents(this.separator())
     }
 
     /**
@@ -67,7 +65,8 @@ export class ComponentManager {
         return this.create("Success", EmbedColor.success)
             .addTextDisplayComponents(
                 new TextDisplayBuilder().setContent(description)
-            );
+            )
+            .addSeparatorComponents(this.separator())
     }
 
     /**
@@ -75,7 +74,8 @@ export class ComponentManager {
      */
     static description(description: string): ContainerBuilder {
         return this.create()
-            .addTextDisplayComponents(new TextDisplayBuilder().setContent(description));
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent(description))
+            .addSeparatorComponents(this.separator())
     }
 
     /**
@@ -85,23 +85,25 @@ export class ComponentManager {
         return this.create("Debug", EmbedColor.green)
             .addTextDisplayComponents(
                 new TextDisplayBuilder().setContent(description)
-            );
+            )
+            .addSeparatorComponents(this.separator())
+    }
+
+    private static separator(spacing: SeparatorSpacingSize = SeparatorSpacingSize.Small): SeparatorBuilder{
+        return new SeparatorBuilder()
+            .setDivider(true)
+            .setSpacing(spacing)
     }
 
     /**
      * Quick field adder
      */
-    static field(container: ContainerBuilder, name: string, value: string, _inline: boolean = false): ContainerBuilder {
+    static field(container: ContainerBuilder, name: string, value: string): ContainerBuilder {
         container.addTextDisplayComponents(
             new TextDisplayBuilder().setContent(`**${name}**`),
             new TextDisplayBuilder().setContent(value)
         );
-
-        container.addSeparatorComponents(
-            new SeparatorBuilder()
-                .setDivider(true)
-                .setSpacing(SeparatorSpacingSize.Small)
-        );
+        container.addSeparatorComponents(this.separator())
 
         return container;
     }
@@ -134,11 +136,11 @@ export class ComponentManager {
             );
         }
 
+    private static footer(container: ContainerBuilder): ContainerBuilder {
         container.addTextDisplayComponents(
             new TextDisplayBuilder()
-                .setContent(`*${Bot.config?.botName || "Bot"} · ${new Date().toLocaleString('fr-FR')}*`)
+                .setContent(`-# **${Bot.config?.botName || "Bot"} · <t:${Math.floor(Date.now() / 1000)}:d> <t:${Math.floor(Date.now() / 1000)}:t>**`)
         );
-
         return container;
     }
 
@@ -156,8 +158,10 @@ export class ComponentManager {
     /**
      * Transform ComponentV2 into object for channel.send()
      */
-    static toMessage(container: ContainerBuilder): MessageCreateOptions {
-        container = this.footer(container);
+    static toMessage(container: ContainerBuilder, footer: boolean = true): MessageCreateOptions {
+        if(footer){
+            container = this.footer(container);
+        }
         return {
             components: [container],
             flags: [MessageFlags.IsComponentsV2]
