@@ -31,5 +31,5 @@
     "noUncheckedSideEffectImports": true
 
   },
-  "exclude": ["src_example"]
+  "exclude": ["src_example", "tsup.config.ts"]
 }

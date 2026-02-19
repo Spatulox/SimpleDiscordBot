@@ -7,6 +7,6 @@ export default defineConfig([
         dts: true,                                  // Génère .d.ts
         sourcemap: false,                           // Pas de .map
         clean: true,                                // Nettoie dist/
-        outDir: 'dist'
+        outDir: 'dist',
     }
 ])

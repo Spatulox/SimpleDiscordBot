@@ -10,15 +10,16 @@
   },
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "rm -r dist/ && tsup",
+    "type-check": "tsc --noEmit",
+    "build": "npm run type-check && tsup",
+    "dev": "npm run type-check && tsx  watch src/test/index.ts",
+
     "patch": "npm run build && npm version patch",
     "minor": "npm run build && npm version minor",
     "major": "npm run build && npm version major",
     "pub:patch": "npm run patch && npm publish --access public",
     "pub:minor": "npm run minor && npm publish --access public",
-    "pub:major": "npm run major && npm publish --access public",
-    "test-pack": "npm run patch && npm publish --access public",
-    "dev": "tsx watch src/test/index.ts"
+    "pub:major": "npm run major && npm publish --access public"
   },
   "license": "MIT",
   "dependencies": {

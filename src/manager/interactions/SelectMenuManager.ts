@@ -6,7 +6,8 @@ import {
     RoleSelectMenuBuilder,
     MentionableSelectMenuBuilder,
     ChannelSelectMenuBuilder,
-    MessageActionRowComponentBuilder, ChannelType,
+    MessageActionRowComponentBuilder, ChannelType, MessageCreateOptions, MessageFlags,
+    InteractionReplyOptions, InteractionEditReplyOptions,
 } from "discord.js";
 
 export type SelectMenuCreateOption = {
@@ -15,6 +16,8 @@ export type SelectMenuCreateOption = {
     description?: string;
     emoji?: string;
 }
+
+export type SelectMenuList = StringSelectMenuBuilder | UserSelectMenuBuilder | RoleSelectMenuBuilder | MentionableSelectMenuBuilder | ChannelSelectMenuBuilder
 
 export class SelectMenuManager {
 
@@ -56,24 +59,23 @@ export class SelectMenuManager {
         customId: string,
         options: SelectMenuCreateOption[],
         pageSize: number = 25
-    ): ActionRowBuilder<MessageActionRowComponentBuilder> {
-        const row = new ActionRowBuilder<MessageActionRowComponentBuilder>();
+    ): ActionRowBuilder<MessageActionRowComponentBuilder>[] {  // ← ARRAY
+
+        const rows: ActionRowBuilder<MessageActionRowComponentBuilder>[] = [];
 
         for (let i = 0; i < options.length; i += pageSize) {
             const pageOptions = options.slice(i, i + pageSize);
             const menu = new StringSelectMenuBuilder()
                 .setCustomId(`${customId}_page_${Math.floor(i/pageSize)}`)
                 .setPlaceholder(`Page ${Math.floor(i/pageSize) + 1}`)
-                .addOptions(pageOptions.map(opt => {
-                    return this.option(opt)
-                }));
+                .addOptions(pageOptions.map(opt => this.option(opt)));
 
-
-            row.addComponents(menu);
+            rows.push(SelectMenuManager.row(menu));
         }
 
-        return row;
+        return rows.slice(0, 5);
     }
+
 
     /**
      * User Select Menu (Components V2)
@@ -127,10 +129,9 @@ export class SelectMenuManager {
     /**
      * Quick option creator
      */
-    static option(option: SelectMenuCreateOption): StringSelectMenuOptionBuilder;
-    static option(options: SelectMenuCreateOption[]): StringSelectMenuOptionBuilder[];
-
-    static option(option: SelectMenuCreateOption | SelectMenuCreateOption[]): StringSelectMenuOptionBuilder | StringSelectMenuOptionBuilder[] {
+    private static option(option: SelectMenuCreateOption): StringSelectMenuOptionBuilder;
+    private static option(options: SelectMenuCreateOption[]): StringSelectMenuOptionBuilder[];
+    private static option(option: SelectMenuCreateOption | SelectMenuCreateOption[]): StringSelectMenuOptionBuilder | StringSelectMenuOptionBuilder[] {
         if (Array.isArray(option)) {
             return option.map((opt: SelectMenuCreateOption) => this._createOption(opt));
         }
@@ -177,5 +178,33 @@ export class SelectMenuManager {
         return components.slice(0, 5).map(component =>
             this.row(component)
         );
+    }
+
+    static toMessage(menus: SelectMenuList | SelectMenuList[] | ActionRowBuilder<MessageActionRowComponentBuilder> | ActionRowBuilder<MessageActionRowComponentBuilder>[]) : MessageCreateOptions {
+        return {
+            components: this._createRowsToReturn(menus),
+        };
+    }
+
+    static toInteraction(menus: SelectMenuList | SelectMenuList[] | ActionRowBuilder<MessageActionRowComponentBuilder> | ActionRowBuilder<MessageActionRowComponentBuilder>[], ephemeral: boolean = false):  InteractionReplyOptions | InteractionEditReplyOptions {
+        return {
+            components: this._createRowsToReturn(menus),
+            flags: ephemeral ? [MessageFlags.Ephemeral] : []
+        };
+    }
+
+    private static _createRowsToReturn(menus: SelectMenuList | SelectMenuList[] | ActionRowBuilder<MessageActionRowComponentBuilder> | ActionRowBuilder<MessageActionRowComponentBuilder>[]): ActionRowBuilder<MessageActionRowComponentBuilder>[]{
+
+        if (Array.isArray(menus)) {
+            return menus.map(menu =>
+                menu instanceof ActionRowBuilder
+                    ? menu
+                    : SelectMenuManager.row(menu)
+            );
+        }
+
+        return menus instanceof ActionRowBuilder
+            ? [menus]
+            : [SelectMenuManager.row(menus)];
     }
 }
