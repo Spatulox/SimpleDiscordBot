@@ -18,7 +18,7 @@
     "pub:minor": "npm run minor && npm publish --access public",
     "pub:major": "npm run major && npm publish --access public",
     "test-pack": "npm run patch && npm publish --access public",
-    "dev": "nodemon --exec tsx src/test/index.ts"
+    "dev": "tsx watch src/test/index.ts"
   },
   "license": "MIT",
   "dependencies": {
@@ -29,7 +29,6 @@
     "@types/node": "^22.14.0",
     "@types/node-schedule": "^2.1.7",
     "dotenv": "^17.2.4",
-    "nodemon": "^3.1.9",
     "tsup": "^8.5.1",
     "tsx": "^4.20.3",
     "typescript": "^5.9.3"
