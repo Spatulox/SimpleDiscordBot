@@ -1,17 +1,26 @@
-import {Bot, EmbedColor, EmbedManager, GuildManager} from "../../index";
-import {ComponentManager, ComponentManagerField} from "../../manager/messages/ComponentManager";
+import {Bot, EmbedColor, FileManager, GuildManager, SelectMenuManager} from "../../index";
+import {
+    ComponentManager,
+    ComponentManagerField,
+    ComponentManagerFileInput
+} from "../../manager/messages/ComponentManager";
+import {SelectMenuCreateOption} from "../../manager/interactions/SelectMenuManager";
+import fs from "fs/promises";
 
-export async function component_test(){
+export async function component_test() {
     const channel = await GuildManager.channel.text.find("1162047096220827831")
-    if(channel) {
-        /*await channel.send(ComponentManager.toMessage(ComponentManager.create()))
-        await channel.send(ComponentManager.toMessage(ComponentManager.create(null, EmbedColor.crimson)))
-        await channel.send(ComponentManager.toMessage(ComponentManager.create("Pas null", EmbedColor.crimson)))
-        await channel.send(ComponentManager.toMessage(ComponentManager.description("desc desc")))
-        await channel.send(ComponentManager.toMessage(ComponentManager.debug("desc debug")))
-        await channel.send(ComponentManager.toMessage(ComponentManager.simple("desc simple")))*/
+    const botIconUrl = Bot.client?.user?.displayAvatarURL({forceStatic: false, size: 128}) ?? ""
+    if (channel) {
+        await channel.send("--BASIC--")
+        await channel.send(ComponentManager.toMessage(ComponentManager.create()))
+        await channel.send(ComponentManager.toMessage(ComponentManager.create({title:null, color:EmbedColor.crimson})))
+        await channel.send(ComponentManager.toMessage(ComponentManager.create({title: "Pas null", color: EmbedColor.crimson, thumbnailUrl: botIconUrl})))
+        await channel.send(ComponentManager.toMessage(ComponentManager.simple("Desc simple")))
+        await channel.send(ComponentManager.toMessage(ComponentManager.success("Desc success")))
+        await channel.send(ComponentManager.toMessage(ComponentManager.debug("Desc debug")))
+        await channel.send(ComponentManager.toMessage(ComponentManager.error("Desc error")))
 
-        const botIconUrl = Bot.client?.user?.displayAvatarURL({ forceStatic: false, size: 128 })
+        await channel.send("--COMPLEX--")
         const fields: ComponentManagerField[] = [
             {name: "Serveur", value: "Helldivers FR", thumbnailUrl: botIconUrl},
             {name: "Membres", value: "1,234"},
@@ -19,15 +28,25 @@ export async function component_test(){
             {name: "Boost", value: "Niveau 2"}
         ];
 
-        const container = ComponentManager.create({thumbnailUrl: botIconUrl})
+        const selectOption: SelectMenuCreateOption[] = [
+            {label: "Test", value: "Test"},
+            {label: "Test2", value: "Test2"},
+            {label: "Test3", value: "Test3"}
+        ]
+
+        const fileBuf = await fs.readFile("./handlers/commands/example.json")
+        const filesData: ComponentManagerFileInput[] = [
+            {buffer: fileBuf, name: "file1.json", spoiler: true},
+            {buffer: fileBuf, name: "file2.json"},
+        ]
+
+        const container = ComponentManager.create({title: "Complex one", color: EmbedColor.yellow, thumbnailUrl: botIconUrl})
         ComponentManager.fields(container, fields)
-        await channel.send(ComponentManager.toMessage(container))
-        /*await channel.send(ComponentManager.toMessage(ComponentManager.error("desc error")))
-
-        await channel.send("Embed")
-
-        await channel.send(EmbedManager.toMessage(EmbedManager.debug("desc embed debug")))
-        await channel.send(EmbedManager.toMessage(EmbedManager.simple("desc embed simple")))
-        await channel.send("---")*/
+        ComponentManager.mediaGallery(container, [botIconUrl, botIconUrl, botIconUrl])
+        ComponentManager.selectMenu(container, SelectMenuManager.users("users_select"))
+        ComponentManager.selectMenu(container, SelectMenuManager.simple("any_select", selectOption))
+        const {files} = ComponentManager.file(container, filesData)
+        await channel.send(ComponentManager.toMessage(container, files))
+        await channel.send("--END--")
     }
 }
