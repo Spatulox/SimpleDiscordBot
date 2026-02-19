@@ -53,7 +53,7 @@ export class ButtonManager {
         return btn
     }
 
-    static row(buttons: ButtonOptions): ActionRowBuilder<ButtonBuilder>
+    /*static row(buttons: ButtonOptions): ActionRowBuilder<ButtonBuilder>
     static row(buttons: ButtonOptions[]): ActionRowBuilder<ButtonBuilder>
     static row(buttons: ButtonOptions | ButtonOptions[]): ActionRowBuilder<ButtonBuilder> {
 
@@ -62,12 +62,12 @@ export class ButtonManager {
                 this.primary(btn)
             );
             return new ActionRowBuilder<ButtonBuilder>()
-                .addComponents(buttonBuilders.slice(0, 5));   
+                .addComponents(buttonBuilders.slice(0, 5));
         }
 
         return new ActionRowBuilder<ButtonBuilder>()
             .addComponents(this.primary(buttons));
-    }
+    }*/
 
 
     static confirm(customId: string) {
@@ -76,5 +76,13 @@ export class ButtonManager {
 
     static cancel(customId: string) {
         return this.danger({ customId, label: "Cancel" });
+    }
+
+    static row(but: ButtonBuilder): ActionRowBuilder<ButtonBuilder>
+    static row(but: ButtonBuilder[]): ActionRowBuilder<ButtonBuilder>
+    static row(but: ButtonBuilder | ButtonBuilder[]): ActionRowBuilder<ButtonBuilder> {
+        const buttons = Array.isArray(but) ? but.slice(0, 5) : [but];
+        return new ActionRowBuilder<ButtonBuilder>()
+            .addComponents(buttons);
     }
 }
