@@ -4,21 +4,31 @@ import {
     SeparatorBuilder,
     SeparatorSpacingSize,
     MessageFlags,
-    MessageCreateOptions, ThumbnailBuilder, SectionBuilder,
+    MessageCreateOptions, ThumbnailBuilder, SectionBuilder, MediaGalleryBuilder, MediaGalleryItemBuilder,
+    StringSelectMenuBuilder, UserSelectMenuBuilder, RoleSelectMenuBuilder, MentionableSelectMenuBuilder,
+    ChannelSelectMenuBuilder, ButtonBuilder, AttachmentBuilder, FileBuilder,
 } from "discord.js";
 import { Bot } from '../../bot/Bot';
 import {EmbedColor} from "./EmbedManager";
+import {SelectMenuManager} from "../interactions/SelectMenuManager";
 
 export interface ComponentManagerField {
     name: string,
     value: string,
-    thumbnailUrl?: string
+    button?: ButtonBuilder[]
+    thumbnailUrl?: string,
 }
 
 export interface ComponentManagerCreate {
     title?: string | null,
     color?: EmbedColor | null,
     thumbnailUrl?: string
+}
+
+export interface ComponentManagerFileInput {
+    buffer: Buffer;
+    name: string;
+    spoiler?: boolean;
 }
 
 export class ComponentManager {
@@ -35,25 +45,22 @@ export class ComponentManager {
             .setAccentColor(option?.color ?? ComponentManager.DEFAULT_COLOR);
 
         if (option?.title || option?.thumbnailUrl) {
-            const headerSection = new SectionBuilder();
-
-            if (option?.title) {
-                headerSection.addTextDisplayComponents(
-                    new TextDisplayBuilder().setContent("## " + option.title)
-                );
-            } else {
-                headerSection.addTextDisplayComponents(
-                    new TextDisplayBuilder().setContent("\u200B")
-                );
-            }
-
             if (option?.thumbnailUrl) {
-                headerSection.setThumbnailAccessory(
-                    new ThumbnailBuilder().setURL(option.thumbnailUrl)
+                const headerSection = new SectionBuilder()
+                    .addTextDisplayComponents(
+                        new TextDisplayBuilder().setContent(
+                            option?.title ? "## " + option.title : "\u200B"
+                        )
+                    )
+                    .setThumbnailAccessory(
+                        new ThumbnailBuilder().setURL(option.thumbnailUrl)
+                    );
+                container.addSectionComponents(headerSection);
+            } else {
+                container.addTextDisplayComponents(
+                    new TextDisplayBuilder().setContent("## " + option.title!)
                 );
             }
-
-            container.addSectionComponents(headerSection);
             container.addSeparatorComponents(this.separator());
         }
 
@@ -70,32 +77,10 @@ export class ComponentManager {
     }
 
     /**
-     * Creates error ComponentV2
-     */
-    static error(description: string): ContainerBuilder {
-        return this.create({title:"Something went wrong", color: EmbedColor.error})
-            .addTextDisplayComponents(
-                new TextDisplayBuilder().setContent(description)
-            )
-            .addSeparatorComponents(this.separator())
-    }
-
-    /**
      * Creates success ComponentV2
      */
     static success(description: string): ContainerBuilder {
         return this.create({title:"Success", color:EmbedColor.success})
-            .addTextDisplayComponents(
-                new TextDisplayBuilder().setContent(description)
-            )
-            .addSeparatorComponents(this.separator())
-    }
-
-    /**
-     * Creates simple description ComponentV2
-     */
-    static description(description: string): ContainerBuilder {
-        return this.create()
             .addTextDisplayComponents(new TextDisplayBuilder().setContent(description))
             .addSeparatorComponents(this.separator())
     }
@@ -104,7 +89,18 @@ export class ComponentManager {
      * Creates debug ComponentV2
      */
     static debug(description: string): ContainerBuilder {
-        return this.create({title:"Debug", color:EmbedColor.green})
+        return this.create({title:"Debug", color:EmbedColor.minecraft})
+            .addTextDisplayComponents(
+                new TextDisplayBuilder().setContent(description)
+            )
+            .addSeparatorComponents(this.separator())
+    }
+
+    /**
+     * Creates error ComponentV2
+     */
+    static error(description: string): ContainerBuilder {
+        return this.create({title:"Something went wrong", color: EmbedColor.error})
             .addTextDisplayComponents(
                 new TextDisplayBuilder().setContent(description)
             )
@@ -143,7 +139,6 @@ export class ComponentManager {
     }
 
 
-
     /**
      * Multiple fields
      */
@@ -153,6 +148,69 @@ export class ComponentManager {
         });
         return container;
     }
+
+    /**
+     * Add a media gallery (links)
+     */
+    static mediaGallery(container: ContainerBuilder, urls: string[]): ContainerBuilder {
+        const gallery = new MediaGalleryBuilder();
+        urls.forEach(url => {
+            gallery.addItems(new MediaGalleryItemBuilder().setURL(url));
+        });
+        container.addMediaGalleryComponents(gallery);
+        return container;
+    }
+
+
+    /**
+     * Add a select menu
+     */
+    static selectMenu(container: ContainerBuilder, selectMenu: StringSelectMenuBuilder[] | UserSelectMenuBuilder[] | RoleSelectMenuBuilder[] | MentionableSelectMenuBuilder[] | ChannelSelectMenuBuilder[]): ContainerBuilder
+    static selectMenu(container: ContainerBuilder, selectMenu: StringSelectMenuBuilder | UserSelectMenuBuilder | RoleSelectMenuBuilder | MentionableSelectMenuBuilder | ChannelSelectMenuBuilder): ContainerBuilder
+    static selectMenu(
+            container: ContainerBuilder,
+            selectMenu: StringSelectMenuBuilder | UserSelectMenuBuilder | RoleSelectMenuBuilder | MentionableSelectMenuBuilder | ChannelSelectMenuBuilder |
+                        (StringSelectMenuBuilder | UserSelectMenuBuilder | RoleSelectMenuBuilder | MentionableSelectMenuBuilder | ChannelSelectMenuBuilder)[]
+    ): ContainerBuilder {
+        const menus = Array.isArray(selectMenu) ? selectMenu : [selectMenu];
+        menus.forEach(menu => {
+            const row = SelectMenuManager.row(menu);
+            container.addActionRowComponents(row);
+        });
+
+        return container;
+    }
+
+
+    /**
+     * Add file(s)
+     * Don't forget to get the files, return by the function and send it via the "file" field when sending message, or passing the file to the ComponentManager.toMessage()
+     */
+    static file(container: ContainerBuilder, file: ComponentManagerFileInput): { container: ContainerBuilder, files: AttachmentBuilder[] };
+    static file(container: ContainerBuilder, file: ComponentManagerFileInput[]): { container: ContainerBuilder, files: AttachmentBuilder[] };
+    static file(container: ContainerBuilder, file: ComponentManagerFileInput | ComponentManagerFileInput[]): { container: ContainerBuilder, files: AttachmentBuilder[] } {
+        const files: AttachmentBuilder[] = [];
+        const fileArray = Array.isArray(file) ? file : [file];
+
+        fileArray.forEach(f => {
+            const attachment = new AttachmentBuilder(f.buffer, {
+                name: f.name
+            });
+            files.push(attachment);
+
+            container.addFileComponents(
+                new FileBuilder()
+                    .setURL(`attachment://${f.name}`)
+                    .setSpoiler(f.spoiler ?? false)
+            )
+            container.addSeparatorComponents(this.separator());
+        });
+
+        return { container, files };
+    }
+
+
+
 
     private static footer(container: ContainerBuilder): ContainerBuilder {
         container.addTextDisplayComponents(
@@ -165,9 +223,16 @@ export class ComponentManager {
     /**
      * Transform ComponentV2 into object for channel.send()
      */
-    static toMessage(container: ContainerBuilder, footer: boolean = true): MessageCreateOptions {
+    static toMessage(container: ContainerBuilder, file: AttachmentBuilder | AttachmentBuilder[] | null = null, footer: boolean = true): MessageCreateOptions {
         if(footer){
-            container = this.footer(container);
+            this.footer(container);
+        }
+        if(file){
+            return {
+                components: [container],
+                files: Array.isArray(file) ? file : [file],
+                flags: [MessageFlags.IsComponentsV2]
+            };
         }
         return {
             components: [container],
