@@ -1,4 +1,4 @@
-import {Bot, EmbedColor, FileManager, GuildManager, SelectMenuManager} from "../../index";
+import {Bot, EmbedColor, GuildManager, SelectMenuManager} from "../../index";
 import {
     ComponentManager,
     ComponentManagerField,
@@ -40,7 +40,7 @@ export async function component_test() {
             {buffer: fileBuf, name: "file2.json"},
         ]
 
-        const container = ComponentManager.create({title: "Complex one", color: EmbedColor.yellow, thumbnailUrl: botIconUrl})
+        const container = ComponentManager.create({title: "Complex one", color: EmbedColor.transparent, thumbnailUrl: botIconUrl})
         ComponentManager.fields(container, fields)
         ComponentManager.mediaGallery(container, [botIconUrl, botIconUrl, botIconUrl])
         ComponentManager.selectMenu(container, SelectMenuManager.users("users_select"))
