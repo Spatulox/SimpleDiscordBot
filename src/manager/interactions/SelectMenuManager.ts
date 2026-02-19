@@ -11,9 +11,9 @@ import {
 
 export type SelectMenuCreateOption = {
     label: string;
+    value: string
     description?: string;
     emoji?: string;
-    value: string
 }
 
 export class SelectMenuManager {

@@ -6,6 +6,7 @@ import {
 import { Bot } from '../../bot/Bot';
 
 export enum EmbedColor {
+    transparent = "transparent",
     error = 0x880015,
     success = 0x00FF00,
     black = 0x000000,
@@ -46,7 +47,6 @@ export enum EmbedColor {
 
 export class EmbedManager {
     private static get BOT_ICON(): string {
-        if (Bot.config.botIconUrl) return Bot.config.botIconUrl;
         return Bot.client?.user?.displayAvatarURL({ forceStatic: false, size: 128 }) || "";
     }
 
@@ -59,8 +59,13 @@ export class EmbedManager {
      */
     static create(color: EmbedColor | null = null): EmbedBuilder {
         const embed = new EmbedBuilder()
-            .setColor(color ?? this.DEFAULT_COLOR)
             .setTimestamp(new Date());
+
+        const colorC = color ?? this.DEFAULT_COLOR;
+
+        if(colorC !== EmbedColor.transparent){
+            embed.setColor(colorC)
+        }
 
         if (Bot.config.botName) {
             const footer: EmbedFooterData = {

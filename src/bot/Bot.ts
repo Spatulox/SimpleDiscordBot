@@ -14,7 +14,6 @@ type CriticConfig = {
 };
 
 export type BotConfig = {
-    botIconUrl?: string;
     defaultEmbedColor?: number | EmbedColor;
     botName?: string
     log?: ConfigLog
