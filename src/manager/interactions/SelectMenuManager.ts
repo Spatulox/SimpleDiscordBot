@@ -6,7 +6,8 @@ import {
     RoleSelectMenuBuilder,
     MentionableSelectMenuBuilder,
     ChannelSelectMenuBuilder,
-    MessageActionRowComponentBuilder, ChannelType,
+    MessageActionRowComponentBuilder, ChannelType, MessageCreateOptions, MessageFlags,
+    InteractionReplyOptions, InteractionEditReplyOptions,
 } from "discord.js";
 
 export type SelectMenuCreateOption = {
@@ -15,6 +16,8 @@ export type SelectMenuCreateOption = {
     description?: string;
     emoji?: string;
 }
+
+export type SelectMenuList = StringSelectMenuBuilder | UserSelectMenuBuilder | RoleSelectMenuBuilder | MentionableSelectMenuBuilder | ChannelSelectMenuBuilder
 
 export class SelectMenuManager {
 

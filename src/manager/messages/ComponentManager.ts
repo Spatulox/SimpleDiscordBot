@@ -4,13 +4,11 @@ import {
     SeparatorBuilder,
     SeparatorSpacingSize,
     MessageFlags,
-    MessageCreateOptions, ThumbnailBuilder, SectionBuilder, MediaGalleryBuilder, MediaGalleryItemBuilder,
-    StringSelectMenuBuilder, UserSelectMenuBuilder, RoleSelectMenuBuilder, MentionableSelectMenuBuilder,
-    ChannelSelectMenuBuilder, ButtonBuilder, AttachmentBuilder, FileBuilder,
+    MessageCreateOptions, ThumbnailBuilder, SectionBuilder, MediaGalleryBuilder, MediaGalleryItemBuilder, ButtonBuilder, AttachmentBuilder, FileBuilder,
 } from "discord.js";
 import { Bot } from '../../bot/Bot';
 import {EmbedColor} from "./EmbedManager";
-import {SelectMenuManager} from "../interactions/SelectMenuManager";
+import {SelectMenuList, SelectMenuManager} from "../interactions/SelectMenuManager";
 
 export interface ComponentManagerField {
     name: string,
@@ -169,12 +167,11 @@ export class ComponentManager {
     /**
      * Add a select menu
      */
-    static selectMenu(container: ContainerBuilder, selectMenu: StringSelectMenuBuilder[] | UserSelectMenuBuilder[] | RoleSelectMenuBuilder[] | MentionableSelectMenuBuilder[] | ChannelSelectMenuBuilder[]): ContainerBuilder
-    static selectMenu(container: ContainerBuilder, selectMenu: StringSelectMenuBuilder | UserSelectMenuBuilder | RoleSelectMenuBuilder | MentionableSelectMenuBuilder | ChannelSelectMenuBuilder): ContainerBuilder
+    static selectMenu(container: ContainerBuilder, selectMenu: SelectMenuList[]): ContainerBuilder
+    static selectMenu(container: ContainerBuilder, selectMenu: SelectMenuList): ContainerBuilder
     static selectMenu(
             container: ContainerBuilder,
-            selectMenu: StringSelectMenuBuilder | UserSelectMenuBuilder | RoleSelectMenuBuilder | MentionableSelectMenuBuilder | ChannelSelectMenuBuilder |
-                        (StringSelectMenuBuilder | UserSelectMenuBuilder | RoleSelectMenuBuilder | MentionableSelectMenuBuilder | ChannelSelectMenuBuilder)[]
+            selectMenu: SelectMenuList | SelectMenuList[]
     ): ContainerBuilder {
         const menus = Array.isArray(selectMenu) ? selectMenu : [selectMenu];
         menus.forEach(menu => {
