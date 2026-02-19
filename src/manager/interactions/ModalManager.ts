@@ -237,11 +237,4 @@ export class ModalManager {
 
         return null;
     }
-
-    /**
-     * Transform modal to interaction.showModal() format
-     */
-    static toInteraction(modal: ModalBuilder): ModalBuilder {
-        return modal;
-    }
 }

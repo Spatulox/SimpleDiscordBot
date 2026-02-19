@@ -148,29 +148,6 @@ export class EmbedManager {
     }
 
     /**
-     * Fluent API shortcuts
-     */
-    static title(embed: EmbedBuilder, title: string): EmbedBuilder {
-        return embed.setTitle(title);
-    }
-
-    static desc(embed: EmbedBuilder, description: string): EmbedBuilder {
-        return embed.setDescription(description);
-    }
-
-    static thumb(embed: EmbedBuilder, url: string): EmbedBuilder {
-        return embed.setThumbnail(url);
-    }
-
-    static image(embed: EmbedBuilder, url: string): EmbedBuilder {
-        return embed.setImage(url);
-    }
-
-    static footer(embed: EmbedBuilder, text: string): EmbedBuilder {
-        return embed.setFooter({ text, iconURL: this.BOT_ICON });
-    }
-
-    /**
      * Transform embed into objet for interaction.reply()
      */
     static toInteraction(embed: EmbedBuilder, ephemeral: boolean = false): InteractionReplyOptions | InteractionEditReplyOptions {

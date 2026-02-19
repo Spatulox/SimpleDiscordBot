@@ -10,12 +10,10 @@ import { Bot } from '../../bot/Bot';
 import {EmbedColor} from "./EmbedManager";
 import {SelectMenuList, SelectMenuManager} from "../interactions/SelectMenuManager";
 
-export interface ComponentManagerField {
-    name: string,
-    value: string,
-    button?: ButtonBuilder[]
-    thumbnailUrl?: string,
-}
+interface BasicComponentManagerField { name: string, value: string }
+interface ComponentManagerFieldThumbnail extends BasicComponentManagerField { thumbnailUrl: string }
+interface ComponentManagerFieldAccessory extends BasicComponentManagerField { button: ButtonBuilder }
+export type ComponentManagerField = ComponentManagerFieldAccessory | ComponentManagerFieldThumbnail | BasicComponentManagerField;
 
 export interface ComponentManagerCreate {
     title?: string | null,
@@ -119,26 +117,54 @@ export class ComponentManager {
      * Quick field adder
      */
     static field(container: ContainerBuilder, field: ComponentManagerField): ContainerBuilder {
-        if (field.thumbnailUrl) {
+
+        if("button" in field || "thumbnailUrl" in field){
             const section = new SectionBuilder()
                 .addTextDisplayComponents(
                     new TextDisplayBuilder().setContent(`**${field.name}**`),
                     new TextDisplayBuilder().setContent(field.value)
-                )
-                .setThumbnailAccessory(
-                    new ThumbnailBuilder().setURL(field.thumbnailUrl)
                 );
+
+            if("button" in field){
+                section.setButtonAccessory(field.button)
+            } else if ("thumbnailUrl" in field){
+                section.setThumbnailAccessory(new ThumbnailBuilder().setURL(field.thumbnailUrl))
+            }
+
             container.addSectionComponents(section);
         } else {
-            container.addTextDisplayComponents(
-                new TextDisplayBuilder().setContent(`**${field.name}**`),
-                new TextDisplayBuilder().setContent(field.value)
-            );
+            container
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder().setContent(`**${field.name}**`),
+                    new TextDisplayBuilder().setContent(field.value)
+                );
         }
 
         container.addSeparatorComponents(this.separator());
         return container;
     }
+
+    /*static field(container: ContainerBuilder, field: ComponentManagerField): ContainerBuilder {
+        const section = new SectionBuilder()
+            .addTextDisplayComponents(
+                new TextDisplayBuilder().setContent(`**${field.name}**`),
+                new TextDisplayBuilder().setContent(field.value)
+            );
+
+        if (field.thumbnailUrl) {
+            section.setThumbnailAccessory(
+                new ThumbnailBuilder().setURL(field.thumbnailUrl)
+            );
+        }
+
+        if (field.button && field.button.length > 0) {
+            section.setButtonAccessory(field.button[0]!);
+        }
+
+        container.addSectionComponents(section);
+        container.addSeparatorComponents(this.separator());
+        return container;
+    }*/
 
 
     /**
@@ -223,6 +249,9 @@ export class ComponentManager {
 
     /**
      * Transform ComponentV2 into object for channel.send()
+     * @param container The container to send
+     * @param file Only if you have files to attach
+     * @param footer Sometimes you don't want to have the Bot name neither the timestamp...
      */
     static toMessage(container: ContainerBuilder, file: AttachmentBuilder | AttachmentBuilder[] | null = null, footer: boolean = true): MessageCreateOptions {
         if(footer){

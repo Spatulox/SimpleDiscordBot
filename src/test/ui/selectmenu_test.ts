@@ -1,10 +1,12 @@
 import {GuildManager} from "../../manager/guild/GuildManager";
 //import {Bot} from "../../bot/Bot";
 import {SelectMenuCreateOption, SelectMenuManager} from "../../manager/interactions/SelectMenuManager";
+import {ChatInputCommandInteraction, InteractionReplyOptions} from "discord.js";
 
-export async function selectmenu_test() {
+export async function selectmenu_test(interaction: ChatInputCommandInteraction) {
     const channel = await GuildManager.channel.text.find("1162047096220827831")
-    //const botIconUrl = Bot.client?.user?.displayAvatarURL({forceStatic: false, size: 128}) ?? ""
+
+    interaction.reply(SelectMenuManager.toInteraction(SelectMenuManager.users("users_menu_interaction")) as InteractionReplyOptions)
     if (channel) {
         await channel.send("--PRE-BUILT--")
         await channel.send(SelectMenuManager.toMessage(SelectMenuManager.users("user_menu")))

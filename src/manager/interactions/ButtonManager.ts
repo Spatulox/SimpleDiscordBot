@@ -1,7 +1,7 @@
 import {
     ButtonBuilder,
     ButtonStyle,
-    ActionRowBuilder,
+    ActionRowBuilder, MessageCreateOptions, InteractionReplyOptions, InteractionEditReplyOptions, MessageFlags,
 } from "discord.js";
 
 export interface ButtonOptions {
@@ -69,5 +69,33 @@ export class ButtonManager {
         const buttons = Array.isArray(but) ? but.slice(0, 5) : [but];
         return new ActionRowBuilder<ButtonBuilder>()
             .addComponents(buttons);
+    }
+
+    static toMessage(button: ButtonBuilder | ButtonBuilder[] | ActionRowBuilder<ButtonBuilder> | ActionRowBuilder<ButtonBuilder>[]): MessageCreateOptions {
+        return {
+            components: this._createRowsToReturn(button),
+        }
+    }
+
+    static toInteraction(button: ButtonBuilder | ButtonBuilder[] | ActionRowBuilder<ButtonBuilder> | ActionRowBuilder<ButtonBuilder>[], ephemeral: boolean = false): InteractionReplyOptions | InteractionEditReplyOptions {
+        return {
+            components: this._createRowsToReturn(button),
+            flags: ephemeral ? [MessageFlags.Ephemeral] : []
+        }
+    }
+
+    private static _createRowsToReturn(button: ButtonBuilder | ButtonBuilder[] | ActionRowBuilder<ButtonBuilder> | ActionRowBuilder<ButtonBuilder>[]): ActionRowBuilder<ButtonBuilder>[]{
+
+        if (Array.isArray(button)) {
+            return button.map(btn =>
+                btn instanceof ActionRowBuilder
+                    ? btn
+                    : ButtonManager.row(btn)
+            );
+        }
+
+        return button instanceof ActionRowBuilder
+            ? [button]
+            : [ButtonManager.row(button)];
     }
 }

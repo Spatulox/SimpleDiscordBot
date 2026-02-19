@@ -6,6 +6,7 @@ import {
 } from "../../manager/messages/ComponentManager";
 import {SelectMenuCreateOption} from "../../manager/interactions/SelectMenuManager";
 import fs from "fs/promises";
+import {ButtonManager} from "../../manager/interactions/ButtonManager";
 
 export async function component_test() {
     const channel = await GuildManager.channel.text.find("1162047096220827831")
@@ -23,7 +24,7 @@ export async function component_test() {
         await channel.send("--COMPLEX--")
         const fields: ComponentManagerField[] = [
             {name: "Serveur", value: "Helldivers FR", thumbnailUrl: botIconUrl},
-            {name: "Membres", value: "1,234"},
+            {name: "Membres", value: "1,234", button: ButtonManager.success({customId: "success_component_button"})},
             {name: "Channels", value: "56"},
             {name: "Boost", value: "Niveau 2"}
         ];
@@ -45,8 +46,8 @@ export async function component_test() {
         ComponentManager.mediaGallery(container, [botIconUrl, botIconUrl, botIconUrl])
         ComponentManager.selectMenu(container, SelectMenuManager.users("users_select"))
         ComponentManager.selectMenu(container, SelectMenuManager.simple("any_select", selectOption))
-        const {files} = ComponentManager.file(container, filesData)
-        await channel.send(ComponentManager.toMessage(container, files))
+        const {files} = ComponentManager.file(container, filesData) // Since discord works really weird, we put files reference inside the container, but the buffed files can't be put right now (not really like that but it's a simple explanation)
+        await channel.send(ComponentManager.toMessage(container, files)) // Buffed files goes here
         await channel.send("--END--")
     }
 }
