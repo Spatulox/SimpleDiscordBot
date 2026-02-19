@@ -4,16 +4,24 @@ import {
     SeparatorBuilder,
     SeparatorSpacingSize,
     MessageFlags,
-    MessageCreateOptions,
+    MessageCreateOptions, ThumbnailBuilder, SectionBuilder,
 } from "discord.js";
 import { Bot } from '../../bot/Bot';
 import {EmbedColor} from "./EmbedManager";
 
+export interface ComponentManagerField {
+    name: string,
+    value: string,
+    thumbnailUrl?: string
+}
+
+export interface ComponentManagerCreate {
+    title?: string | null,
+    color?: EmbedColor | null,
+    thumbnailUrl?: string
+}
+
 export class ComponentManager {
-    private static get BOT_ICON(): string {
-        if (Bot.config?.botIconUrl) return Bot.config?.botIconUrl;
-        return Bot.client?.user?.displayAvatarURL({ forceStatic: false, size: 128 }) || "";
-    }
 
     private static get DEFAULT_COLOR(): number {
         return Bot.config?.defaultEmbedColor || EmbedColor.default;
@@ -22,16 +30,31 @@ export class ComponentManager {
     /**
      * Creates base ComponentV2
      */
-    static create(title: string | null = null, color: EmbedColor | null = null): ContainerBuilder {
+    static create(option?: ComponentManagerCreate | null): ContainerBuilder {
         const container = new ContainerBuilder()
-            .setAccentColor(color ?? ComponentManager.DEFAULT_COLOR);
+            .setAccentColor(option?.color ?? ComponentManager.DEFAULT_COLOR);
 
-        if(title){
-            container.addTextDisplayComponents(
-                new TextDisplayBuilder()
-                    .setContent("## " + title)
-            )
-            .addSeparatorComponents(this.separator())
+        if (option?.title || option?.thumbnailUrl) {
+            const headerSection = new SectionBuilder();
+
+            if (option?.title) {
+                headerSection.addTextDisplayComponents(
+                    new TextDisplayBuilder().setContent("## " + option.title)
+                );
+            } else {
+                headerSection.addTextDisplayComponents(
+                    new TextDisplayBuilder().setContent("\u200B")
+                );
+            }
+
+            if (option?.thumbnailUrl) {
+                headerSection.setThumbnailAccessory(
+                    new ThumbnailBuilder().setURL(option.thumbnailUrl)
+                );
+            }
+
+            container.addSectionComponents(headerSection);
+            container.addSeparatorComponents(this.separator());
         }
 
         return container;
@@ -41,7 +64,7 @@ export class ComponentManager {
      * Creates simple ComponentV2 with just description
      */
     static simple(description: string, color: EmbedColor | null = null): ContainerBuilder {
-        return this.create(null, color)
+        return this.create({color})
             .addTextDisplayComponents(new TextDisplayBuilder().setContent(description))
             .addSeparatorComponents(this.separator())
     }
@@ -50,7 +73,7 @@ export class ComponentManager {
      * Creates error ComponentV2
      */
     static error(description: string): ContainerBuilder {
-        return this.create("Something went wrong", EmbedColor.error)
+        return this.create({title:"Something went wrong", color: EmbedColor.error})
             .addTextDisplayComponents(
                 new TextDisplayBuilder().setContent(description)
             )
@@ -61,7 +84,7 @@ export class ComponentManager {
      * Creates success ComponentV2
      */
     static success(description: string): ContainerBuilder {
-        return this.create("Success", EmbedColor.success)
+        return this.create({title:"Success", color:EmbedColor.success})
             .addTextDisplayComponents(
                 new TextDisplayBuilder().setContent(description)
             )
@@ -81,7 +104,7 @@ export class ComponentManager {
      * Creates debug ComponentV2
      */
     static debug(description: string): ContainerBuilder {
-        return this.create("Debug", EmbedColor.green)
+        return this.create({title:"Debug", color:EmbedColor.green})
             .addTextDisplayComponents(
                 new TextDisplayBuilder().setContent(description)
             )
@@ -97,23 +120,36 @@ export class ComponentManager {
     /**
      * Quick field adder
      */
-    static field(container: ContainerBuilder, name: string, value: string): ContainerBuilder {
-        container.addTextDisplayComponents(
-            new TextDisplayBuilder().setContent(`**${name}**`),
-            new TextDisplayBuilder().setContent(value)
-        );
-        container.addSeparatorComponents(this.separator())
+    static field(container: ContainerBuilder, field: ComponentManagerField): ContainerBuilder {
+        if (field.thumbnailUrl) {
+            const section = new SectionBuilder()
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder().setContent(`**${field.name}**`),
+                    new TextDisplayBuilder().setContent(field.value)
+                )
+                .setThumbnailAccessory(
+                    new ThumbnailBuilder().setURL(field.thumbnailUrl)
+                );
+            container.addSectionComponents(section);
+        } else {
+            container.addTextDisplayComponents(
+                new TextDisplayBuilder().setContent(`**${field.name}**`),
+                new TextDisplayBuilder().setContent(field.value)
+            );
+        }
 
+        container.addSeparatorComponents(this.separator());
         return container;
     }
+
 
 
     /**
      * Multiple fields
      */
-    static fields(container: ContainerBuilder, fields: {name: string, value: string}[]): ContainerBuilder {
+    static fields(container: ContainerBuilder, fields: ComponentManagerField[]): ContainerBuilder {
         fields.forEach((f) => {
-            this.field(container, f.name, f.value);
+            this.field(container, f);
         });
         return container;
     }
