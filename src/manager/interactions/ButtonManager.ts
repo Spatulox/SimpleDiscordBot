@@ -53,12 +53,20 @@ export class ButtonManager {
         return btn
     }
 
-    static row(buttons: ButtonOptions[]): ActionRowBuilder<ButtonBuilder> {
-        const buttonBuilders = buttons.map(btn =>
-            this.primary(btn)
-        );
+    static row(buttons: ButtonOptions): ActionRowBuilder<ButtonBuilder>
+    static row(buttons: ButtonOptions[]): ActionRowBuilder<ButtonBuilder>
+    static row(buttons: ButtonOptions | ButtonOptions[]): ActionRowBuilder<ButtonBuilder> {
+
+        if(Array.isArray(buttons)) {
+            const buttonBuilders = buttons.map(btn =>
+                this.primary(btn)
+            );
+            return new ActionRowBuilder<ButtonBuilder>()
+                .addComponents(buttonBuilders.slice(0, 5));   
+        }
+
         return new ActionRowBuilder<ButtonBuilder>()
-            .addComponents(buttonBuilders.slice(0, 5));
+            .addComponents(this.primary(buttons));
     }
 
 
