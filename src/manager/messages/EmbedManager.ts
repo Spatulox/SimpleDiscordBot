@@ -46,7 +46,6 @@ export enum EmbedColor {
 
 export class EmbedManager {
     private static get BOT_ICON(): string {
-        if (Bot.config.botIconUrl) return Bot.config.botIconUrl;
         return Bot.client?.user?.displayAvatarURL({ forceStatic: false, size: 128 }) || "";
     }
 
