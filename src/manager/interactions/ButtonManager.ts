@@ -1,0 +1,73 @@
+import {
+    ButtonBuilder,
+    ButtonStyle,
+    ActionRowBuilder,
+} from "discord.js";
+
+export interface ButtonOptions {
+    label?: string;
+    emoji?: string;
+    customId: string;
+    disabled?: boolean;
+}
+
+export class ButtonManager {
+
+    private static _create(options: ButtonOptions & { style: ButtonStyle }): ButtonBuilder {
+        const btn = new ButtonBuilder()
+            .setCustomId(options.customId)
+            .setLabel(options.label ?? "Button")
+            .setStyle(options.style)
+            .setDisabled(options.disabled ?? false);
+
+        if (options.emoji) {
+            btn.setEmoji(options.emoji);
+        }
+
+        return btn;
+    }
+
+    static primary(options: ButtonOptions): ButtonBuilder {
+        return this._create({ ...options, style: ButtonStyle.Primary });
+    }
+
+    static success(options: ButtonOptions): ButtonBuilder {
+        return this._create({ ...options, style: ButtonStyle.Success });
+    }
+
+    static secondary(options: ButtonOptions): ButtonBuilder {
+        return this._create({ ...options, style: ButtonStyle.Secondary });
+    }
+
+    static danger(options: ButtonOptions): ButtonBuilder {
+        return this._create({ ...options, style: ButtonStyle.Danger });
+    }
+
+    static link(options: Omit<ButtonOptions & {url: string, label: string}, "customId">): ButtonBuilder {
+        const btn = new ButtonBuilder()
+            .setLabel(options.label)
+            .setStyle(ButtonStyle.Link)
+            .setURL(options.url)
+
+        if(options.emoji) btn.setEmoji(options.emoji);
+
+        return btn
+    }
+
+
+    static confirm(customId: string) {
+        return this.success({ customId, label: "Confirm" });
+    }
+
+    static cancel(customId: string) {
+        return this.danger({ customId, label: "Cancel" });
+    }
+
+    static row(but: ButtonBuilder): ActionRowBuilder<ButtonBuilder>
+    static row(but: ButtonBuilder[]): ActionRowBuilder<ButtonBuilder>
+    static row(but: ButtonBuilder | ButtonBuilder[]): ActionRowBuilder<ButtonBuilder> {
+        const buttons = Array.isArray(but) ? but.slice(0, 5) : [but];
+        return new ActionRowBuilder<ButtonBuilder>()
+            .addComponents(buttons);
+    }
+}
