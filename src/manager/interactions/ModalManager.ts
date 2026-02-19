@@ -14,15 +14,26 @@ export enum ModalFieldType {
     PHONE,
 }
 
-export interface ModalField {
-    type: ModalFieldType;
+interface BaseModalField {
     label: string;
-    placeholder?: string;
     required?: boolean;
 }
 
-interface InternalModalField extends ModalField {
+interface TextModalField extends BaseModalField {
+    type: ModalFieldType.SHORT | ModalFieldType.LONG | ModalFieldType.NUMBER | ModalFieldType.PHONE;
+    placeholder?: string;
+}
+
+interface DateModalField extends BaseModalField {
+    type: ModalFieldType.DATE;
+}
+
+export type ModalField = TextModalField | DateModalField;
+
+interface InternalModalField extends BaseModalField {
     customId: string;
+    type: ModalFieldType;
+    placeholder?: string;
 }
 
 export class ModalManager {
@@ -64,7 +75,7 @@ export class ModalManager {
                 builder.setStyle(TextInputStyle.Short).setMaxLength(10);
                 break;
             case ModalFieldType.DATE:
-                builder.setStyle(TextInputStyle.Short).setMaxLength(10);
+                builder.setStyle(TextInputStyle.Short).setMaxLength(10).setPlaceholder("YYYY-MM-DD / DD-MM-YYYY or YYYY/MM/DD / DD/MM/YYYY");
                 break;
             case ModalFieldType.PHONE:
                 builder.setStyle(TextInputStyle.Short).setMaxLength(20);
@@ -74,7 +85,9 @@ export class ModalManager {
         return new LabelBuilder().setLabel(opt.label).setTextInputComponent(builder);
     }
 
-    /**
+
+
+        /**
      * Simple modal with ONE field - DIRECT ModalBuilder return !
      */
     static simple(
@@ -86,7 +99,9 @@ export class ModalManager {
         const opt: InternalModalField = {
             ...field,
             customId: `${customId}_input`,
-            placeholder : field.placeholder ?? `Enter ${field.label.toLowerCase()}`,
+            placeholder: ('placeholder' in field && field.placeholder)
+                ? field.placeholder
+                : `Enter ${field.label.toLowerCase()}`
         }
 
         modal.addLabelComponents(this._createField(opt));
@@ -99,8 +114,8 @@ export class ModalManager {
     static titleDescription(
         customId: string,
         modalTitle: string,
-        title: Omit<ModalField, "type">,
-        description: Omit<ModalField, "type">,
+        title: Omit<TextModalField, "type">,
+        description: Omit<TextModalField, "type">,
     ): ModalBuilder {
         const modal = this.create(modalTitle, customId);
 
@@ -134,7 +149,7 @@ export class ModalManager {
         modalTitle: string = "Select Date",
         inputLabel: string = "Date"
     ): ModalBuilder {
-        return this.simple(`${customId}_date`, modalTitle, {label:inputLabel, type: ModalFieldType.DATE, placeholder: "YYYY-MM-DD or DD/MM/YYYY"});
+        return this.simple(`${customId}_date`, modalTitle, {label:inputLabel, type: ModalFieldType.DATE});
     }
 
     /**
@@ -189,28 +204,37 @@ export class ModalManager {
         return isNaN(num) ? null : num;
     }
 
-    static parsePhone(value: string): string | null {
-        const clean = value.replace(/[\s\-\(\)]/g, '');
-        if (/^(06|07|09)\d{8}$/.test(clean) || /^(\+33|0033)?[6-9]\d{8}$/.test(clean)) {
-            if (clean.startsWith('06') || clean.startsWith('07') || clean.startsWith('09')) {
-                return '+33' + clean.slice(2);
-            }
-            return clean.startsWith('0033') ? '+33' + clean.slice(4) : clean;
-        }
-        return null;
-    }
-
+    /**
+     * yyyy-mm-dd / dd-mm-yyyy / dd/mm/yyyy / yyyy/mm/dd
+     * American format is not supported lol
+     * @param value
+     */
     static parseDate(value: string): Date | null {
-        if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        if (/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(value)) { // 2020-12-20
             const [year, month, day] = value.split('-').map(Number);
             const date = new Date(year!, month! - 1, day);
             return isNaN(date.getTime()) ? null : date;
         }
-        if (/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
+
+        if (/^(0[1-9]|[12]\d|3[01])-(0[1-9]|1[0-2])-\d{4}$/.test(value)) { // 20-12-2020
+            const [day, month, year] = value.split('-').map(Number);
+            const date = new Date(year!, month! - 1, day);
+            return isNaN(date.getTime()) ? null : date;
+        }
+
+
+        if (/^(0[1-9]|[12]\d|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/.test(value)) { // 20/12/2020
             const [day, month, year] = value.split('/').map(Number);
             const date = new Date(year!, month! - 1, day);
             return isNaN(date.getTime()) ? null : date;
         }
+
+        if (/^\d{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])$/.test(value)) { // 2020/12/20
+            const [year, month, day] = value.split('/').map(Number);
+            const date = new Date(year!, month! - 1, day);
+            return isNaN(date.getTime()) ? null : date;
+        }
+
         return null;
     }
 
