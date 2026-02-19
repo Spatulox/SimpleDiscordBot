@@ -59,24 +59,23 @@ export class SelectMenuManager {
         customId: string,
         options: SelectMenuCreateOption[],
         pageSize: number = 25
-    ): ActionRowBuilder<MessageActionRowComponentBuilder> {
-        const row = new ActionRowBuilder<MessageActionRowComponentBuilder>();
+    ): ActionRowBuilder<MessageActionRowComponentBuilder>[] {  // ← ARRAY
+
+        const rows: ActionRowBuilder<MessageActionRowComponentBuilder>[] = [];
 
         for (let i = 0; i < options.length; i += pageSize) {
             const pageOptions = options.slice(i, i + pageSize);
             const menu = new StringSelectMenuBuilder()
                 .setCustomId(`${customId}_page_${Math.floor(i/pageSize)}`)
                 .setPlaceholder(`Page ${Math.floor(i/pageSize) + 1}`)
-                .addOptions(pageOptions.map(opt => {
-                    return this.option(opt)
-                }));
+                .addOptions(pageOptions.map(opt => this.option(opt)));
 
-
-            row.addComponents(menu);
+            rows.push(SelectMenuManager.row(menu));
         }
 
-        return row;
+        return rows.slice(0, 5);
     }
+
 
     /**
      * User Select Menu (Components V2)
