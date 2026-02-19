@@ -4,7 +4,6 @@ import {
     SeparatorBuilder,
     SeparatorSpacingSize,
     MessageFlags,
-    InteractionReplyOptions,
     MessageCreateOptions,
 } from "discord.js";
 import { Bot } from '../../bot/Bot';
@@ -112,29 +111,12 @@ export class ComponentManager {
     /**
      * Multiple fields
      */
-    static fields(container: ContainerBuilder, fields: {name: string, value: string, inline?: boolean}[]): ContainerBuilder {
+    static fields(container: ContainerBuilder, fields: {name: string, value: string}[]): ContainerBuilder {
         fields.forEach((f) => {
-            this.field(container, f.name, f.value, f.inline ?? false);
+            this.field(container, f.name, f.value);
         });
         return container;
     }
-
-    private static footer(container: ContainerBuilder): ContainerBuilder {
-
-        container.addSeparatorComponents(
-            new SeparatorBuilder()
-                .setDivider(true)
-                .setSpacing(SeparatorSpacingSize.Small)
-        );
-
-        const icon = this.BOT_ICON
-
-        if (icon) {
-            container.addTextDisplayComponents(
-                new TextDisplayBuilder()
-                    .setContent(`[${icon.slice(0, 50)}...]`)
-            );
-        }
 
     private static footer(container: ContainerBuilder): ContainerBuilder {
         container.addTextDisplayComponents(
@@ -142,17 +124,6 @@ export class ComponentManager {
                 .setContent(`-# **${Bot.config?.botName || "Bot"} · <t:${Math.floor(Date.now() / 1000)}:d> <t:${Math.floor(Date.now() / 1000)}:t>**`)
         );
         return container;
-    }
-
-    /**
-     * Transform ComponentV2 into object for interaction.reply()
-     */
-    static toInteraction(container: ContainerBuilder, ephemeral: boolean = false): InteractionReplyOptions {
-        container = this.footer(container);
-        return {
-            components: [container],
-            flags: ephemeral ? [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2] : [MessageFlags.IsComponentsV2]
-        };
     }
 
     /**
