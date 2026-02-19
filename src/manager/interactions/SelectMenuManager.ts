@@ -181,4 +181,32 @@ export class SelectMenuManager {
             this.row(component)
         );
     }
+
+    static toMessage(menus: SelectMenuList | SelectMenuList[] | ActionRowBuilder<MessageActionRowComponentBuilder> | ActionRowBuilder<MessageActionRowComponentBuilder>[]) : MessageCreateOptions {
+        return {
+            components: this._createRowsToReturn(menus),
+        };
+    }
+
+    static toInteraction(menus: SelectMenuList | SelectMenuList[] | ActionRowBuilder<MessageActionRowComponentBuilder> | ActionRowBuilder<MessageActionRowComponentBuilder>[], ephemeral: boolean = false):  InteractionReplyOptions | InteractionEditReplyOptions {
+        return {
+            components: this._createRowsToReturn(menus),
+            flags: ephemeral ? [MessageFlags.Ephemeral] : []
+        };
+    }
+
+    private static _createRowsToReturn(menus: SelectMenuList | SelectMenuList[] | ActionRowBuilder<MessageActionRowComponentBuilder> | ActionRowBuilder<MessageActionRowComponentBuilder>[]): ActionRowBuilder<MessageActionRowComponentBuilder>[]{
+
+        if (Array.isArray(menus)) {
+            return menus.map(menu =>
+                menu instanceof ActionRowBuilder
+                    ? menu
+                    : SelectMenuManager.row(menu)
+            );
+        }
+
+        return menus instanceof ActionRowBuilder
+            ? [menus]
+            : [SelectMenuManager.row(menus)];
+    }
 }
