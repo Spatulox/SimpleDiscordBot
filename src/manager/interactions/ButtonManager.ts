@@ -43,31 +43,16 @@ export class ButtonManager {
         return this._create({ ...options, style: ButtonStyle.Danger });
     }
 
-    static link(label: string, url: string, emoji?: string): ButtonBuilder {
+    static link(options: Omit<ButtonOptions & {url: string, label: string}, "customId">): ButtonBuilder {
         const btn = new ButtonBuilder()
-            .setLabel(label)
-            .setURL(url)
+            .setLabel(options.label)
+            .setStyle(ButtonStyle.Link)
+            .setURL(options.url)
 
-        if(emoji) btn.setEmoji(emoji);
+        if(options.emoji) btn.setEmoji(options.emoji);
 
         return btn
     }
-
-    /*static row(buttons: ButtonOptions): ActionRowBuilder<ButtonBuilder>
-    static row(buttons: ButtonOptions[]): ActionRowBuilder<ButtonBuilder>
-    static row(buttons: ButtonOptions | ButtonOptions[]): ActionRowBuilder<ButtonBuilder> {
-
-        if(Array.isArray(buttons)) {
-            const buttonBuilders = buttons.map(btn =>
-                this.primary(btn)
-            );
-            return new ActionRowBuilder<ButtonBuilder>()
-                .addComponents(buttonBuilders.slice(0, 5));
-        }
-
-        return new ActionRowBuilder<ButtonBuilder>()
-            .addComponents(this.primary(buttons));
-    }*/
 
 
     static confirm(customId: string) {
