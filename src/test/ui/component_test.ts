@@ -43,7 +43,7 @@ export async function component_test() {
 
         const container = ComponentManager.create({title: "Complex one", color: EmbedColor.transparent, thumbnailUrl: botIconUrl})
         ComponentManager.fields(container, fields)
-        ComponentManager.mediaGallery(container, [botIconUrl, botIconUrl, botIconUrl])
+        ComponentManager.mediaGallery(container, [{url:botIconUrl}, {url:botIconUrl, spoiler: true}, {url:botIconUrl}])
         ComponentManager.selectMenu(container, SelectMenuManager.users("users_select"))
         ComponentManager.selectMenu(container, SelectMenuManager.simple("any_select", selectOption))
         const {files} = ComponentManager.file(container, filesData) // Since discord works really weird, we put files reference inside the container, but the buffed files can't be put right now (not really like that but it's a simple explanation)

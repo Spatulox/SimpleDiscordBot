@@ -180,10 +180,10 @@ export class ComponentManager {
     /**
      * Add a media gallery (links)
      */
-    static mediaGallery(container: ContainerBuilder, urls: string[]): ContainerBuilder {
+    static mediaGallery(container: ContainerBuilder, medias: {url: string, spoiler?: boolean}[]): ContainerBuilder {
         const gallery = new MediaGalleryBuilder();
-        urls.forEach(url => {
-            gallery.addItems(new MediaGalleryItemBuilder().setURL(url));
+        medias.forEach(med => {
+            gallery.addItems(new MediaGalleryItemBuilder().setURL(med.url).setSpoiler(med.spoiler ?? false));
         });
         container.addMediaGalleryComponents(gallery);
         return container;
