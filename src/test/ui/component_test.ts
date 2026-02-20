@@ -1,26 +1,35 @@
-import {Bot, SimpleColor, GuildManager, SelectMenuManager} from "../../index";
 import {
+    Bot,
+    SimpleColor,
+    GuildManager,
+    SelectMenuManager,
+    ButtonManager,
     ComponentManager,
     ComponentManagerField,
-    ComponentManagerFileInput
-} from "../../manager/messages/ComponentManager";
-import {SelectMenuCreateOption} from "../../manager/interactions/SelectMenuManager";
+    ComponentManagerFileInput,
+    SelectMenuCreateOption,
+    EmbedManager
+} from "../../index";
 import fs from "fs/promises";
-import {ButtonManager} from "../../manager/interactions/ButtonManager";
-import {ButtonBuilder} from "discord.js";
+import {ButtonBuilder, ChatInputCommandInteraction} from "discord.js";
 
-export async function component_test() {
+export async function component_test(interaction: ChatInputCommandInteraction) {
     const channel = await GuildManager.channel.text.find("1162047096220827831")
     const botIconUrl = Bot.client?.user?.displayAvatarURL({forceStatic: false, size: 128}) ?? ""
+
+    interaction.reply(ComponentManager.toInteraction(ComponentManager.simple("Reply Simple")))
+
     if (channel) {
         await channel.send("--BASIC--")
         await channel.send(ComponentManager.toMessage(ComponentManager.create()))
-        await channel.send(ComponentManager.toMessage(ComponentManager.create({title:null, color:SimpleColor.crimson})))
+        await channel.send(ComponentManager.toMessage(ComponentManager.create({title:null, color: SimpleColor.crimson})))
         await channel.send(ComponentManager.toMessage(ComponentManager.create({title: "Pas null", color: SimpleColor.crimson, thumbnailUrl: botIconUrl})))
         await channel.send(ComponentManager.toMessage(ComponentManager.simple("Desc simple")))
         await channel.send(ComponentManager.toMessage(ComponentManager.success("Desc success")))
         await channel.send(ComponentManager.toMessage(ComponentManager.debug("Desc debug")))
         await channel.send(ComponentManager.toMessage(ComponentManager.error("Desc error")))
+        await Bot.log.info(ComponentManager.error("Bot log info component_error"))
+        await Bot.message.send(channel, EmbedManager.success("Bot message info component_error"))
 
         await channel.send("--COMPLEX--")
 

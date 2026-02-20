@@ -26,7 +26,9 @@ async function main() {
     })
 
     bot.client.on(Events.InteractionCreate, async (interaction) => {
-        console.log(interaction);
+        if(interaction.isChatInputCommand()){
+            console.log(interaction);
+        }
     })
 
 }

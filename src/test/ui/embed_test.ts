@@ -1,9 +1,8 @@
-import {GuildManager} from "../../manager/guild/GuildManager";
-import {SimpleColor, EmbedManager} from "../../manager/messages/EmbedManager";
-import {ChatInputCommandInteraction, EmbedField, InteractionReplyOptions} from "discord.js";
+import {ChatInputCommandInteraction, EmbedField} from "discord.js";
+import {Bot, SimpleColor, EmbedManager, GuildManager } from "../../index";
 
 export async function embed_test(interaction: ChatInputCommandInteraction) {
-    interaction.reply(EmbedManager.toInteraction(EmbedManager.success("Yey !")) as InteractionReplyOptions)
+    interaction.reply(EmbedManager.toInteraction(EmbedManager.success("Yey !")))
     const channel = await GuildManager.channel.text.find("1162047096220827831")
     if (channel) {
         await channel.send("--BASIC--")
@@ -14,6 +13,8 @@ export async function embed_test(interaction: ChatInputCommandInteraction) {
         await channel.send(EmbedManager.toMessage(EmbedManager.success("Success description")))
         await channel.send(EmbedManager.toMessage(EmbedManager.debug("Debug description")))
         await channel.send(EmbedManager.toMessage(EmbedManager.error("Error description")))
+        await Bot.log.info(EmbedManager.error("Bot log error embed"))
+        await Bot.message.send(channel, EmbedManager.success("Bot message info embed"))
 
         await channel.send("--COMPLEX--")
         const fields: EmbedField[] = [

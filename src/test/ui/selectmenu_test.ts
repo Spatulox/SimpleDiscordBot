@@ -1,18 +1,21 @@
 import {GuildManager} from "../../manager/guild/GuildManager";
 //import {Bot} from "../../core/Bot";
 import {SelectMenuCreateOption, SelectMenuManager} from "../../manager/interactions/SelectMenuManager";
-import {ChatInputCommandInteraction, InteractionReplyOptions} from "discord.js";
+import {ChatInputCommandInteraction} from "discord.js";
+import {Bot} from "../../core/Bot";
 
 export async function selectmenu_test(interaction: ChatInputCommandInteraction) {
     const channel = await GuildManager.channel.text.find("1162047096220827831")
 
-    interaction.reply(SelectMenuManager.toInteraction(SelectMenuManager.users("users_menu_interaction")) as InteractionReplyOptions)
+    interaction.reply(SelectMenuManager.toInteraction(SelectMenuManager.users("users_menu_interaction")))
     if (channel) {
         await channel.send("--PRE-BUILT--")
         await channel.send(SelectMenuManager.toMessage(SelectMenuManager.users("user_menu")))
         await channel.send(SelectMenuManager.toMessage(SelectMenuManager.roles("user_menu")))
         await channel.send(SelectMenuManager.toMessage(SelectMenuManager.mentionables("user_menu")))
         await channel.send(SelectMenuManager.toMessage(SelectMenuManager.channels("user_menu")))
+        await Bot.log.info(SelectMenuManager.row(SelectMenuManager.channels("user_menu")))
+        await Bot.message.send(channel, SelectMenuManager.row(SelectMenuManager.channels("user_menu")))
 
         await channel.send("--COMPLEX--")
 
