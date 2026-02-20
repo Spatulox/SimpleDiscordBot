@@ -194,8 +194,15 @@ export class ComponentManager {
      * Multiple fields
      */
     static fields(container: ContainerBuilder, fields: ComponentManagerField[]): ContainerBuilder {
-        fields.forEach((f) => {
-            this.field(container, f);
+        fields.forEach((field, index) => {
+            const finalField = { ...field };
+
+            // Disable the last separator unless explicitly defined
+            if (index === fields.length - 1 && finalField.separator === undefined) {
+                finalField.separator = false;
+            }
+
+            this.field(container, finalField);
         });
         return container;
     }
