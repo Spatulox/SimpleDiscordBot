@@ -14,9 +14,9 @@ export { UserManager } from './manager/direct/UserManager';
 
 
 // Handlers
-export { ModalManager } from "./manager/interactions/ModalManager";
+export { ModalManager, ModalFieldType, ModalField } from "./manager/interactions/ModalManager";
 export { SelectMenuManager } from "./manager/interactions/SelectMenuManager";
-export { ComponentManager } from "./manager/messages/ComponentManager";
+export { ComponentManager, ComponentManagerField } from "./manager/messages/ComponentManager";
 export { ButtonManager } from "./manager/interactions/ButtonManager";
 
 // Utils
