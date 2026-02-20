@@ -4,7 +4,7 @@ import {
     InteractionReplyOptions,
     InteractionUpdateOptions, MessageCreateOptions,
     MessageFlags,
-    MessageActionRowComponentBuilder
+    MessageActionRowComponentBuilder, ContainerBuilder
 } from "discord.js";
 
 //Any interface/type with those fields
@@ -14,13 +14,13 @@ type MessageFields = {
     components?: any;
 };
 
-export type SendableComponent = EmbedBuilder | ActionRowBuilder<MessageActionRowComponentBuilder>;
+export type SendableComponent = EmbedBuilder | ContainerBuilder | ActionRowBuilder<MessageActionRowComponentBuilder>;
 
 /** @internal */
 export class SendableComponentBuilder {
 
-    static isSendableComponent(thing: any): boolean {
-        return thing instanceof EmbedBuilder || thing instanceof ActionRowBuilder;
+    static isSendableComponent(thing: any): thing is SendableComponent {
+        return thing instanceof EmbedBuilder || thing instanceof ContainerBuilder || thing instanceof ActionRowBuilder;
     }
 
     private static build<T extends MessageFields>(
@@ -38,6 +38,10 @@ export class SendableComponentBuilder {
             if (comp instanceof EmbedBuilder) {
                 base.embeds = base.embeds || [];
                 base.embeds!.push(comp);
+            }
+            if(comp instanceof ContainerBuilder) {
+                base.components = base.components || [];
+                base.components!.push(comp);
             }
             if (comp instanceof ActionRowBuilder) {
                 base.components = base.components || [];
