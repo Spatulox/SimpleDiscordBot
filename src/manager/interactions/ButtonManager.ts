@@ -13,7 +13,7 @@ export interface ButtonOptions {
 
 export class ButtonManager {
 
-    private static _create(options: ButtonOptions & { style: ButtonStyle }): ButtonBuilder {
+    static create(options: ButtonOptions & { style: ButtonStyle }): ButtonBuilder {
         const btn = new ButtonBuilder()
             .setCustomId(options.customId)
             .setLabel(options.label ?? "Button")
@@ -28,19 +28,19 @@ export class ButtonManager {
     }
 
     static primary(options: ButtonOptions): ButtonBuilder {
-        return this._create({ ...options, style: ButtonStyle.Primary });
+        return this.create({ ...options, style: ButtonStyle.Primary });
     }
 
     static success(options: ButtonOptions): ButtonBuilder {
-        return this._create({ ...options, style: ButtonStyle.Success });
+        return this.create({ ...options, style: ButtonStyle.Success });
     }
 
     static secondary(options: ButtonOptions): ButtonBuilder {
-        return this._create({ ...options, style: ButtonStyle.Secondary });
+        return this.create({ ...options, style: ButtonStyle.Secondary });
     }
 
     static danger(options: ButtonOptions): ButtonBuilder {
-        return this._create({ ...options, style: ButtonStyle.Danger });
+        return this.create({ ...options, style: ButtonStyle.Danger });
     }
 
     static link(options: Omit<ButtonOptions & {url: string, label: string}, "customId">): ButtonBuilder {
@@ -73,18 +73,18 @@ export class ButtonManager {
 
     static toMessage(button: ButtonBuilder | ButtonBuilder[] | ActionRowBuilder<ButtonBuilder> | ActionRowBuilder<ButtonBuilder>[]): MessageCreateOptions {
         return {
-            components: this._createRowsToReturn(button),
+            components: this.createRowsToReturn(button),
         }
     }
 
     static toInteraction(button: ButtonBuilder | ButtonBuilder[] | ActionRowBuilder<ButtonBuilder> | ActionRowBuilder<ButtonBuilder>[], ephemeral: boolean = false): InteractionReplyOptions | InteractionEditReplyOptions {
         return {
-            components: this._createRowsToReturn(button),
+            components: this.createRowsToReturn(button),
             flags: ephemeral ? [MessageFlags.Ephemeral] : []
         }
     }
 
-    private static _createRowsToReturn(button: ButtonBuilder | ButtonBuilder[] | ActionRowBuilder<ButtonBuilder> | ActionRowBuilder<ButtonBuilder>[]): ActionRowBuilder<ButtonBuilder>[]{
+    private static createRowsToReturn(button: ButtonBuilder | ButtonBuilder[] | ActionRowBuilder<ButtonBuilder> | ActionRowBuilder<ButtonBuilder>[]): ActionRowBuilder<ButtonBuilder>[]{
 
         if (Array.isArray(button)) {
             return button.map(btn =>
