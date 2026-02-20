@@ -10,7 +10,7 @@ import { Bot } from '../../bot/Bot';
 import {EmbedColor} from "./EmbedManager";
 import {SelectMenuList, SelectMenuManager} from "../interactions/SelectMenuManager";
 
-interface BasicComponentManagerField { name?: string, value: string }
+interface BasicComponentManagerField { name?: string, value: string, separator?: SeparatorSpacingSize | false }
 interface ComponentManagerFieldThumbnail extends BasicComponentManagerField { thumbnailUrl: string }
 interface ComponentManagerFieldAccessory extends BasicComponentManagerField { button: ButtonBuilder }
 export type ComponentManagerField = ComponentManagerFieldAccessory | ComponentManagerFieldThumbnail | BasicComponentManagerField;
@@ -19,7 +19,8 @@ export interface ComponentManagerCreate {
     title?: string | null,
     description?: string | null,
     color?: EmbedColor | null,
-    thumbnailUrl?: string
+    thumbnailUrl?: string,
+    separator?: SeparatorSpacingSize | false
 }
 
 export interface ComponentManagerFileInput {
@@ -66,8 +67,9 @@ export class ComponentManager {
             if(option?.description) {
                 container.addTextDisplayComponents(new TextDisplayBuilder().setContent(option.description))
             }
-
-            container.addSeparatorComponents(this.separator());
+            if(option?.separator) {
+                container.addSeparatorComponents(this.separator(option.separator));
+            }
         }
 
         return container;
@@ -146,7 +148,9 @@ export class ComponentManager {
             container.addTextDisplayComponents(new TextDisplayBuilder().setContent(field.value));
         }
 
-        container.addSeparatorComponents(this.separator());
+        if(field.separator !== false){
+            container.addSeparatorComponents(this.separator(field.separator));
+        }
         return container;
     }
 
