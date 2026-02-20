@@ -10,13 +10,14 @@ import { Bot } from '../../bot/Bot';
 import {EmbedColor} from "./EmbedManager";
 import {SelectMenuList, SelectMenuManager} from "../interactions/SelectMenuManager";
 
-interface BasicComponentManagerField { name: string, value: string }
+interface BasicComponentManagerField { name?: string, value: string }
 interface ComponentManagerFieldThumbnail extends BasicComponentManagerField { thumbnailUrl: string }
 interface ComponentManagerFieldAccessory extends BasicComponentManagerField { button: ButtonBuilder }
 export type ComponentManagerField = ComponentManagerFieldAccessory | ComponentManagerFieldThumbnail | BasicComponentManagerField;
 
 export interface ComponentManagerCreate {
     title?: string | null,
+    description?: string | null,
     color?: EmbedColor | null,
     thumbnailUrl?: string
 }
@@ -49,7 +50,7 @@ export class ComponentManager {
                 const headerSection = new SectionBuilder()
                     .addTextDisplayComponents(
                         new TextDisplayBuilder().setContent(
-                            option?.title ? "## " + option.title : "\u200B"
+                            option?.title ? option.title : "\u200B"
                         )
                     )
                     .setThumbnailAccessory(
@@ -58,9 +59,14 @@ export class ComponentManager {
                 container.addSectionComponents(headerSection);
             } else {
                 container.addTextDisplayComponents(
-                    new TextDisplayBuilder().setContent("## " + option.title!)
+                    new TextDisplayBuilder().setContent(option.title!)
                 );
             }
+
+            if(option?.description) {
+                container.addTextDisplayComponents(new TextDisplayBuilder().setContent(option.description))
+            }
+
             container.addSeparatorComponents(this.separator());
         }
 
@@ -120,10 +126,11 @@ export class ComponentManager {
 
         if("button" in field || "thumbnailUrl" in field){
             const section = new SectionBuilder()
-                .addTextDisplayComponents(
-                    new TextDisplayBuilder().setContent(`**${field.name}**`),
-                    new TextDisplayBuilder().setContent(field.value)
-                );
+
+                if(field.name){
+                    section.addTextDisplayComponents(new TextDisplayBuilder().setContent(`__**${field.name}**__`))
+                }
+                section.addTextDisplayComponents(new TextDisplayBuilder().setContent(field.value))
 
             if("button" in field){
                 section.setButtonAccessory(field.button)
@@ -133,11 +140,10 @@ export class ComponentManager {
 
             container.addSectionComponents(section);
         } else {
-            container
-                .addTextDisplayComponents(
-                    new TextDisplayBuilder().setContent(`**${field.name}**`),
-                    new TextDisplayBuilder().setContent(field.value)
-                );
+            if(field.name){
+                container.addTextDisplayComponents(new TextDisplayBuilder().setContent(`**${field.name}**`))
+            }
+            container.addTextDisplayComponents(new TextDisplayBuilder().setContent(field.value));
         }
 
         container.addSeparatorComponents(this.separator());
