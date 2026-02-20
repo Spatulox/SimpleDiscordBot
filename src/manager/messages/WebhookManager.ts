@@ -60,7 +60,7 @@ export class WebhookManager {
         const options: WebhookMessageCreateOptions = {};
 
         if (SendableComponentBuilder.isSendableComponent(content)) {
-            const t = SendableComponentBuilder.buildMessage(content as SendableComponent | SendableComponent[])
+            const t = SendableComponentBuilder.buildMessage(content)
             options.embeds = t.embeds;
             options.components = t.components;
         } else if( typeof content == 'string'){

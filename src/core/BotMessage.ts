@@ -44,7 +44,7 @@ export class BotMessage {
 
             if(typeof content !== "string" && !component) {
                 if(SendableComponentBuilder.isSendableComponent(content)){
-                    messageCreate = SendableComponentBuilder.buildMessage(content as SendableComponent);
+                    messageCreate = SendableComponentBuilder.buildMessage(content);
                 } else {
                     messageCreate = content as MessageCreateOptions;
                 }

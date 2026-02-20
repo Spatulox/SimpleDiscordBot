@@ -34,7 +34,7 @@ export class GuildMessageManager {
                 payload = SendableComponentBuilder.buildMessage(content_or_component_or_options);
 
             } else if (SendableComponentBuilder.isSendableComponent(content_or_component_or_options) || Array.isArray(content_or_component_or_options)) {
-                payload = SendableComponentBuilder.buildMessage(content_or_component_or_options as SendableComponent | SendableComponent[]);
+                payload = SendableComponentBuilder.buildMessage(content_or_component_or_options);
             } else {
                 payload = content_or_component_or_options as MessageCreateOptions;
             }

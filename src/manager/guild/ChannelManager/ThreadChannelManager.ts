@@ -60,7 +60,7 @@ export class ThreadChannelManager {
         if(typeof content_or_component_or_options == 'string') {
             return await GuildTextChannelManager.message.send(channelId, content_or_component_or_options)
         } else if (SendableComponentBuilder.isSendableComponent(content_or_component_or_options) || Array.isArray(content_or_component_or_options)) {
-            return await GuildTextChannelManager.message.send(channelId, content_or_component_or_options as SendableComponent| SendableComponent[])
+            return await GuildTextChannelManager.message.send(channelId, content_or_component_or_options)
         } else {
             return await GuildTextChannelManager.message.send(channelId, content_or_component_or_options as MessageCreateOptions)
         }
