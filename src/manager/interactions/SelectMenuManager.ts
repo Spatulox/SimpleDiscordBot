@@ -186,10 +186,22 @@ export class SelectMenuManager {
         };
     }
 
-    static toInteraction(menus: SelectMenuList | SelectMenuList[] | ActionRowBuilder<MessageActionRowComponentBuilder> | ActionRowBuilder<MessageActionRowComponentBuilder>[], ephemeral: boolean = false):  InteractionReplyOptions | InteractionEditReplyOptions {
+
+    static toInteraction(
+        menus: SelectMenuList | SelectMenuList[] | ActionRowBuilder<MessageActionRowComponentBuilder> | ActionRowBuilder<MessageActionRowComponentBuilder>[],
+        ephemeral: boolean = false
+    ): InteractionReplyOptions {
         return {
             components: this._createRowsToReturn(menus),
             flags: ephemeral ? [MessageFlags.Ephemeral] : []
+        };
+    }
+
+    static toInteractionEdit(
+        menus: SelectMenuList | SelectMenuList[] | ActionRowBuilder<MessageActionRowComponentBuilder> | ActionRowBuilder<MessageActionRowComponentBuilder>[]
+    ): InteractionEditReplyOptions {
+        return {
+            components: this._createRowsToReturn(menus)
         };
     }
 

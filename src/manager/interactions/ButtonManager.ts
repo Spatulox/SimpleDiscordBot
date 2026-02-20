@@ -77,11 +77,17 @@ export class ButtonManager {
         }
     }
 
-    static toInteraction(button: ButtonBuilder | ButtonBuilder[] | ActionRowBuilder<ButtonBuilder> | ActionRowBuilder<ButtonBuilder>[], ephemeral: boolean = false): InteractionReplyOptions | InteractionEditReplyOptions {
+    static toInteraction(button: ButtonBuilder | ButtonBuilder[] | ActionRowBuilder<ButtonBuilder> | ActionRowBuilder<ButtonBuilder>[], ephemeral: boolean = false): InteractionReplyOptions {
         return {
             components: this.createRowsToReturn(button),
             flags: ephemeral ? [MessageFlags.Ephemeral] : []
-        }
+        };
+    }
+
+    static toInteractionEdit(button: ButtonBuilder | ButtonBuilder[] | ActionRowBuilder<ButtonBuilder> | ActionRowBuilder<ButtonBuilder>[]): InteractionEditReplyOptions {
+        return {
+            components: this.createRowsToReturn(button)
+        };
     }
 
     private static createRowsToReturn(button: ButtonBuilder | ButtonBuilder[] | ActionRowBuilder<ButtonBuilder> | ActionRowBuilder<ButtonBuilder>[]): ActionRowBuilder<ButtonBuilder>[]{

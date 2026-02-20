@@ -111,12 +111,22 @@ export class EmbedManager {
     /**
      * Transform embed into objet for interaction.reply()
      */
-    static toInteraction(embed: EmbedBuilder, ephemeral: boolean = false): InteractionReplyOptions | InteractionEditReplyOptions {
+    static toInteraction(embed: EmbedBuilder, ephemeral: boolean = false): InteractionReplyOptions {
         return {
             embeds: [embed],
-            flags: ephemeral ? [MessageFlags.Ephemeral] : undefined
+            flags: ephemeral ? [MessageFlags.Ephemeral] : []
         };
     }
+
+    /**
+     * Transform embed into objet for interaction.editReply()
+     */
+    static toInteractionEdit(embed: EmbedBuilder): InteractionEditReplyOptions {
+        return {
+            embeds: [embed]
+        };
+    }
+
 
     /**
      * Transform embed into objet to send a message

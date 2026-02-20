@@ -12,7 +12,7 @@ import {
     ButtonBuilder,
     AttachmentBuilder,
     FileBuilder,
-    ActionRowBuilder,
+    ActionRowBuilder, InteractionReplyOptions, InteractionEditReplyOptions,
 } from "discord.js";
 import { Bot } from '../../core/Bot';
 import {SelectMenuList, SelectMenuManager} from "../interactions/SelectMenuManager";
@@ -275,5 +275,50 @@ export class ComponentManager {
             components: [container],
             flags: [MessageFlags.IsComponentsV2]
         };
+    }
+
+    static toInteraction(
+        container: ContainerBuilder,
+        file: AttachmentBuilder | AttachmentBuilder[] | null = null,
+        footer: boolean = true
+    ): InteractionReplyOptions {
+        if(footer){
+            this.footer(container);
+        }
+        const base: InteractionReplyOptions = {
+            components: [container],
+            flags: [MessageFlags.IsComponentsV2]
+        };
+
+        if(file){
+            return {
+                ...base,
+                files: Array.isArray(file) ? file : [file]
+            };
+        }
+
+        return base;
+    }
+
+    static toInteractionEdit(
+        container: ContainerBuilder,
+        file: AttachmentBuilder | AttachmentBuilder[] | null = null,
+        footer: boolean = true
+    ): InteractionEditReplyOptions {
+        if(footer){
+            this.footer(container);
+        }
+        const base: InteractionEditReplyOptions = {
+            components: [container],
+        };
+
+        if(file){
+            return {
+                ...base,
+                files: Array.isArray(file) ? file : [file]
+            };
+        }
+
+        return base;
     }
 }
