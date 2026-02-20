@@ -12,22 +12,21 @@ export { ReactionManager } from "./manager/messages/ReactionManager";
 export { GuildManager } from "./manager/guild/GuildManager";
 export { UserManager } from './manager/direct/UserManager';
 
-
 // Handlers
 export { ModalManager, ModalFieldType, ModalField } from "./manager/interactions/ModalManager";
-export { SelectMenuManager } from "./manager/interactions/SelectMenuManager";
-export { ComponentManager, ComponentManagerField } from "./manager/messages/ComponentManager";
-export { ButtonManager } from "./manager/interactions/ButtonManager";
+export { SelectMenuManager, SelectMenuList, SelectMenuCreateOption } from "./manager/interactions/SelectMenuManager";
+export { ComponentManager, ComponentManagerCreate, ComponentManagerField, ComponentManagerFileInput } from "./manager/messages/ComponentManager";
+export { ButtonManager, ButtonOptions } from "./manager/interactions/ButtonManager";
 
 // Utils
 export { Time } from "./utils/UnitTime"
 export { Log } from "./utils/Log"
 export { SimpleMutex } from "./utils/SimpleMutex"
-export { DiscordRegex } from "./constants/DiscordRegex";
 
+// Constants
+export { DiscordRegex } from "./constants/DiscordRegex";
 export { SimpleColor } from "./constants/SimpleColor";
 
-
-// Type
+// Other
 export type { BotConfig, RandomBotActivity } from './core/Bot';
 export { SimpleDiscordBotInfo } from "./SimpleDiscordBotInfo";
