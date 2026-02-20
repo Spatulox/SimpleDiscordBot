@@ -16,6 +16,7 @@ export enum ModalFieldType {
 
 interface BaseModalField {
     label: string;
+    value?: string
     required?: boolean;
 }
 
@@ -56,7 +57,11 @@ export class ModalManager {
 
         const builder = new TextInputBuilder()
             .setCustomId(opt.customId)
-            .setRequired(opt.required ?? false);
+            .setRequired(opt.required ?? false)
+
+        if(opt.value){
+            builder.setValue(opt.value)
+        }
 
         if(opt.placeholder) {
             builder.setPlaceholder(opt.placeholder);
@@ -101,7 +106,8 @@ export class ModalManager {
             customId: `${customId}_input`,
             placeholder: ('placeholder' in field && field.placeholder)
                 ? field.placeholder
-                : `Enter ${field.label.toLowerCase()}`
+                : `Enter ${field.label.toLowerCase()}`,
+            value: field.value,
         }
 
         modal.addLabelComponents(this._createField(opt));
