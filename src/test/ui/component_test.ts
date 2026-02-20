@@ -7,6 +7,7 @@ import {
 import {SelectMenuCreateOption} from "../../manager/interactions/SelectMenuManager";
 import fs from "fs/promises";
 import {ButtonManager} from "../../manager/interactions/ButtonManager";
+import {ButtonBuilder} from "discord.js";
 
 export async function component_test() {
     const channel = await GuildManager.channel.text.find("1162047096220827831")
@@ -22,9 +23,19 @@ export async function component_test() {
         await channel.send(ComponentManager.toMessage(ComponentManager.error("Desc error")))
 
         await channel.send("--COMPLEX--")
+
+        const buttonLine: ButtonBuilder[] = [
+            ButtonManager.success({customId: "success_component_button_1"}),
+            ButtonManager.link({label: "Google", url: "https://google.com"}),
+            ButtonManager.danger({customId: "success_component_button_2"}),
+            ButtonManager.danger({customId: "success_component_button_3"}),
+            ButtonManager.danger({customId: "success_component_button_4"})
+        ]
+
         const fields: ComponentManagerField[] = [
             {name: "Serveur", value: "Helldivers FR", thumbnailUrl: botIconUrl},
             {name: "Membres", value: "1,234", button: ButtonManager.success({customId: "success_component_button"})},
+            {name: "Buttons", value: "Button line", button: buttonLine},
             {name: "Channels", value: "56"},
             {name: "Boost", value: "Niveau 2"}
         ];

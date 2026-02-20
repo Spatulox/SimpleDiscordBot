@@ -4,7 +4,15 @@ import {
     SeparatorBuilder,
     SeparatorSpacingSize,
     MessageFlags,
-    MessageCreateOptions, ThumbnailBuilder, SectionBuilder, MediaGalleryBuilder, MediaGalleryItemBuilder, ButtonBuilder, AttachmentBuilder, FileBuilder,
+    MessageCreateOptions,
+    ThumbnailBuilder,
+    SectionBuilder,
+    MediaGalleryBuilder,
+    MediaGalleryItemBuilder,
+    ButtonBuilder,
+    AttachmentBuilder,
+    FileBuilder,
+    ActionRowBuilder,
 } from "discord.js";
 import { Bot } from '../../bot/Bot';
 import {EmbedColor} from "./EmbedManager";
@@ -12,7 +20,7 @@ import {SelectMenuList, SelectMenuManager} from "../interactions/SelectMenuManag
 
 interface BasicComponentManagerField { name?: string, value: string, separator?: SeparatorSpacingSize | false }
 interface ComponentManagerFieldThumbnail extends BasicComponentManagerField { thumbnailUrl: string }
-interface ComponentManagerFieldAccessory extends BasicComponentManagerField { button: ButtonBuilder }
+interface ComponentManagerFieldAccessory extends BasicComponentManagerField { button: ButtonBuilder | ButtonBuilder[] }
 export type ComponentManagerField = ComponentManagerFieldAccessory | ComponentManagerFieldThumbnail | BasicComponentManagerField;
 
 export interface ComponentManagerCreate {
@@ -124,17 +132,24 @@ export class ComponentManager {
     /**
      * Quick field adder
      */
+    private static fieldAddText(container: ContainerBuilder | SectionBuilder, options: {name?: string, value: string}) {
+        options.name && container.addTextDisplayComponents(new TextDisplayBuilder().setContent(`__**${options.name}**__`));
+        container.addTextDisplayComponents(new TextDisplayBuilder().setContent(options.value));
+    }
     static field(container: ContainerBuilder, field: ComponentManagerField): ContainerBuilder {
 
-        if("button" in field || "thumbnailUrl" in field){
+        if("button" in field && Array.isArray(field.button) && field.button.length > 0){
+            const actionRow = new ActionRowBuilder<ButtonBuilder>()
+                .addComponents(field.button);
+            this.fieldAddText(container, {name: field.name, value: field.value});
+
+            container.addActionRowComponents(actionRow);
+
+        } else if( ("button" in field && !Array.isArray(field.button)) || "thumbnailUrl" in field){
             const section = new SectionBuilder()
+            this.fieldAddText(section, {name: field.name, value: field.value});
 
-                if(field.name){
-                    section.addTextDisplayComponents(new TextDisplayBuilder().setContent(`__**${field.name}**__`))
-                }
-                section.addTextDisplayComponents(new TextDisplayBuilder().setContent(field.value))
-
-            if("button" in field){
+            if("button" in field && !Array.isArray(field.button)){
                 section.setButtonAccessory(field.button)
             } else if ("thumbnailUrl" in field){
                 section.setThumbnailAccessory(new ThumbnailBuilder().setURL(field.thumbnailUrl))
@@ -142,10 +157,7 @@ export class ComponentManager {
 
             container.addSectionComponents(section);
         } else {
-            if(field.name){
-                container.addTextDisplayComponents(new TextDisplayBuilder().setContent(`**${field.name}**`))
-            }
-            container.addTextDisplayComponents(new TextDisplayBuilder().setContent(field.value));
+            this.fieldAddText(container, {name: field.name, value: field.value});
         }
 
         if(field.separator !== false){
@@ -153,6 +165,7 @@ export class ComponentManager {
         }
         return container;
     }
+
 
     /*static field(container: ContainerBuilder, field: ComponentManagerField): ContainerBuilder {
         const section = new SectionBuilder()
