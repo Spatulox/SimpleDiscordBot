@@ -1,6 +1,6 @@
 import {ChannelType, GuildChannelCreateOptions, VoiceChannel} from "discord.js";
 import {GuildChannelManager} from "./GuildChannelManager";
-import {Bot} from "../../../bot/Bot";
+import {Bot} from "../../../core/Bot";
 import {Log} from "../../../utils/Log";
 
 export class GuildVoiceChannelManager extends GuildChannelManager {

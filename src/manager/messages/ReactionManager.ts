@@ -3,7 +3,7 @@ import {
     EmojiResolvable,
 } from 'discord.js';
 import { Log } from '../../utils/Log';
-import { Bot } from '../../bot/Bot';
+import { Bot } from '../../core/Bot';
 import {GuildTextChannelManager} from "../guild/ChannelManager/GuildTextChannelManager";
 
 export class ReactionManager {

@@ -1,4 +1,4 @@
-import {Bot, BotConfig, EmbedColor, Time} from "../src";
+import {Bot, BotConfig, SimpleColor, Time} from "../src";
 import {client} from "./client";
 import {Events} from "discord.js"
 import {randomActivityList} from "./randomActivityList";
@@ -6,8 +6,8 @@ import {randomActivityList} from "./randomActivityList";
 async function main() {
 
     const config: BotConfig = {
-        defaultEmbedColor: EmbedColor.blue, // (When embed are created with EmbedManager)
-        botName: "Simple Discord Bot", // The name of the bot
+        defaultSimpleColor: SimpleColor.blue, // (When embed are created with EmbedManager)
+        botName: "Simple Discord Bot", // The name of the core
         log: {
             logChannelId: "1162047096220827831",
             errorChannelId: "1162047096220827831",

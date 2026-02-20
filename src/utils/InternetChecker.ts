@@ -1,5 +1,5 @@
-import { Log } from '../Log';
-import { Time } from '../times/UnitTime';
+import { Log } from './Log';
+import { Time } from './UnitTime';
 /** @internal*/
 export class InternetChecker {
     private static readonly TARGET = 'https://1.1.1.1'; // Cloudflare DNS HTTPS

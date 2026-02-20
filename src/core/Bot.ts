@@ -1,12 +1,13 @@
 import {Client, ActivityType, Events, version} from 'discord.js';
-import { Time } from '../utils/times/UnitTime';
+import { Time } from '../utils/UnitTime';
 import {Log} from "../utils/Log";
-import {InternetChecker} from "../utils/network/InternetChecker";
+import {InternetChecker} from "../utils/InternetChecker";
 import {BotLog, ConfigLog} from "./BotLog";
-import {EmbedColor, EmbedManager} from "../manager/messages/EmbedManager";
+import {EmbedManager} from "../manager/messages/EmbedManager";
 import {BotMessage} from "./BotMessage";
 import {BotEnv} from "./BotEnv";
 import {BotInteraction} from "./BotInteraction";
+import {SimpleColor} from "../constants/SimpleColor";
 
 type CriticConfig = {
     dev: boolean;
@@ -14,7 +15,7 @@ type CriticConfig = {
 };
 
 export type BotConfig = {
-    defaultEmbedColor?: number | EmbedColor;
+    defaultSimpleColor?: number | SimpleColor;
     botName?: string
     log?: ConfigLog
 }

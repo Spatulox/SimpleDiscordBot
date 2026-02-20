@@ -1,5 +1,5 @@
 import {BasicUserManager} from "./BasicUserManager";
-import {Bot} from "../../bot/Bot";
+import {Bot} from "../../core/Bot";
 import {User} from "discord.js";
 import {Log} from "../../utils/Log";
 

@@ -1,4 +1,4 @@
-import {DiscordRegex} from "../utils/DiscordRegex";
+import {DiscordRegex} from "../constants/DiscordRegex";
 
 export const BotEnv = {
     get token(): string {

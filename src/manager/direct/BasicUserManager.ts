@@ -1,5 +1,5 @@
 import {Guild, GuildMember, Message, MessageCreateOptions, User} from "discord.js";
-import {Bot} from "../../bot/Bot";
+import {Bot} from "../../core/Bot";
 import {Log} from "../../utils/Log";
 import {SendableComponent, SendableComponentBuilder} from "../builder/SendableComponentBuilder";
 import {GuildManager} from "../guild/GuildManager";

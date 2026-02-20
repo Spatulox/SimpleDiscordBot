@@ -1,11 +1,11 @@
-export { Bot } from "./bot/Bot"
-export {BotEnv} from "./bot/BotEnv";
+export { Bot } from "./core/Bot"
+export {BotEnv} from "./core/BotEnv";
 
 
 // Manager
 export { FileManager } from './manager/FileManager'
 
-export { EmbedManager, EmbedColor } from './manager/messages/EmbedManager';
+export { EmbedManager } from './manager/messages/EmbedManager';
 export { WebhookManager } from './manager/messages/WebhookManager';
 export { ReactionManager } from "./manager/messages/ReactionManager";
 
@@ -20,12 +20,14 @@ export { ComponentManager, ComponentManagerField } from "./manager/messages/Comp
 export { ButtonManager } from "./manager/interactions/ButtonManager";
 
 // Utils
-export { Time } from "./utils/times/UnitTime"
+export { Time } from "./utils/UnitTime"
 export { Log } from "./utils/Log"
 export { SimpleMutex } from "./utils/SimpleMutex"
-export { DiscordRegex } from "./utils/DiscordRegex";
+export { DiscordRegex } from "./constants/DiscordRegex";
+
+export { SimpleColor } from "./constants/SimpleColor";
 
 
 // Type
-export type { BotConfig, RandomBotActivity } from './bot/Bot';
+export type { BotConfig, RandomBotActivity } from './core/Bot';
 export { SimpleDiscordBotInfo } from "./SimpleDiscordBotInfo";

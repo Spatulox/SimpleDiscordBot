@@ -12,7 +12,7 @@
 > - Include the [DiscordInterationManager](https://github.com/Spatulox/DiscordInteractionManager) package
 > - Simple Log package
 > - Provides easy Managers to avoid repetitive code everywhere
-> - Simple yet powerful builders (Embeds, Modals, SelectMenus, Components) that rely on discord.js for full compatibility
+> - Simple yet powerful builders (Embeds, Modals, SelectMenus, Components, Buttons) that rely on discord.js for full compatibility
 
 
 ## Installation
@@ -29,7 +29,7 @@ DISCORD_BOT_CLIENTID="" // Yout bot client id
 ```
 
 ```typescript
-import {Bot, BotConfig, EmbedColor, Time} from "@spatulox/simplediscordbot";
+import {Bot, BotConfig, SimpleColor, Time} from "@spatulox/simplediscordbot";
 import {Client, Events, GatewayIntentBits} from "discord.js";
 
 const client = new Client({
@@ -37,7 +37,7 @@ const client = new Client({
 });
 
 const config: BotConfig = {
-    defaultEmbedColor: EmbedColor.blue,
+    defaultSimpleColor: SimpleColor.blue,
     botName: "Simple Discord Bot",
     log: {
         logChannelId: "YOUR_LOG_CHANNEL_ID",

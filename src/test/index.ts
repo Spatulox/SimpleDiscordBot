@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import {Bot, BotConfig, EmbedColor, Time} from "../index";
+import {Bot, BotConfig, SimpleColor, Time} from "../index";
 import {client} from "./client";
 import {Events} from "discord.js"
 import {randomActivityList} from "./randomActivityList";
@@ -8,7 +8,7 @@ dotenv.config();
 async function main() {
 
     const config: BotConfig = {
-        defaultEmbedColor: EmbedColor.blue, // (When embed are created with EmbedManager)
+        defaultSimpleColor: SimpleColor.blue, // (When embed are created with EmbedManager/ComponentManager)
         botName: "Simple Discord Bot", // The name of the bot
         log: {
             logChannelId: "1162047096220827831",

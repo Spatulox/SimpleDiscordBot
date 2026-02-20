@@ -7,7 +7,7 @@ import {
 } from 'discord.js';
 import {EmbedManager} from "./EmbedManager";
 import {Log} from "../../utils/Log";
-import {Bot} from "../../bot/Bot";
+import {Bot} from "../../core/Bot";
 import {SendableComponent, SendableComponentBuilder} from "../builder/SendableComponentBuilder";
 
 export class WebhookManager {

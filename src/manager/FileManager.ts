@@ -2,7 +2,7 @@
 import path from 'path';
 import fs from 'fs/promises';
 import { Log } from '../utils/Log';
-import {Bot} from "../bot/Bot";
+import {Bot} from "../core/Bot";
 import {EmbedManager} from "./messages/EmbedManager";
 
 export class FileManager {

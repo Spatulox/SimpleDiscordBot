@@ -1,5 +1,5 @@
 import {GuildManager} from "../../manager/guild/GuildManager";
-import {EmbedColor, EmbedManager} from "../../manager/messages/EmbedManager";
+import {SimpleColor, EmbedManager} from "../../manager/messages/EmbedManager";
 import {ChatInputCommandInteraction, EmbedField, InteractionReplyOptions} from "discord.js";
 
 export async function embed_test(interaction: ChatInputCommandInteraction) {
@@ -7,8 +7,8 @@ export async function embed_test(interaction: ChatInputCommandInteraction) {
     const channel = await GuildManager.channel.text.find("1162047096220827831")
     if (channel) {
         await channel.send("--BASIC--")
-        await channel.send(EmbedManager.toMessage(EmbedManager.create(EmbedColor.transparent)))
-        await channel.send(EmbedManager.toMessage(EmbedManager.create(EmbedColor.yellow)))
+        await channel.send(EmbedManager.toMessage(EmbedManager.create(SimpleColor.transparent)))
+        await channel.send(EmbedManager.toMessage(EmbedManager.create(SimpleColor.yellow)))
         await channel.send(EmbedManager.toMessage(EmbedManager.simple("Simple description")))
         await channel.send(EmbedManager.toMessage(EmbedManager.description("Description description")))
         await channel.send(EmbedManager.toMessage(EmbedManager.success("Success description")))

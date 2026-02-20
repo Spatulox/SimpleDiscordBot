@@ -1,6 +1,6 @@
 import {GuildChannelManager} from "./GuildChannelManager";
 import {ChannelType, ForumChannel, GuildChannelCreateOptions} from "discord.js";
-import {Bot} from "../../../bot/Bot";
+import {Bot} from "../../../core/Bot";
 import {Log} from "../../../utils/Log";
 
 export class ForumChannelManager extends GuildChannelManager {

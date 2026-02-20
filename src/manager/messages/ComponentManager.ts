@@ -14,9 +14,9 @@ import {
     FileBuilder,
     ActionRowBuilder,
 } from "discord.js";
-import { Bot } from '../../bot/Bot';
-import {EmbedColor} from "./EmbedManager";
+import { Bot } from '../../core/Bot';
 import {SelectMenuList, SelectMenuManager} from "../interactions/SelectMenuManager";
+import {SimpleColor} from "../../constants/SimpleColor";
 
 interface BasicComponentManagerField { name?: string, value: string, separator?: SeparatorSpacingSize | false }
 interface ComponentManagerFieldThumbnail extends BasicComponentManagerField { thumbnailUrl: string }
@@ -26,7 +26,7 @@ export type ComponentManagerField = ComponentManagerFieldAccessory | ComponentMa
 export interface ComponentManagerCreate {
     title?: string | null,
     description?: string | null,
-    color?: EmbedColor | null,
+    color?: SimpleColor | null,
     thumbnailUrl?: string,
     separator?: SeparatorSpacingSize | false
 }
@@ -39,8 +39,8 @@ export interface ComponentManagerFileInput {
 
 export class ComponentManager {
 
-    private static get DEFAULT_COLOR(): number | EmbedColor {
-        return Bot.config?.defaultEmbedColor || EmbedColor.default;
+    private static get DEFAULT_COLOR(): number | SimpleColor {
+        return Bot.config?.defaultSimpleColor || SimpleColor.default;
     }
 
     /**
@@ -50,7 +50,7 @@ export class ComponentManager {
         const container = new ContainerBuilder()
 
         const colorC = option?.color ?? this.DEFAULT_COLOR;
-        if(colorC !== EmbedColor.transparent){
+        if(colorC !== SimpleColor.transparent){
             container.setAccentColor(colorC)
         }
 
@@ -86,7 +86,7 @@ export class ComponentManager {
     /**
      * Creates simple ComponentV2 with just description
      */
-    static simple(description: string, color: EmbedColor | null = null): ContainerBuilder {
+    static simple(description: string, color: SimpleColor | null = null): ContainerBuilder {
         return this.create({color})
             .addTextDisplayComponents(new TextDisplayBuilder().setContent(description))
             .addSeparatorComponents(this.separator())
@@ -96,7 +96,7 @@ export class ComponentManager {
      * Creates success ComponentV2
      */
     static success(description: string): ContainerBuilder {
-        return this.create({title:"Success", color:EmbedColor.success})
+        return this.create({title:"Success", color:SimpleColor.success})
             .addTextDisplayComponents(new TextDisplayBuilder().setContent(description))
             .addSeparatorComponents(this.separator())
     }
@@ -105,7 +105,7 @@ export class ComponentManager {
      * Creates debug ComponentV2
      */
     static debug(description: string): ContainerBuilder {
-        return this.create({title:"Debug", color:EmbedColor.minecraft})
+        return this.create({title:"Debug", color:SimpleColor.minecraft})
             .addTextDisplayComponents(
                 new TextDisplayBuilder().setContent(description)
             )
@@ -116,7 +116,7 @@ export class ComponentManager {
      * Creates error ComponentV2
      */
     static error(description: string): ContainerBuilder {
-        return this.create({title:"Something went wrong", color: EmbedColor.error})
+        return this.create({title:"Something went wrong", color: SimpleColor.error})
             .addTextDisplayComponents(
                 new TextDisplayBuilder().setContent(description)
             )
@@ -165,29 +165,6 @@ export class ComponentManager {
         }
         return container;
     }
-
-
-    /*static field(container: ContainerBuilder, field: ComponentManagerField): ContainerBuilder {
-        const section = new SectionBuilder()
-            .addTextDisplayComponents(
-                new TextDisplayBuilder().setContent(`**${field.name}**`),
-                new TextDisplayBuilder().setContent(field.value)
-            );
-
-        if (field.thumbnailUrl) {
-            section.setThumbnailAccessory(
-                new ThumbnailBuilder().setURL(field.thumbnailUrl)
-            );
-        }
-
-        if (field.button && field.button.length > 0) {
-            section.setButtonAccessory(field.button[0]!);
-        }
-
-        container.addSectionComponents(section);
-        container.addSeparatorComponents(this.separator());
-        return container;
-    }*/
 
 
     /**

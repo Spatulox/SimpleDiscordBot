@@ -4,7 +4,7 @@ import {
     TextInputStyle,
     LabelBuilder,
 } from "discord.js";
-import {Bot} from "../../bot/Bot";
+import {Bot} from "../../core/Bot";
 
 export enum ModalFieldType {
     SHORT,

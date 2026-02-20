@@ -6,9 +6,9 @@ import {
     VoiceChannel, StageChannel, Channel
 } from 'discord.js';
 import {Log} from "../../utils/Log";
-import {Time} from "../../utils/times/UnitTime";
+import {Time} from "../../utils/UnitTime";
 import {GuildUserManager} from "./GuildUserManager";
-import {Bot} from "../../bot/Bot";
+import {Bot} from "../../core/Bot";
 import {GuildChannelManager} from "./ChannelManager/GuildChannelManager";
 import {RoleManager} from "./RoleManager";
 import {GuildChannelList} from "./ChannelManager/GuildChannelList";

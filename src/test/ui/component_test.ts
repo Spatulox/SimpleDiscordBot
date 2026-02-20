@@ -1,4 +1,4 @@
-import {Bot, EmbedColor, GuildManager, SelectMenuManager} from "../../index";
+import {Bot, SimpleColor, GuildManager, SelectMenuManager} from "../../index";
 import {
     ComponentManager,
     ComponentManagerField,
@@ -15,8 +15,8 @@ export async function component_test() {
     if (channel) {
         await channel.send("--BASIC--")
         await channel.send(ComponentManager.toMessage(ComponentManager.create()))
-        await channel.send(ComponentManager.toMessage(ComponentManager.create({title:null, color:EmbedColor.crimson})))
-        await channel.send(ComponentManager.toMessage(ComponentManager.create({title: "Pas null", color: EmbedColor.crimson, thumbnailUrl: botIconUrl})))
+        await channel.send(ComponentManager.toMessage(ComponentManager.create({title:null, color:SimpleColor.crimson})))
+        await channel.send(ComponentManager.toMessage(ComponentManager.create({title: "Pas null", color: SimpleColor.crimson, thumbnailUrl: botIconUrl})))
         await channel.send(ComponentManager.toMessage(ComponentManager.simple("Desc simple")))
         await channel.send(ComponentManager.toMessage(ComponentManager.success("Desc success")))
         await channel.send(ComponentManager.toMessage(ComponentManager.debug("Desc debug")))
@@ -52,7 +52,7 @@ export async function component_test() {
             {buffer: fileBuf, name: "file2.json"},
         ]
 
-        const container = ComponentManager.create({title: "Complex one", color: EmbedColor.transparent, thumbnailUrl: botIconUrl})
+        const container = ComponentManager.create({title: "Complex one", color: SimpleColor.transparent, thumbnailUrl: botIconUrl})
         ComponentManager.fields(container, fields)
         ComponentManager.mediaGallery(container, [{url:botIconUrl}, {url:botIconUrl, spoiler: true}, {url:botIconUrl}])
         ComponentManager.selectMenu(container, SelectMenuManager.users("users_select"))
