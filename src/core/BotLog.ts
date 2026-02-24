@@ -4,17 +4,18 @@ import {Log} from "../utils/Log";
 import {Bot} from "./Bot";
 import {SendableComponent} from "../manager/builder/SendableComponentBuilder";
 
+type PreciseLogConfig = {channelId: string, console: boolean, discord: boolean}
 export type ConfigLog = {
-    logChannelId: string;
-    errorChannelId: string;
-    info: {console: boolean, discord: boolean}
-    error: {console: boolean, discord: boolean}
-    warn: {console: boolean, discord: boolean}
-    debug: {console: boolean, discord: boolean}
+    info: PreciseLogConfig
+    error: PreciseLogConfig
+    warn: PreciseLogConfig
+    debug: PreciseLogConfig
 }
 
 export class BotLog {
     private static logChannel: TextChannel | null = null;
+    private static warnChannel: TextChannel | null = null;
+    private static debugChannel: TextChannel | null = null;
     private static  errorChannel: TextChannel | null = null;
 
     constructor() {}
@@ -26,38 +27,95 @@ export class BotLog {
     /**
      * Initialize Discord logging channels and update Bot.log references
      */
+
     public static async initDiscordLogging(): Promise<void> {
         if (!Bot.client.isReady()) {
             Log.warn('Client not ready for Discord logging init');
             return;
         }
+        
+        const logTypes = [
+            { config: 'info', prop: 'logChannel' },
+            { config: 'warn', prop: 'warnChannel' },
+            { config: 'error', prop: 'errorChannel' },
+            { config: 'debug', prop: 'debugChannel' }
+        ] as const;
 
-        if (Bot.config.log?.logChannelId) {
+        for (const { config, prop } of logTypes) {
+            const channelId = Bot.config.log?.[config]?.channelId;
+            if (!channelId) continue;
+
             try {
-                const logCh = await Bot.client.channels.fetch(Bot.config.log.logChannelId) as TextChannel;
+                const channel = await Bot.client.channels.fetch(channelId) as TextChannel;
+                if (channel?.isTextBased()) {
+                    (BotLog)[prop] = channel;
+                } else {
+                    Log.warn(`${config.charAt(0).toUpperCase() + config.slice(1)} channel ${channelId} invalid`);
+                }
+            } catch (error) {
+                Log.error(`${config.charAt(0).toUpperCase() + config.slice(1)} channel fetch failed: ${error}`);
+            }
+        }
+    }
+
+    /*public static async initDiscordLogging(): Promise<void> {
+        if (!Bot.client.isReady()) {
+            Log.warn('Client not ready for Discord logging init');
+            return;
+        }
+
+        if (Bot.config.log?.info.channelId) {
+            try {
+                const logCh = await Bot.client.channels.fetch(Bot.config.log.info.channelId) as TextChannel;
                 if (logCh?.isTextBased()) {
                     BotLog.logChannel = logCh;
                 } else {
-                    Log.warn(`Log channel ${Bot.config.log.logChannelId} invalid`);
+                    Log.warn(`Log channel ${Bot.config.log.info.channelId} invalid`);
                 }
             } catch (error) {
                 Log.error(`Log channel fetch failed: ${error}`);
             }
         }
 
-        if (Bot.config.log?.errorChannelId) {
+        if (Bot.config.log?.warn.channelId) {
             try {
-                const errorCh = await Bot.client.channels.fetch(Bot.config.log.errorChannelId) as TextChannel;
+                const errorCh = await Bot.client.channels.fetch(Bot.config.log.warn.channelId) as TextChannel;
+                if (errorCh?.isTextBased()) {
+                    BotLog.warnChannel = errorCh;
+                } else {
+                    Log.warn(`Warn channel ${Bot.config.log.warn.channelId} invalid`);
+                }
+            } catch (error) {
+                Log.error(`Warn channel fetch failed: ${error}`);
+            }
+        }
+
+        if (Bot.config.log?.error.channelId) {
+            try {
+                const errorCh = await Bot.client.channels.fetch(Bot.config.log.error.channelId) as TextChannel;
                 if (errorCh?.isTextBased()) {
                     BotLog.errorChannel = errorCh;
                 } else {
-                    Log.warn(`Error channel ${Bot.config.log.errorChannelId} invalid`);
+                    Log.warn(`Error channel ${Bot.config.log.error.channelId} invalid`);
                 }
             } catch (error) {
                 Log.error(`Error channel fetch failed: ${error}`);
             }
         }
-    }
+
+        if (Bot.config.log?.debug.channelId) {
+            try {
+                const errorCh = await Bot.client.channels.fetch(Bot.config.log.debug.channelId) as TextChannel;
+                if (errorCh?.isTextBased()) {
+                    BotLog.debugChannel = errorCh;
+                } else {
+                    Log.warn(`Debug channel ${Bot.config.log.debug.channelId} invalid`);
+                }
+            } catch (error) {
+                Log.error(`Debug channel fetch failed: ${error}`);
+            }
+        }
+    }*/
 
 
     /**
@@ -135,8 +193,8 @@ export class BotLog {
             if(typeof content == 'string') { Log.warn(content) }
         }
 
-        if (logConfig?.warn.discord && this.logChannel) {
-            return await this._sendToChannel(this.logChannel, content, 'warn');
+        if (logConfig?.warn.discord && this.warnChannel) {
+            return await this._sendToChannel(this.warnChannel, content, 'warn');
         }
     }
 
@@ -150,8 +208,8 @@ export class BotLog {
             if(typeof content == 'string') { Log.debug(content) }
         }
 
-        if (logConfig?.debug.discord && this.logChannel) {
-            return await this._sendToChannel(this.logChannel, content, 'debug');
+        if (logConfig?.debug.discord && this.debugChannel) {
+            return await this._sendToChannel(this.debugChannel, content, 'debug');
         }
     }
 
