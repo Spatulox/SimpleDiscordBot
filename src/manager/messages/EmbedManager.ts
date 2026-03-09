@@ -97,8 +97,8 @@ export class EmbedManager {
     /**
      * Quick field adder
      */
-    static field(embed: EmbedBuilder, name: string, value: string, inline: boolean = false): EmbedBuilder {
-        return embed.addFields({ name, value, inline });
+    static field(embed: EmbedBuilder, field: {name: string, value: string, inline?: boolean}): EmbedBuilder {
+        return embed.addFields({ name: field.name, value: field.value, inline: field.inline ?? false });
     }
 
     static fields(embed: EmbedBuilder, fields: {name: string, value: string, inline?: boolean}[]): EmbedBuilder {
