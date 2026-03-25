@@ -2,7 +2,7 @@ import { Log } from './Log';
 import { Time } from './UnitTime';
 /** @internal*/
 export class InternetChecker {
-    private static readonly TARGET = 'https://1.1.1.1'; // Cloudflare DNS HTTPS
+    private static readonly TARGET = 'https://one.one.one.one/'; // Cloudflare DNS HTTPS
     private static readonly RETRY_TIME = Time.second.SEC_30;
 
     /**
