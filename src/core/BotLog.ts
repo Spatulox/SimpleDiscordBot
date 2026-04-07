@@ -78,6 +78,8 @@ export class BotLog {
                     Log.info(text);
                 }
                 msg = await channel.send({embeds: [content]});
+            } else if (content instanceof ContainerBuilder) {
+                msg = await channel.send({components: [content], flags: MessageFlags.IsComponentsV2});
             } else if (content instanceof ActionRowBuilder) {
                 msg = await channel.send({components: [content]});
             } else {

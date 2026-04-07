@@ -35,17 +35,19 @@ export class SendableComponentBuilder {
         const comps = Array.isArray(components) ? components : [components].filter(Boolean);
 
         for (const comp of comps) {
+            base.embeds = base.embeds || [];
+            base.components = base.components || [];
+
             if (comp instanceof EmbedBuilder) {
-                base.embeds = base.embeds || [];
-                base.embeds!.push(comp);
+                base.embeds.push(comp);
             }
+            }
+
             if(comp instanceof ContainerBuilder) {
-                base.components = base.components || [];
-                base.components!.push(comp);
+                base.components.push(comp);
             }
             if (comp instanceof ActionRowBuilder) {
-                base.components = base.components || [];
-                base.components!.push(comp);
+                base.components.push(comp);
             }
         }
         return base
@@ -81,11 +83,17 @@ export class SendableComponentBuilder {
 
         // Case 2
         if (typeof contentOrComponent !== 'string' && !component) {
+            if(contentOrComponent instanceof ContainerBuilder) { // Hack because ContainerBuilder is ComponentV2
+                base.flags = [MessageFlags.IsComponentsV2]
+            }
             return this.build(base, null, contentOrComponent);
         }
 
         // Case 3
         if (typeof contentOrComponent == 'string' && component) {
+            if(component instanceof ContainerBuilder) {  // Hack because ContainerBuilder is ComponentV2
+                base.flags = [MessageFlags.IsComponentsV2]
+            }
             return this.build(base, contentOrComponent, component);
         }
 

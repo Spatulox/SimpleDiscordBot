@@ -29,7 +29,7 @@ export async function component_test(interaction: ChatInputCommandInteraction) {
         await channel.send(ComponentManager.toMessage(ComponentManager.debug("Desc debug")))
         await channel.send(ComponentManager.toMessage(ComponentManager.error("Desc error")))
         await Bot.log.info(ComponentManager.error("Bot log info component_error"))
-        await Bot.message.send(channel, EmbedManager.success("Bot message info component_error"))
+        await Bot.message.send(channel, ComponentManager.success("Bot message info component_error"))
 
         await channel.send("--COMPLEX--")
 
