@@ -8,7 +8,6 @@ import {
     ComponentManagerField,
     ComponentManagerFileInput,
     SelectMenuCreateOption,
-    EmbedManager
 } from "../../index";
 import fs from "fs/promises";
 import {ButtonBuilder, ChatInputCommandInteraction} from "discord.js";

@@ -11,10 +11,10 @@ export class FileManager {
      * @param filePath Full path to the JSON file
      * @returns Parsed JSON object or 'Error' string on failure
      */
-    static async readJsonFile(filePath: string): Promise<any | false> {
+    static async readJsonFile<T = any>(filePath: string): Promise<T | false> {
         try {
             const data = await fs.readFile(filePath, 'utf8');
-            return JSON.parse(data);
+            return JSON.parse(data) as T;
         } catch (error) {
             Log.error(`Failed to read JSON file ${filePath}: ${error}`);
             return false;
