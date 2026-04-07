@@ -22,7 +22,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@spatulox/discord-interaction-manager": "^2.0.5",
+    "@spatulox/discord-interaction-manager": "^2.0.6",
     "discord.js": "^14.26.0"
   },
   "devDependencies": {
