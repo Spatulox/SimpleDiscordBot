@@ -1,6 +1,9 @@
 # Changelog
 Date format : dd/mm/yyy
 
+### 08/04/2026 - 2.0.1
+- Fix the README.md to match the new BotLog system
+
 ### 08/04/2026 - 2.0.0
 - GuildManager.find now seach in cache then fetch. Now can return Guild | null
 - BotLog now have separate channelId for each log type
