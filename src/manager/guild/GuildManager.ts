@@ -1,10 +1,4 @@
-import {
-    GuildMember,
-    Collection,
-    Guild,
-    GuildBan,
-    VoiceChannel, StageChannel, Channel
-} from 'discord.js';
+import {Channel, Collection, Guild, GuildBan, GuildMember, StageChannel, VoiceChannel} from 'discord.js';
 import {Log} from "../../utils/Log";
 import {Time} from "../../utils/UnitTime";
 import {GuildUserManager} from "./GuildUserManager";
@@ -25,8 +19,16 @@ export class GuildManager {
         return Array.from(Bot.client.guilds.cache.values());
     }
 
-    static async find(guild_id: string): Promise<Guild> {
-        return await Bot.client.guilds.fetch(guild_id)
+    static async find(guild_id: string): Promise<Guild | null> {
+        try {
+            const cached = Bot.client.guilds.cache.get(guild_id);
+            if (cached) return cached;
+
+            return await Bot.client.guilds.fetch(guild_id)
+        } catch (error) {
+            Log.error(`GuildManager: Guild ${guild_id} : ${error} `);
+            return null
+        }
     }
 
     /**
