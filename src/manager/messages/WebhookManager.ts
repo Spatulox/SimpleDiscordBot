@@ -33,7 +33,7 @@ export class WebhookManager {
 
         try {
             const webhooks = await this.textChannel.fetchWebhooks();
-            this.webhook = webhooks.find(h => h.name === this.name) ??
+            this.webhook = webhooks.find(h => h.name === this.name && h.owner?.id == Bot.client.user?.id) ??
                 await this.textChannel.createWebhook({
                     name: this.name,
                     avatar: this.avatarURL,
