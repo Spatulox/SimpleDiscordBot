@@ -1,8 +1,15 @@
 // src/utils/BotLog.ts
-import {TextChannel, EmbedBuilder, Message, ActionRowBuilder} from 'discord.js';
+import {
+    TextChannel,
+    EmbedBuilder,
+    Message,
+    ActionRowBuilder,
+    ContainerBuilder, MessageFlags,
+} from 'discord.js';
 import {Log} from "../utils/Log";
 import {Bot} from "./Bot";
 import {SendableComponent} from "../manager/builder/SendableComponentBuilder";
+import {SelectMenuManager} from "../manager/interactions/SelectMenuManager";
 
 export type ConfigLog = {
     logChannelId: string;
@@ -78,6 +85,8 @@ export class BotLog {
                     Log.info(text);
                 }
                 msg = await channel.send({embeds: [content]});
+            } else if (SelectMenuManager.isSelectMenuList(content)) {
+                msg = await channel.send({components: SelectMenuManager.rows(content)});
             } else if (content instanceof ContainerBuilder) {
                 msg = await channel.send({components: [content], flags: MessageFlags.IsComponentsV2});
             } else if (content instanceof ActionRowBuilder) {

@@ -6,6 +6,8 @@ import {
     MessageFlags,
     MessageActionRowComponentBuilder, ContainerBuilder
 } from "discord.js";
+import {SelectMenuManager} from "../interactions/SelectMenuManager";
+import {BaseSelectMenuBuilder} from "@discordjs/builders";
 
 //Any interface/type with those fields
 type MessageFields = {
@@ -14,13 +16,13 @@ type MessageFields = {
     components?: any;
 };
 
-export type SendableComponent = EmbedBuilder | ContainerBuilder | ActionRowBuilder<MessageActionRowComponentBuilder>;
+export type SendableComponent = EmbedBuilder | ContainerBuilder | BaseSelectMenuBuilder<any> | ActionRowBuilder<MessageActionRowComponentBuilder>;
 
 /** @internal */
 export class SendableComponentBuilder {
 
     static isSendableComponent(thing: any): thing is SendableComponent {
-        return thing instanceof EmbedBuilder || thing instanceof ContainerBuilder || thing instanceof ActionRowBuilder;
+        return thing instanceof EmbedBuilder || thing instanceof ContainerBuilder || thing instanceof BaseSelectMenuBuilder || thing instanceof ActionRowBuilder;
     }
 
     private static build<T extends MessageFields>(
@@ -41,6 +43,8 @@ export class SendableComponentBuilder {
             if (comp instanceof EmbedBuilder) {
                 base.embeds.push(comp);
             }
+            if(SelectMenuManager.isSelectMenuList(comp)) {
+                base.components.push(SelectMenuManager.row(comp));
             }
 
             if(comp instanceof ContainerBuilder) {

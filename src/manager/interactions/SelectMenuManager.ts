@@ -21,6 +21,14 @@ export type SelectMenuList = StringSelectMenuBuilder | UserSelectMenuBuilder | R
 
 export class SelectMenuManager {
 
+    static isSelectMenuList(comp: any): comp is SelectMenuList {
+        return comp instanceof StringSelectMenuBuilder ||
+            comp instanceof UserSelectMenuBuilder ||
+            comp instanceof RoleSelectMenuBuilder ||
+            comp instanceof MentionableSelectMenuBuilder ||
+            comp instanceof ChannelSelectMenuBuilder;
+    }
+
     /**
      * Creates base StringSelectMenu - SIMPLE API !
      */

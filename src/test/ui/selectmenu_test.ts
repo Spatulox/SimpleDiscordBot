@@ -41,6 +41,12 @@ export async function selectmenu_test(interaction: ChatInputCommandInteraction) 
         ]
 
         await channel.send(SelectMenuManager.toMessage(SelectMenuManager.simple("simple_menu", selection)))
+        await Bot.log.info(SelectMenuManager.simple("simple_menu", selection))
+        await Bot.message.send(channel, SelectMenuManager.simple("simple_menu", selection))
+        await Bot.log.info(SelectMenuManager.mentionables("simple_menu"))
+        await Bot.message.send(channel, SelectMenuManager.channels("simple_menu"))
+
+        await channel.send(SelectMenuManager.toMessage(SelectMenuManager.simple("simple_menu", selection)))
         await channel.send(SelectMenuManager.toMessage(SelectMenuManager.paginated("simple_menu_paginated", lotOfSelection, 5)))
     }
 }
