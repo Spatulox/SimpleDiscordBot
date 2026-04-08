@@ -40,12 +40,10 @@ const config: BotConfig = {
     defaultSimpleColor: SimpleColor.blue,
     botName: "Simple Discord Bot",
     log: {
-        logChannelId: "YOUR_LOG_CHANNEL_ID",
-        errorChannelId: "YOUR_ERROR_CHANNEL_ID",
-        info: { console: true, discord: true },
-        error: { console: true, discord: true },
-        warn: { console: true, discord: true },
-        debug: { console: true, discord: false }
+        info: {channelId: "YOUR_LOG_CHANNEL_ID", console: true, discord: true},
+        error: {channelId: "YOUR_LOG_CHANNEL_ID", console: true, discord: true},
+        warn: {channelId: "YOUR_LOG_CHANNEL_ID", console: true, discord: true},
+        debug: {channelId: "YOUR_LOG_CHANNEL_ID", console: true, discord: false},
     }
 };
 
