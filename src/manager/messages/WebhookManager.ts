@@ -1,10 +1,10 @@
 import {
-    Base64Resolvable,
+    Base64Resolvable, BaseGuildTextChannel,
     BufferResolvable,
     Client,
     Message,
     Snowflake,
-    TextChannel,
+    TextChannel, ThreadChannel,
     Webhook,
     WebhookMessageCreateOptions
 } from 'discord.js';
@@ -21,9 +21,10 @@ export class WebhookManager {
         private readonly client: Client,
         private readonly name: string,
         private readonly avatarPathOrUrl?: string
-    ) {}
+    ) {
+    }
 
-    private async getAvatar():  Promise<BufferResolvable | Base64Resolvable | null> {
+    private async getAvatar(): Promise<BufferResolvable | Base64Resolvable | null> {
         if (!this.avatarPathOrUrl) return null;
 
         // Si c'est une URL http/https
@@ -45,10 +46,18 @@ export class WebhookManager {
     /**
      * Récupère le channel à partir de l'ID ou utilise directement si TextChannel/ThreadChannel
      */
-    private async getTextChannel(channelId: Snowflake): Promise<TextChannel> {
+    private async getTextChannel(channelId: Snowflake): Promise<TextChannel | ThreadChannel> {
         const channel = await this.client.channels.fetch(channelId);
-        if (!channel || !(channel instanceof TextChannel)) {
-            throw new Error(`Channel ${channelId} is not a TextChannel`);
+
+        if (!channel) {
+            throw new Error(`Channel ${channelId} not found`);
+        }
+
+        if (
+            !(channel instanceof TextChannel) &&
+            !(channel instanceof ThreadChannel)
+        ) {
+            throw new Error(`Channel ${channelId} is not a TextChannel nor a ThreadChannel`);
         }
         return channel;
     }
@@ -60,10 +69,26 @@ export class WebhookManager {
         if (this.webhook) return this.webhook;
 
         try {
-            const textChannel = await this.getTextChannel(channelId);
+            const textThreadChannel = await this.getTextChannel(channelId);
+            let textChannel: BaseGuildTextChannel;
+
+            if (textThreadChannel instanceof ThreadChannel) {
+                const parent = textThreadChannel.parent;
+                if (!parent || !(parent instanceof BaseGuildTextChannel)) {
+                    throw new Error("Targeted channel parent is not a BaseGuildTextChannel");
+                }
+                textChannel = parent;
+            } else {
+                textChannel = textThreadChannel;
+            }
+
             const webhooks = await textChannel.fetchWebhooks();
 
-            this.webhook = webhooks.find(h => h.name === this.name && h.owner?.id == this.client.user?.id) ??
+            this.webhook = webhooks.find(
+                h =>
+                    h.name === this.name &&
+                    h.owner?.id === this.client.user?.id
+                ) ??
                 await textChannel.createWebhook({
                     name: this.name,
                     avatar: await this.getAvatar(),
