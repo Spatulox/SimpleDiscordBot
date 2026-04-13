@@ -1,6 +1,9 @@
 # Changelog
 Date format : dd/mm/yyy
 
+### 13/04/2026 - 2.0.3
+- Fix : WebhookManager can now send webhooks in threads
+
 ### 08/04/2026 - 2.0.1
 - Fix the README.md to match the new BotLog system
 
