@@ -2,16 +2,13 @@ import dotenv from "dotenv";
 import {
     Bot,
     BotConfig,
-    ComponentManager,
-    EmbedManager,
-    SelectMenuManager,
     SimpleColor,
     Time,
-    WebhookManager
 } from "../index";
 import {client} from "./client";
 import {Events} from "discord.js"
 import {randomActivityList} from "./randomActivityList";
+import {webhook_test} from "./ui/webhook_test";
 dotenv.config();
 
 async function main() {
@@ -35,13 +32,7 @@ async function main() {
     bot.client.on(Events.InteractionCreate, async (interaction) => {
         if(interaction.isChatInputCommand()){
             console.log(interaction);
-            const web = new WebhookManager(Bot.client, "Amiral", "./src/test/img/amiral_super_terre.jpg")
-            const web2 = new WebhookManager(Bot.client, "Linux", "https://imgs.search.brave.com/SZFEB5gZc-95omrZUtOmwS23cD0aCSh04HOvoByG6Jk/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9keW1h/LmZyL2Jsb2cvY29u/dGVudC9pbWFnZXMv/c2l6ZS93OTYwLzIw/MjQvMDgvbGludXgx/MjAweDYyOC53ZWJw")
-            web.send(interaction.channelId, "Coucou")
-            web.send(interaction.channelId, EmbedManager.error("coucou"))
-            web.send(interaction.channelId, ComponentManager.success("Success"))
-            web.send(interaction.channelId, SelectMenuManager.users("user_select"))
-            web2.send(interaction.channelId, "Coucou")
+            webhook_test(interaction)
         }
     })
 

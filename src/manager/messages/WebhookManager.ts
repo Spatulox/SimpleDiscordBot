@@ -4,7 +4,7 @@ import {
     Client,
     Message,
     Snowflake,
-    TextChannel, ThreadChannel,
+    TextChannel, ThreadChannel, ThreadOnlyChannel,
     Webhook,
     WebhookMessageCreateOptions
 } from 'discord.js';
@@ -46,7 +46,7 @@ export class WebhookManager {
     /**
      * Récupère le channel à partir de l'ID ou utilise directement si TextChannel/ThreadChannel
      */
-    private async getTextChannel(channelId: Snowflake): Promise<TextChannel | ThreadChannel> {
+    private async getChannel(channelId: Snowflake): Promise<TextChannel | ThreadChannel> {
         const channel = await this.client.channels.fetch(channelId);
 
         if (!channel) {
@@ -64,18 +64,19 @@ export class WebhookManager {
 
     /**
      * Get or create webhook (lazy initialization)
+     * Create the webhook in the parent channel if it's in a thread
      */
     private async getWebhook(channelId: Snowflake): Promise<Webhook> {
         if (this.webhook) return this.webhook;
 
         try {
-            const textThreadChannel = await this.getTextChannel(channelId);
-            let textChannel: BaseGuildTextChannel;
+            const textThreadChannel = await this.getChannel(channelId);
+            let textChannel: BaseGuildTextChannel | ThreadOnlyChannel;
 
             if (textThreadChannel instanceof ThreadChannel) {
                 const parent = textThreadChannel.parent;
-                if (!parent || !(parent instanceof BaseGuildTextChannel)) {
-                    throw new Error("Targeted channel parent is not a BaseGuildTextChannel");
+                if (!parent || !(parent instanceof BaseGuildTextChannel) && !(parent instanceof ThreadOnlyChannel)) {
+                    throw new Error("Targeted channel parent is not a BaseGuildTextChannel or ThreadOnlyChannel");
                 }
                 textChannel = parent;
             } else {
@@ -125,6 +126,11 @@ export class WebhookManager {
             Object.assign(options, content);
         } else {
             options.content = String(content);
+        }
+
+        const channelType = await this.getChannel(channelId)
+        if(channelType instanceof ThreadChannel) {
+            options.threadId = channelId;
         }
 
         try {
