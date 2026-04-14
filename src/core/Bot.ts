@@ -8,6 +8,7 @@ import {BotMessage} from "./BotMessage";
 import {BotEnv} from "./BotEnv";
 import {BotInteraction} from "./BotInteraction";
 import {SimpleColor} from "../constants/SimpleColor";
+import {SimpleDiscordBotInfo} from "../SimpleDiscordBotInfo";
 
 type CriticConfig = {
     dev: boolean;
@@ -55,6 +56,7 @@ export class Bot {
 
         (async() => {
             Log.info(`Using discord.js version: ${version}`);
+            Log.info(`Using simplediscordbot version: ${SimpleDiscordBotInfo.version}`);
             Log.info('Trying to connect to Discord Servers')
 
             await InternetChecker.checkConnection(3)
