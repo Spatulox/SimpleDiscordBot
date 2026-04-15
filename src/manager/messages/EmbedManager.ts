@@ -28,7 +28,7 @@ export class EmbedManager {
             embed.setColor(colorC)
         }
 
-        if (Bot.config.botName) {
+        if (Bot.config?.botName) {
             const footer: EmbedFooterData = {
                 text: Bot.config.botName
             };

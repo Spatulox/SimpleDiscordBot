@@ -164,7 +164,7 @@ export class BotLog {
      * Send INFO log - TEXT or EMBED ! Respecte config.log.info
      */
     static async info(content: string | SendableComponent): Promise<Message | void> {
-        const logConfig = Bot.config.log;
+        const logConfig = Bot.config?.log;
 
         // 1. CONSOLE selon config (ou défaut ON)
         if (!logConfig || logConfig.info.console) {
