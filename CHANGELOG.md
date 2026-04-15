@@ -1,7 +1,10 @@
 # Changelog
 Date format : dd/mm/yyy
 
-### 15/04/2026 - 2.1.0
+### 15/04/2026 - 2.1.2
+- CacheManager should now take the botname in lowercase and escape weird char
+
+### 15/04/2026 - 2.1.0 & 2.1.1
 - Add a CacheManager for simple persisting data
 - Add QoL method to FileManager (fileExist(), deleteFile())
 - Fix :

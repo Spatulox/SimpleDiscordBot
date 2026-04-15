@@ -6,7 +6,11 @@ import {Bot} from "../core/Bot";
 
 export class CacheManager {
     private static get cacheDir(){
-        return path.join(process.cwd(), `.${Bot.config?.botName ?? "simplediscordbot"}cache`);
+        let folderPath = "simplediscordbot";
+        if(Bot.config?.botName){
+            folderPath = this.cleanCacheId(Bot.config?.botName?.toLowerCase()).replace(" ", "_")
+        }
+        return path.join(process.cwd(), `.${folderPath}cache`);
     }
 
     private static cleanCacheId(key: string): string {
