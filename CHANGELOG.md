@@ -1,6 +1,13 @@
 # Changelog
 Date format : dd/mm/yyy
 
+### 15/04/2026 - 2.1.0
+- Add a CacheManager for simple persisting data
+- Add QoL method to FileManager (fileExist(), deleteFile())
+- Fix :
+  - SimpleDiscordBotInfo.version showing license instead of version
+  - FileManager should be able to create hidden folder
+
 ### 13/04/2026 - 2.0.3
 - Fix : WebhookManager can now send webhooks in threads
 
