@@ -1,11 +1,27 @@
 // src/filesystem/FileManager.ts
 import path from 'path';
 import fs from 'fs/promises';
-import { Log } from '../utils/Log';
+import {Log} from '../utils/Log';
 import {Bot} from "../core/Bot";
 import {EmbedManager} from "./messages/EmbedManager";
 
 export class FileManager {
+
+
+    /**
+     * Check if a file exist
+     * @param filePath File path with file name
+     * @returns true si le fichier existe, false sinon
+     */
+    static async fileExists(filePath: string): Promise<boolean> {
+        try {
+            await fs.access(filePath);
+            return true;
+        } catch {
+            return false;
+        }
+    }
+
     /**
      * Reads a JSON file synchronously.
      * @param filePath Full path to the JSON file
@@ -29,10 +45,9 @@ export class FileManager {
     static async listDirectories(directoryPath: string): Promise<string[] | false> {
         try {
             const files = await fs.readdir(directoryPath, { withFileTypes: true });
-            const directories = files
+            return files
                 .filter(file => file.isDirectory())
                 .map(dir => dir.name);
-            return directories;
         } catch (error) {
             Log.error(`Failed to read directory ${directoryPath}: ${error}`);
             return false;
@@ -102,17 +117,7 @@ export class FileManager {
 
         try {
             // Create directory structure recursively
-            const directories = directoryPath.split(path.sep).filter(Boolean);
-            let currentPath = '';
-
-            for (const dir of directories) {
-                currentPath = path.join(currentPath, dir);
-                try {
-                    await fs.access(currentPath);
-                } catch {
-                    await fs.mkdir(currentPath, { recursive: true });
-                }
-            }
+            await fs.mkdir(directoryPath, { recursive: true });
 
             if (!filename || filename.trim() === '') {
                 Log.error('Cannot write JSON file: empty filename');
@@ -134,6 +139,28 @@ export class FileManager {
             } else {
                 Log.error(`Failed to write file ${directoryPath}/${cleanFilename}.json: ${error}`);
             }
+            return false;
+        }
+    }
+
+    /**
+     * Delete a file
+     * @param filePath Full file path
+     * @returns true si supprimé avec succès, false sinon
+     */
+    static async deleteFile(filePath: string): Promise<boolean> {
+        try {
+            // Vérifie d'abord si le fichier existe
+            if (!(await this.fileExists(filePath))) {
+                Log.warn(`File does not exist: ${filePath}`);
+                return false;
+            }
+
+            await fs.unlink(filePath);
+            Log.info(`Successfully deleted file: ${filePath}`);
+            return true;
+        } catch (error) {
+            Log.error(`Failed to delete file ${filePath}: ${error}`);
             return false;
         }
     }
