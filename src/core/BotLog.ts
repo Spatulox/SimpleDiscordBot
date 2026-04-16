@@ -9,7 +9,8 @@ import {
 import {Log} from "../utils/Log";
 import {Bot} from "./Bot";
 import {SendableComponent} from "../manager/builder/SendableComponentBuilder";
-import {SelectMenuManager} from "../manager/interactions/SelectMenuManager";
+import {SelectMenuManager} from "../manager/interactible/SelectMenuManager";
+import {BotEnv} from "./BotEnv";
 
 type PreciseLogConfig = {channelId: string, console: boolean, discord: boolean}
 export type ConfigLog = {
@@ -213,6 +214,7 @@ export class BotLog {
      * Send DEBUG log - TEXT or EMBED ! Respecte config.log.debug
      */
     static async debug(content: string | SendableComponent): Promise<Message | void> {
+        if(!BotEnv.dev) return
         const logConfig = Bot.config.log;
 
         if (!logConfig || logConfig?.debug.console) {
