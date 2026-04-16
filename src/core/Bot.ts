@@ -22,7 +22,6 @@ export type BotConfig = {
 }
 
 export type InternalBotConfig = {
-    clientId: string
 } & BotConfig;
 
 export type RandomBotActivity = {type: ActivityType, message: string}[]
@@ -45,13 +44,13 @@ export class Bot {
     static get client(): Client { return Bot._client; }
     static get config(): InternalBotConfig { return Bot._config; }
 
-    constructor(client: Client, config: BotConfig) {
+    constructor(client: Client, config: BotConfig = {}) {
 
         Log.info('----------------------------------------------------');
         Log.info("Starting Bot")
 
         Bot.criticConfig = { dev: BotEnv.dev, token: BotEnv.token };
-        Bot._config = { ...config, clientId: BotEnv.clientId};
+        Bot._config = config
         Bot._client = client;
 
         (async() => {
