@@ -3,7 +3,7 @@ import {WebhookManager} from "../../manager/messages/WebhookManager";
 import {Bot} from "../../core/Bot";
 import {EmbedManager} from "../../manager/messages/EmbedManager";
 import {ComponentManager} from "../../manager/messages/ComponentManager";
-import {SelectMenuManager} from "../../manager/interactions/SelectMenuManager";
+import {SelectMenuManager} from "../../manager/interactible/SelectMenuManager";
 
 export function webhook_test(interaction: ChatInputCommandInteraction) {
 

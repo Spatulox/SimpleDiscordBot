@@ -1,5 +1,5 @@
 import {ChatInputCommandInteraction} from "discord.js";
-import {ModalFieldType, ModalManager} from "../../manager/interactions/ModalManager";
+import {ModalFieldType, ModalManager} from "../../manager/interactible/ModalManager";
 
 export async function modal_test(interaction: ChatInputCommandInteraction) {
 

@@ -6,7 +6,7 @@ import {
     MessageFlags,
     MessageActionRowComponentBuilder, ContainerBuilder
 } from "discord.js";
-import {SelectMenuManager} from "../interactions/SelectMenuManager";
+import {SelectMenuManager} from "../interactible/SelectMenuManager";
 import {BaseSelectMenuBuilder} from "@discordjs/builders";
 
 //Any interface/type with those fields

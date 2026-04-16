@@ -3,7 +3,7 @@ import {
     ActionRowBuilder,
     ButtonBuilder, ButtonInteraction,
 } from "discord.js";
-import { ButtonManager } from "../interactions/ButtonManager.js";
+import { ButtonManager } from "./ButtonManager";
 
 export interface Page {
     embed: EmbedBuilder;

@@ -14,10 +14,10 @@ export { GuildManager } from "./manager/guild/GuildManager";
 export { UserManager } from './manager/direct/UserManager';
 
 // Handlers
-export { ModalManager, ModalFieldType, ModalField } from "./manager/interactions/ModalManager";
-export { SelectMenuManager, SelectMenuList, SelectMenuCreateOption } from "./manager/interactions/SelectMenuManager";
+export { ModalManager, ModalFieldType, ModalField } from "./manager/interactible/ModalManager";
+export { SelectMenuManager, SelectMenuList, SelectMenuCreateOption } from "./manager/interactible/SelectMenuManager";
 export { ComponentManager, ComponentManagerCreate, ComponentManagerField, ComponentManagerFileInput } from "./manager/messages/ComponentManager";
-export { ButtonManager, ButtonOptions } from "./manager/interactions/ButtonManager";
+export { ButtonManager, ButtonOptions } from "./manager/interactible/ButtonManager";
 
 // Utils
 export { Time } from "./utils/UnitTime"

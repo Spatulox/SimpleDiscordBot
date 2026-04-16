@@ -1,6 +1,6 @@
 import {GuildManager} from "../../manager/guild/GuildManager";
 //import {Bot} from "../../core/Bot";
-import {SelectMenuCreateOption, SelectMenuManager} from "../../manager/interactions/SelectMenuManager";
+import {SelectMenuCreateOption, SelectMenuManager} from "../../manager/interactible/SelectMenuManager";
 import {ChatInputCommandInteraction} from "discord.js";
 import {Bot} from "../../core/Bot";
 

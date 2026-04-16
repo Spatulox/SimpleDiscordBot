@@ -15,7 +15,7 @@ import {
     ActionRowBuilder, InteractionReplyOptions, InteractionEditReplyOptions,
 } from "discord.js";
 import { Bot } from '../../core/Bot';
-import {SelectMenuList, SelectMenuManager} from "../interactions/SelectMenuManager";
+import {SelectMenuList, SelectMenuManager} from "../interactible/SelectMenuManager";
 import {SimpleColor} from "../../constants/SimpleColor";
 
 interface BasicComponentManagerField { name?: string, value: string, separator?: SeparatorSpacingSize | false }
