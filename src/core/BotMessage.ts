@@ -72,31 +72,44 @@ export class BotMessage {
         }
     }
 
-    static async sendDM(user: User | GuildMember | string, content?: string, component?: SendableComponent): Promise<Message | null> {
+    static async sendDM(userOrId: User | GuildMember | string, content: string, component: SendableComponent): Promise<Message | null>;
+    static async sendDM(userOrId: User | GuildMember | string, content: string | SendableComponent | MessageCreateOptions): Promise<Message | null>;
+    static async sendDM(userOrId: User | GuildMember | string, content: string | SendableComponent | MessageCreateOptions, component?: SendableComponent): Promise<Message | null> {
         try {
+            if (!userOrId) {
+                Log.warn("Cannot send DM: Invalid user / ID");
+                return null;
+            }
+
             let targetUser: User;
-            if (user instanceof User || user instanceof GuildMember) {
-                targetUser = user instanceof GuildMember ? user.user : user;
+
+            if (userOrId instanceof User || userOrId instanceof GuildMember) {
+                targetUser = userOrId instanceof GuildMember ? userOrId.user : userOrId;
             } else {
-                targetUser = await Bot.client.users.fetch(user)
+                const fetchedUser = await Bot.client.users.fetch(userOrId);
+                if (!fetchedUser) {
+                    Log.warn(`Cannot send DM: User not found for ID: ${userOrId}`);
+                    return null;
+                }
+                targetUser = fetchedUser;
             }
 
             let messageCreate: MessageCreateOptions;
 
-            if (content && component) {
+            if (typeof content === "string" && component) {
                 messageCreate = SendableComponentBuilder.buildMessage(content, component);
-            } else if (content) {
+            } else if (typeof content === "string") {
                 messageCreate = SendableComponentBuilder.buildMessage(content);
-            } else if (component) {
-                messageCreate = SendableComponentBuilder.buildMessage(component);
+            } else if (SendableComponentBuilder.isSendableComponent(content)) {
+                messageCreate = SendableComponentBuilder.buildMessage(content);
             } else {
-                throw new Error("Cannot send message : content and component cannot be null at the same time");
+                messageCreate = content // as MessageCreateOptions; // MessageCreateOptions
             }
 
-            return await targetUser.send(messageCreate)
+            return await targetUser.send(messageCreate);
         } catch (error) {
-            Log.error(`Cannot send message to ${user}: ${error}`);
-            return null
+            Log.error(`Cannot send DM to ${userOrId}: ${error}`);
+            return null;
         }
     }
 
