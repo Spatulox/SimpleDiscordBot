@@ -63,7 +63,7 @@ export class BotInteraction {
             typeof content === 'string' ? ephemeral : component as boolean
         );
 
-        return interaction.reply(options);
+        return await interaction.reply(options);
     }
 
     static async followUp(interaction: BaseInteraction, content: SendableComponent, ephemeral?: boolean): Promise<InteractionResponse<boolean> | Message<boolean> | boolean>
@@ -74,7 +74,7 @@ export class BotInteraction {
         component: SendableComponent | boolean = false,
         ephemeral: boolean = false
     ): Promise<InteractionResponse<boolean> | Message<boolean> | boolean> {
-        if (!interaction.isRepliable()) return false;
+        if (!interaction.isMessageComponent()) return false;
 
         const options = this.buildReplyOptions(
             typeof content === 'string' ? content : "",
@@ -82,26 +82,24 @@ export class BotInteraction {
             typeof content === 'string' ? ephemeral : component as boolean
         );
 
-        return interaction.followUp(options);
+        return await interaction.followUp(options);
     }
 
-    static async defer(interaction: BaseInteraction): Promise<void> {
-        if (!interaction.isRepliable()) return;
+    static async defer(interaction: BaseInteraction): Promise<InteractionResponse<boolean>  | void> {
 
         if (interaction.isChatInputCommand() || interaction.isContextMenuCommand()) {
             if (!interaction.deferred && !interaction.replied) {
-                await interaction.deferReply();
+                return await interaction.deferReply();
             }
             return;
         }
 
         if (
-            interaction.isButton() ||
-            interaction.isAnySelectMenu() ||
+            interaction.isMessageComponent() ||
             interaction.isModalSubmit()
         ) {
             if (!interaction.deferred && !interaction.replied) {
-                await interaction.deferUpdate();
+                return await interaction.deferUpdate();
             }
         }
     }
@@ -113,7 +111,6 @@ export class BotInteraction {
         content: SendableComponent | string,
         component?: SendableComponent,
     ): Promise<InteractionResponse<boolean> | Message<boolean> | boolean> {
-        if (!interaction.isRepliable()) return false;
 
         const options = this.buildUpdateOptions(
             typeof content === 'string' ? content : "",
@@ -126,6 +123,7 @@ export class BotInteraction {
         }
 
         // Slash commands → editReply()
+        if(!interaction.isCommand()) return false
         if (interaction.deferred || interaction.replied) {
             return await interaction.editReply(options);
         }
