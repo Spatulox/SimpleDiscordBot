@@ -1,0 +1,18 @@
+Rédige une page de wiki au format suivant :
+
+- Utilise le langage Markdown.
+- Commence par un en‑tête `## [NomDeLaClasse / NomDuModule]`.
+- Ajoute un bref paragraphe introductif qui explique en 1–2 phrases ce que cette classe / ce module fait.
+- Ensuite, utilise des sous‑titres courtes (au maximum 6 mots) comme :
+  - `### Core behavior`
+  - `### Main methods`
+  - `### Exemple d’utilisation`
+  - `### Typique usage`
+- Pour chaque section, rédige 2–3 phrases max, claires et concises.
+- Évite les résumés / conclusions à la fin; limite le contenu exactement aux sections utiles.
+- Si la classe est un helper ou un utils, explique aussi comment l’utilisateur doit l’instancier / l’utiliser dans son code.
+- Si la classe fait partie d’un système plus large (ex. module system, manager, interaction router), place un petit paragraphe qui montre où elle s’insère dans l’architecture globale.
+- Ne fais pas de liste de toutes les méthodes une par une; regroupe‑les par rôle ou par type (ex. “methods for reading files”, “methods for sending messages”).
+- Termine par une petite section `### Typical usage` avec 1–2 exemples de code courts et concrets en TypeScript, montrant comment l’utiliser dans un contexte de bot Discord.
+
+Tout doit rester lisible, orienté développeur, sans entrer dans des détails implémentatoires trop bas‑niveau.
