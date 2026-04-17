@@ -1,5 +1,3 @@
-import {DiscordRegex} from "../constants/DiscordRegex";
-
 export const BotEnv = {
     get token(): string {
         const token = process.env.DISCORD_BOT_TOKEN;
@@ -8,15 +6,5 @@ export const BotEnv = {
     },
     get dev(): boolean {
         return !!process.env.DISCORD_BOT_DEV;
-    },
-    get clientId(): string {
-        const token = process.env.DISCORD_BOT_CLIENTID;
-        if (!token) throw new Error('Missing environment variable : DISCORD_BOT_CLIENTID');
-
-        if(!DiscordRegex.BOT_ID.test(token)){
-            throw new Error("Invalid token format")
-        }
-
-        return token;
     }
 } as const;
