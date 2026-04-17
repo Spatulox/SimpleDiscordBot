@@ -10,7 +10,7 @@ export class RoleManager {
      */
     static async add(member: GuildMember, roleId: Snowflake): Promise<boolean> {
         try {
-            const role = member.roles.cache.get(roleId);
+            const role = member.guild.roles.cache.get(roleId);
             if (!role) {
                 Log.warn(`Role ${roleId} not found in cache`);
                 return false;
