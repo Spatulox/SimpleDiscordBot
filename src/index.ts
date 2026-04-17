@@ -4,7 +4,7 @@ export {BotEnv} from "./core/BotEnv";
 
 // Manager
 export { FileManager } from './manager/FileManager'
-export {CacheManager} from "./manager/CacheManager";
+export { CacheManager } from "./manager/CacheManager";
 
 export { EmbedManager } from './manager/messages/EmbedManager';
 export { WebhookManager } from './manager/messages/WebhookManager';
