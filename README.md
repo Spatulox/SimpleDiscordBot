@@ -14,19 +14,28 @@
 > - Provides easy Managers to avoid repetitive code everywhere
 > - Simple yet powerful builders (Embeds, Modals, SelectMenus, Components, Buttons) that rely on discord.js for full compatibility
 
+# Don't forget to check the [wiki](https://github.com/spatulox-discord/SimpleDiscordBot/wiki)
 
 ## Installation
 ```bash
-npm i @spatulox/simplediscordbot
+  npm i @spatulox/simplediscordbot
 ```
 
 ## Quick Start
 
 Env Variables:
-```bash
-DISCORD_BOT_TOKEN="" // Your bot Token
-DISCORD_BOT_CLIENTID="" // Yout bot client id
 ```
+DISCORD_BOT_TOKEN="" // Your bot Token
+```
+<details>
+    <summary>Note for v2.1.2 and older</summary>
+
+> You also need to set up this env var :
+> ```
+> DISCORD_BOT_CLIENTID="" // You bot ClientID
+> ```
+
+</details>
 
 ```typescript
 import {Bot, BotConfig, SimpleColor, Time} from "@spatulox/simplediscordbot";
