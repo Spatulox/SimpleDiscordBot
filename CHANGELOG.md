@@ -2,14 +2,14 @@
 Date format : dd/mm/yyy
 
 
-### 27/04/2026 - 2.2.0
+### 27/04/2026 - 2.2.1
 - Add :
   - Add a full wiki matching this version
 - Changes:
   - `DISCORD_BOT_DEV` now enable/disable the Bot.log.debug() / Log.debug()
   - Removed `DISCORD_BOT_CLIENTID`
   - Add overloading for `BotMessage.sendDM()` : Should now match all other `send()` from the framework for consistency
-  - Rework the type of `ComponentManagerField` to mandatory/optionally allow the 'name' & 'value' fields (both need to be present (or not) at the same time)
+  - Rework the type of `ComponentManagerField` : 'name' & 'value' are now optional. 'value' is now only mandatory when using 'thumbnailUrl' field with
 - Fix :
   - `Bot.interaction.xxx()` logic : some interaction were enable to pass some requirement because of a wrong check logic
   - RoleManager : take the member.guild.role instead of member.role to assign an exsiting role to a GuildMember

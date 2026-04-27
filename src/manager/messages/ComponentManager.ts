@@ -18,22 +18,16 @@ import { Bot } from '../../core/Bot';
 import {SelectMenuList, SelectMenuManager} from "../interactible/SelectMenuManager";
 import {SimpleColor} from "../../constants/SimpleColor";
 
-type OptionalText = {
+type BasicText = {
     separator?: SeparatorSpacingSize | false;
-    name?: string; // set to never if you don't want it to be present
-    value?: string; // set to never if you don't want it to be present
-};
+    name?: string;
+}
+type OptionalText = BasicText & { value?: string; };
+type RequiredText = BasicText & { value: string; };
 
-type RequiredText = {
-    separator?: SeparatorSpacingSize | false;
-    name: string;
-    value: string;
-};
-
-type BasicComponentManagerField = OptionalText | RequiredText;
 type ComponentManagerFieldThumbnail = RequiredText & { thumbnailUrl: string };
-type ComponentManagerFieldAccessory = BasicComponentManagerField & { button: ButtonBuilder | ButtonBuilder[] };
-export type ComponentManagerField = (ComponentManagerFieldAccessory | ComponentManagerFieldThumbnail | BasicComponentManagerField)
+type ComponentManagerFieldAccessory = OptionalText & { button: ButtonBuilder | ButtonBuilder[] };
+export type ComponentManagerField = (ComponentManagerFieldAccessory | ComponentManagerFieldThumbnail | OptionalText)
 
 export interface ComponentManagerCreate {
     title?: string | null,
@@ -160,7 +154,7 @@ export class ComponentManager {
             container.addActionRowComponents(actionRow);
 
         } else if( ("button" in field && !Array.isArray(field.button)) || "thumbnailUrl" in field){
-            if(hasText){
+            if(hasText){ // Text 'value' is mandatory when it's a thumbnail
                 const section = new SectionBuilder()
                 this.fieldAddText(section, {name: field.name, value: field.value});
                 if("button" in field && !Array.isArray(field.button)){
