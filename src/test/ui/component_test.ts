@@ -7,7 +7,7 @@ import {
     ComponentManager,
     ComponentManagerField,
     ComponentManagerFileInput,
-    SelectMenuCreateOption,
+    //SelectMenuCreateOption,
 } from "../../index";
 import fs from "fs/promises";
 import {ButtonBuilder, ChatInputCommandInteraction} from "discord.js";
@@ -19,7 +19,7 @@ export async function component_test(interaction: ChatInputCommandInteraction) {
     interaction.reply(ComponentManager.toInteraction(ComponentManager.simple("Reply Simple")))
 
     if (channel) {
-        await channel.send("--BASIC--")
+        /*await channel.send("--BASIC--")
         await channel.send(ComponentManager.toMessage(ComponentManager.create()))
         await channel.send(ComponentManager.toMessage(ComponentManager.create({title:null, color: SimpleColor.crimson})))
         await channel.send(ComponentManager.toMessage(ComponentManager.create({title: "Pas null", color: SimpleColor.crimson, thumbnailUrl: botIconUrl})))
@@ -30,7 +30,7 @@ export async function component_test(interaction: ChatInputCommandInteraction) {
         await Bot.log.info(ComponentManager.error("Bot log info component_error"))
         await Bot.message.send(channel, ComponentManager.success("Bot message info component_error"))
 
-        await channel.send("--COMPLEX--")
+        await channel.send("--COMPLEX--")*/
 
         const buttonLine: ButtonBuilder[] = [
             ButtonManager.success({customId: "success_component_button_1"}),
@@ -40,19 +40,27 @@ export async function component_test(interaction: ChatInputCommandInteraction) {
             ButtonManager.danger({customId: "success_component_button_4"})
         ]
 
+        const buttonLine2: ButtonBuilder[] = [
+            ButtonManager.success({customId: "success_component_button_1_2"}),
+            ButtonManager.link({label: "Google 2", url: "https://google.com"}),
+            ButtonManager.danger({customId: "success_component_button_2_2"}),
+            ButtonManager.danger({customId: "success_component_button_3_2"}),
+            ButtonManager.danger({customId: "success_component_button_4_2"})
+        ]
+
         const fields: ComponentManagerField[] = [
             {name: "Serveur", value: "Helldivers FR", thumbnailUrl: botIconUrl},
             {name: "Membres", value: "1,234", button: ButtonManager.success({customId: "success_component_button"})},
+            {button: ButtonManager.success({customId: "success_component_button_2_3"})},
             {name: "Buttons", value: "Button line", button: buttonLine},
-            {name: "Channels", value: "56"},
-            {name: "Boost", value: "Niveau 2"}
+            {button: buttonLine2},
         ];
 
-        const selectOption: SelectMenuCreateOption[] = [
+        /*const selectOption: SelectMenuCreateOption[] = [
             {label: "Test", value: "Test"},
             {label: "Test2", value: "Test2"},
             {label: "Test3", value: "Test3"}
-        ]
+        ]*/
 
         const fileBuf = await fs.readFile("./handlers/commands/example.json")
         const filesData: ComponentManagerFileInput[] = [
@@ -64,7 +72,7 @@ export async function component_test(interaction: ChatInputCommandInteraction) {
         ComponentManager.fields(container, fields)
         ComponentManager.mediaGallery(container, [{url:botIconUrl}, {url:botIconUrl, spoiler: true}, {url:botIconUrl}])
         ComponentManager.selectMenu(container, SelectMenuManager.users("users_select"))
-        ComponentManager.selectMenu(container, SelectMenuManager.simple("any_select", selectOption))
+        //ComponentManager.selectMenu(container, SelectMenuManager.simple("any_select", selectOption))
         const {files} = ComponentManager.file(container, filesData) // Since discord works really weird, we put files reference inside the container, but the buffed files can't be put right now (not really like that but it's a simple explanation)
         await channel.send(ComponentManager.toMessage(container, files)) // Buffed files goes here
         await channel.send("--END--")

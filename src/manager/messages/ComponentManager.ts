@@ -18,10 +18,22 @@ import { Bot } from '../../core/Bot';
 import {SelectMenuList, SelectMenuManager} from "../interactible/SelectMenuManager";
 import {SimpleColor} from "../../constants/SimpleColor";
 
-interface BasicComponentManagerField { name?: string, value: string, separator?: SeparatorSpacingSize | false }
-interface ComponentManagerFieldThumbnail extends BasicComponentManagerField { thumbnailUrl: string }
-interface ComponentManagerFieldAccessory extends BasicComponentManagerField { button: ButtonBuilder | ButtonBuilder[] }
-export type ComponentManagerField = ComponentManagerFieldAccessory | ComponentManagerFieldThumbnail | BasicComponentManagerField;
+type OptionalText = {
+    separator?: SeparatorSpacingSize | false;
+    name?: never;
+    value?: never;
+};
+
+type RequiredText = {
+    separator?: SeparatorSpacingSize | false;
+    name: string;
+    value: string;
+};
+
+type BasicComponentManagerField = OptionalText | RequiredText;
+type ComponentManagerFieldThumbnail = RequiredText & { thumbnailUrl: string };
+type ComponentManagerFieldAccessory = BasicComponentManagerField & { button: ButtonBuilder | ButtonBuilder[] };
+export type ComponentManagerField = (ComponentManagerFieldAccessory | ComponentManagerFieldThumbnail | BasicComponentManagerField)
 
 export interface ComponentManagerCreate {
     title?: string | null,
@@ -132,32 +144,40 @@ export class ComponentManager {
     /**
      * Quick field adder
      */
-    private static fieldAddText(container: ContainerBuilder | SectionBuilder, options: {name?: string, value: string}) {
+    private static fieldAddText(container: ContainerBuilder | SectionBuilder, options: {name?: string, value?: string}) {
         options.name && container.addTextDisplayComponents(new TextDisplayBuilder().setContent(`__**${options.name}**__`));
-        container.addTextDisplayComponents(new TextDisplayBuilder().setContent(options.value));
+        options.value && container.addTextDisplayComponents(new TextDisplayBuilder().setContent(options.value));
     }
     static field(container: ContainerBuilder, field: ComponentManagerField): ContainerBuilder {
+
+        const hasText = 'name' in field && 'value' in field && field.name && field.value;
 
         if("button" in field && Array.isArray(field.button) && field.button.length > 0){
             const actionRow = new ActionRowBuilder<ButtonBuilder>()
                 .addComponents(field.button);
-            this.fieldAddText(container, {name: field.name, value: field.value});
+            if(hasText) this.fieldAddText(container, {name: field.name, value: field.value});
 
             container.addActionRowComponents(actionRow);
 
         } else if( ("button" in field && !Array.isArray(field.button)) || "thumbnailUrl" in field){
-            const section = new SectionBuilder()
-            this.fieldAddText(section, {name: field.name, value: field.value});
-
-            if("button" in field && !Array.isArray(field.button)){
-                section.setButtonAccessory(field.button)
-            } else if ("thumbnailUrl" in field){
-                section.setThumbnailAccessory(new ThumbnailBuilder().setURL(field.thumbnailUrl))
+            if(hasText){
+                const section = new SectionBuilder()
+                this.fieldAddText(section, {name: field.name, value: field.value});
+                if("button" in field && !Array.isArray(field.button)){
+                    section.setButtonAccessory(field.button)
+                } else if ("thumbnailUrl" in field){
+                    section.setThumbnailAccessory(new ThumbnailBuilder().setURL(field.thumbnailUrl))
+                }
+                container.addSectionComponents(section);
+            } else {
+                if("button" in field && !Array.isArray(field.button)) {
+                    const actionRow = new ActionRowBuilder<ButtonBuilder>()
+                        .addComponents(field.button);
+                    container.addActionRowComponents(actionRow);
+                }
             }
-
-            container.addSectionComponents(section);
         } else {
-            this.fieldAddText(container, {name: field.name, value: field.value});
+            if(hasText) this.fieldAddText(container, {name: field.name, value: field.value});
         }
 
         if(field.separator !== false){

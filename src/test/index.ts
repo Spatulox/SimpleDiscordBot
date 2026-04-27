@@ -8,7 +8,7 @@ import {
 import {client} from "./client";
 import {Events} from "discord.js"
 import {randomActivityList} from "./randomActivityList";
-import {webhook_test} from "./ui/webhook_test";
+import {component_test} from "./ui/component_test";
 dotenv.config();
 
 async function main() {
@@ -32,7 +32,8 @@ async function main() {
     bot.client.on(Events.InteractionCreate, async (interaction) => {
         if(interaction.isChatInputCommand()){
             console.log(interaction);
-            webhook_test(interaction)
+            //webhook_test(interaction)
+            component_test(interaction)
         }
     })
 
