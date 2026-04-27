@@ -20,8 +20,8 @@ import {SimpleColor} from "../../constants/SimpleColor";
 
 type OptionalText = {
     separator?: SeparatorSpacingSize | false;
-    name?: never;
-    value?: never;
+    name?: string; // set to never if you don't want it to be present
+    value?: string; // set to never if you don't want it to be present
 };
 
 type RequiredText = {
