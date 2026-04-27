@@ -44,8 +44,6 @@ export async function component_test(interaction: ChatInputCommandInteraction) {
             ButtonManager.success({customId: "success_component_button_1_2"}),
             ButtonManager.link({label: "Google 2", url: "https://google.com"}),
             ButtonManager.danger({customId: "success_component_button_2_2"}),
-            ButtonManager.danger({customId: "success_component_button_3_2"}),
-            ButtonManager.danger({customId: "success_component_button_4_2"})
         ]
 
         const fields: ComponentManagerField[] = [
