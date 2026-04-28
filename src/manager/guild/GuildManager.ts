@@ -1,6 +1,6 @@
 import {Channel, Collection, Guild, GuildBan, GuildMember, StageChannel, VoiceChannel} from 'discord.js';
 import {Log} from "../../utils/Log";
-import {Time} from "../../utils/UnitTime";
+import {Time} from "@spatulox/utils";
 import {GuildUserManager} from "./GuildUserManager";
 import {Bot} from "../../core/Bot";
 import {GuildChannelManager} from "./ChannelManager/GuildChannelManager";

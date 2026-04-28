@@ -1,5 +1,5 @@
 import {Client, ActivityType, Events, version} from 'discord.js';
-import { Time } from '../utils/UnitTime';
+import { Time } from '@spatulox/utils';
 import {Log} from "../utils/Log";
 import {InternetChecker} from "../utils/InternetChecker";
 import {BotLog, ConfigLog} from "./BotLog";
