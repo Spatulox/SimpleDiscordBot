@@ -144,7 +144,7 @@ export class ComponentManager {
     }
     static field(container: ContainerBuilder, field: ComponentManagerField): ContainerBuilder {
 
-        const hasText = 'name' in field && 'value' in field && field.name && field.value;
+        const hasText = ('name' in field || 'value' in field) && (field.name || field.value);
 
         if("button" in field && Array.isArray(field.button) && field.button.length > 0){
             const actionRow = new ActionRowBuilder<ButtonBuilder>()
