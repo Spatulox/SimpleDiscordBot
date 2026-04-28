@@ -2,7 +2,7 @@ import {
     Invite,
     InviteCreateOptions
 } from 'discord.js';
-import { Log } from '../../utils/Log';
+import {Log} from "@spatulox/utils";
 import {GuildChannelManager} from "./ChannelManager/GuildChannelManager";
 import {GuildManager} from "./GuildManager";
 

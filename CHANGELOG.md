@@ -1,6 +1,13 @@
 # Changelog
-Date format : dd/mm/yyy
+Date format : dd/mm/yyyy
 
+### 28/04/2026 - 2.2.1
+- Changes :
+  - Add dependency to @spatulox/utils
+    - `Time/Log/SimpleMutex` are now part of the `@spatulox/utils` package but are still reexported from this package
+    - `FileManager/CacheManager` are now part of the `@spatulox/utils` package but are still reexported from this package
+  - CacheManager now have a fixed cache folder `.utilscache`
+  - The `sendErrorToChannel` param of FileManager.writeJsonFile() have been removed
 
 ### 27/04/2026 - 2.2.1
 - Add :

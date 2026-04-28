@@ -2,7 +2,7 @@ import {
     GuildBasedChannel, GuildChannelCreateOptions
 } from 'discord.js';
 import {Bot} from "../../../core/Bot";
-import {Log} from "../../../utils/Log";
+import {Log} from "@spatulox/utils";
 import {GuildMessageManager} from "./GuildMessageManager";
 
 export class GuildChannelManager {

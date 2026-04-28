@@ -1,7 +1,7 @@
 import {Client, ActivityType, Events, version} from 'discord.js';
-import { Time } from '../utils/UnitTime';
-import {Log} from "../utils/Log";
-import {InternetChecker} from "../utils/InternetChecker";
+import { Time } from '@spatulox/utils';
+import {Log} from "@spatulox/utils";
+import {InternetChecker} from "@spatulox/utils";
 import {BotLog, ConfigLog} from "./BotLog";
 import {EmbedManager} from "../manager/messages/EmbedManager";
 import {BotMessage} from "./BotMessage";

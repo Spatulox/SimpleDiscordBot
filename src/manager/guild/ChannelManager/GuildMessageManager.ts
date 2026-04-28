@@ -1,6 +1,6 @@
 import {Message, MessageCreateOptions} from "discord.js";
 import {GuildTextChannelManager} from "./GuildTextChannelManager";
-import {Log} from "../../../utils/Log";
+import {Log} from "@spatulox/utils";
 import {SendableComponent, SendableComponentBuilder} from "../../builder/SendableComponentBuilder";
 
 export class GuildMessageManager {

@@ -6,7 +6,7 @@ import {
     ActionRowBuilder,
     ContainerBuilder, MessageFlags,
 } from 'discord.js';
-import {Log} from "../utils/Log";
+import {Log} from "@spatulox/utils";
 import {Bot} from "./Bot";
 import {SendableComponent} from "../manager/builder/SendableComponentBuilder";
 import {SelectMenuManager} from "../manager/interactible/SelectMenuManager";

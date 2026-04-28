@@ -6,7 +6,7 @@ import {
     User,
     GuildMember, MessageCreateOptions
 } from 'discord.js';
-import {Log} from "../utils/Log";
+import {Log} from "@spatulox/utils";
 import {Bot} from "./Bot";
 import {EmbedManager} from "../manager/messages/EmbedManager";
 import {SendableComponent, SendableComponentBuilder} from "../manager/builder/SendableComponentBuilder";
