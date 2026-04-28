@@ -1,7 +1,7 @@
 import {BasicUserManager} from "./BasicUserManager";
 import {Bot} from "../../core/Bot";
 import {User} from "discord.js";
-import {Log} from "../../utils/Log";
+import {Log} from "@spatulox/utils";
 
 export class UserManager extends BasicUserManager{
     static async find(userId: string): Promise<User | null> {

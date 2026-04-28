@@ -1,7 +1,7 @@
 import {TextChannel, ChannelType, GuildChannelCreateOptions} from "discord.js";
 import {GuildChannelManager} from "./GuildChannelManager";
 import {Bot} from "../../../core/Bot";
-import {Log} from "../../../utils/Log";
+import {Log} from "@spatulox/utils";
 
 export class GuildTextChannelManager extends GuildChannelManager {
 

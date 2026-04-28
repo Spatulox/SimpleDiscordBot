@@ -1,5 +1,5 @@
 import {Bot} from "../../core/Bot";
-import {Log} from "../../utils/Log";
+import {Log} from "@spatulox/utils";
 import {BasicUserManager} from "../direct/BasicUserManager"
 import {BanOptions, GuildMember} from "discord.js";
 import {setTimeout} from "timers/promises";

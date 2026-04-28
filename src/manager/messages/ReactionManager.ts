@@ -2,7 +2,7 @@ import {
     User,
     EmojiResolvable,
 } from 'discord.js';
-import { Log } from '../../utils/Log';
+import {Log} from "@spatulox/utils";
 import { Bot } from '../../core/Bot';
 import {GuildTextChannelManager} from "../guild/ChannelManager/GuildTextChannelManager";
 

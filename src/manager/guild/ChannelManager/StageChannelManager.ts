@@ -1,7 +1,7 @@
 import {ChannelType, GuildChannelCreateOptions, StageChannel} from "discord.js";
 import {GuildChannelManager} from "./GuildChannelManager";
 import {Bot} from "../../../core/Bot";
-import {Log} from "../../../utils/Log";
+import {Log} from "@spatulox/utils";
 
 export class StageChannelManager extends GuildChannelManager {
     static async findInGuild(guildId: string, channelId: string): Promise<StageChannel | null> {
