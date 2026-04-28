@@ -3,8 +3,8 @@ export {BotEnv} from "./core/BotEnv";
 
 
 // Manager
-export { FileManager } from './manager/FileManager'
-export { CacheManager } from "./manager/CacheManager";
+export { FileManager } from '@spatulox/utils'
+export { CacheManager } from "@spatulox/utils";
 
 export { EmbedManager } from './manager/messages/EmbedManager';
 export { WebhookManager } from './manager/messages/WebhookManager';
@@ -20,9 +20,9 @@ export { ComponentManager, ComponentManagerCreate, ComponentManagerField, Compon
 export { ButtonManager, ButtonOptions } from "./manager/interactible/ButtonManager";
 
 // Utils
-export { Time } from "./utils/UnitTime"
-export { Log } from "./utils/Log"
-export { SimpleMutex } from "./utils/SimpleMutex"
+export { Time } from "@spatulox/utils"
+export { Log } from "@spatulox/utils"
+export { SimpleMutex } from "@spatulox/utils"
 
 // Constants
 export { DiscordRegex } from "./constants/DiscordRegex";
