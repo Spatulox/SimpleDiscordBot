@@ -16,6 +16,15 @@
 
 # Don't forget to check the [wiki](https://github.com/spatulox-discord/SimpleDiscordBot/wiki)
 
+## 🧩 Starting a new bot ?
+
+> Don't start from an empty folder : the [**DiscordBotTemplate**](https://github.com/Spatulox/DiscordBotTemplate)
+> is a ready-to-use project built on this framework. Login, logging, modules, interaction
+> routing and slash command deployment are already wired, you only fill in your ids.
+>
+> It has [its own wiki](https://github.com/Spatulox/DiscordBotTemplate/wiki) too, and a
+> `feat/multi-bot` branch for several bots living in one repository.
+
 ## Installation
 ```bash
   npm i @spatulox/simplediscordbot
